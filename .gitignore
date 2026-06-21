@@ -1,0 +1,22 @@
+.DS_Store
+
+# Obsidian local workspace state
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# External reference project kept outside this notes repository
+00frappe-books-typescript/
+
+# Project outputs kept outside this notes repository
+01一些进度/产出/
+
+# Potentially sensitive personal network/proxy notes
+00开始前的一些准备文件/99-私人网络环境说明.md
+
+# Common local/build artifacts for future projects
+node_modules/
+dist/
+build/
+.env
+.env.*
+*.log
