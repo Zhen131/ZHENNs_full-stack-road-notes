@@ -1,0 +1,4 @@
+interface:
+  display_name: "账本工作流"
+  short_description: "按任务模式加载账本上下文并推进代码、Git、讨论、继续与日志工作"
+  default_prompt: "Use $ledger-workflow to continue the current ledger task with the minimum necessary project context."
