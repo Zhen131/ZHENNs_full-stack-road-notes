@@ -2,7 +2,7 @@
 
 时间：2026-07-03 至 2026-07-09
 
-主题：数据存得住（IndexedDB 持久化）
+主题：让页面真正活起来（接线，内存态）
 
 ---
 
@@ -10,49 +10,50 @@
 
 | 日期 | 任务 | 状态 |
 | --- | --- | --- |
-| 7月3日 | Day 1：学 IndexedDB、定方案 | 未开始 |
-| 7月4日 | Day 2：写 IndexedDB 存取工 | 未开始 |
-| 7月5日 | Day 3：写账本总管 + 组装点 | 未开始 |
-| 7月6日 | Day 4：把页面切换到走保存层 | 未开始 |
-| 7月7日 | Day 5：验收持久化 | 未开始 |
-| 7月8日 | Day 6：写日志、整理下周 | 未开始 |
+| 7月3日 | Day 1：规划状态与服务 | 未开始 |
+| 7月4日 | Day 2：接通“新增交易”表单 | 未开始 |
+| 7月5日 | Day 3：接通“交易列表” | 未开始 |
+| 7月6日 | Day 4：接通价格输入与资产汇总 | 未开始 |
+| 7月7日 | Day 5：手动验收与修 bug | 未开始 |
+| 7月8日 | Day 6：截屏、写日志、整理下周 | 未开始 |
 | 7月9日 | Day 7：休息与轻复盘 | 未开始 |
 
 ---
 
-## Day 1：学 IndexedDB、定方案
+## Day 1：规划状态与服务
 
-- [ ] 学 IndexedDB（db/objectStore/事务/异步）
-- [ ] 用 idb 库降低异步复杂度
-- [ ] 定第一版 whole-blob 整坨读写
+- [ ] 复习 React 受控表单与 useState/useReducer
+- [ ] 设计内存版 LedgerData 状态
+- [ ] 规划 tradeService / positionService 职责
 
-## Day 2：写 IndexedDB 存取工
+## Day 2：接通“新增交易”表单
 
-- [ ] 实现 indexedDbStorageAdapter 的 read/write
-- [ ] 空库返回默认空结构不崩
+- [ ] 表单 → TradeDraft → 校验 → 写入内存
+- [ ] 校验失败在表单提示，不污染数据
 
-## Day 3：写账本总管 + 组装点
+## Day 3：接通“交易列表”
 
-- [ ] 实现 ledgerRepository（保存/读取/清空）
-- [ ] 建组装点工厂：Noop 加密 + IndexedDB adapter
+- [ ] 列表渲染真实状态
+- [ ] 删掉 DashboardShell 硬编码数组
 
-## Day 4：把页面切换到走保存层
+## Day 4：接通价格输入与资产汇总
 
-- [ ] 启动时从 repository 读、变更后写
-- [ ] 页面/service 不直接碰 IndexedDB
+- [ ] 价格写入内存 priceSnapshots
+- [ ] 资产汇总调用 positionService 实时计算
 
-## Day 5：验收持久化
+## Day 5：手动验收与修 bug
 
-- [ ] 加交易→刷新→数据还在
-- [ ] clearAll 后变空
-- [ ] DevTools Application 面板看到数据
+- [ ] 逐条输入 5 条样例核对数字
+- [ ] 手动输入 BTC 价格核对未实现盈亏
+- [ ] 试超卖确认被拦
 
-## Day 6：写日志、整理下周
+## Day 6：截屏、写日志、整理下周
 
-- [ ] 写存储架构日志（进论文 Implementation）
+- [ ] 录 30 秒操作截屏
+- [ ] 写分层架构日志（进论文 System Design）
 - [ ] 整理 Week 5 任务
 
 ## Day 7：休息与轻复盘
 
-- [ ] 看一遍保存层代码
+- [ ] 看一遍页面与代码
 - [ ] 记录新问题

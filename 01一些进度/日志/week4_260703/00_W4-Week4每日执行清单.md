@@ -1,131 +1,131 @@
 # Week 4 每日执行清单
 
 时间：2026-07-03 至 2026-07-09  
-主题：数据存得住（IndexedDB 持久化）
+主题：让页面真正活起来（把计算接进页面，能真的加交易看结果）
 
-> 让数据刷新后还在。按 Week1 保存层设计实现 Repository → StorageAdapter，存储后端直接用 IndexedDB，加密层先用 Noop 占位。这是论文"typed repository layer over IndexedDB"的落地。
-> 起点：Week1 已设计好接口与"组装点一行切换实现"的思路（见 week1 文件夹《05B_W1-保存层设计说明》）。
+> 本周数据先放内存（React 状态），刷新会丢——存盘是 Week 5 的事。先把"输入 → 计算 → 展示"打通。
+> 起点：现在的 `DashboardShell.tsx` 是写死的假数据，本周换成真状态 + 真计算，并按 Week1 数据流接线（页面不做计算）。
 
 ---
 
-## Day 1：7月3日，学 IndexedDB、定方案
+## Day 1：7月3日，规划状态与服务
 
-今天只做一件事：搞懂 IndexedDB 基本模型，定第一版读写策略。
+今天只做一件事：想清楚页面状态长什么样、service 怎么分工。
 
 要做：
 
-- 学 IndexedDB：database / objectStore / 事务 / 异步
-- 建议用轻量封装库 `idb` 降低异步复杂度
-- 规划第一版"整坨 LedgerData 读写"（whole-blob）
+- 复习 React 受控表单与 `useState / useReducer`
+- 设计页面状态形状（一个内存版 LedgerData）
+- 规划 `services/tradeService.ts`、`services/positionService.ts` 的职责
 
 产出：
 
-- IndexedDB 学习笔记 + 方案决定
+- 状态与 service 设计草稿
 
 完成标准：
 
-- 能说清为什么第一版先整坨读写、未来再分片
+- 能说清页面、service、calculator 各自负责什么
 
 ---
 
-## Day 2：7月4日，写 IndexedDB 存取工
+## Day 2：7月4日，接通"新增交易"表单
 
-今天只做一件事：实现 storage adapter 的读和写。
+今天只做一件事：让表单能真的提交一笔交易进内存。
 
 要做：
 
-- 实现 `adapters/indexedDbStorageAdapter.ts`
-- read() 返回整个 LedgerData（空库返回默认空结构、不崩）
-- write(data) 整坨写回
+- 表单 → ManualTradeFormSource 整理成 TradeDraft → tradeValidator 校验 → 写入内存状态
+- 校验失败在表单上提示，不污染数据
 
 产出：
 
-- indexedDbStorageAdapter
+- 可用的新增交易表单
 
 完成标准：
 
-- 能把一个 LedgerData 写进去再读回来，内容一致
+- 填表提交后，内存里多了一笔交易
+- 非法输入会被挡下并提示
 
 ---
 
-## Day 3：7月5日，写账本总管 + 组装点
+## Day 3：7月5日，接通"交易列表"
 
-今天只做一件事：实现 Repository，并在一个组装点拼好实现。
+今天只做一件事：让交易列表显示真实数据。
 
 要做：
 
-- 实现 `repositories/ledgerRepository.ts`：getLedgerData / listTrades / saveTrade / savePriceSnapshot / clearAll
-- 内部全部翻译成 adapter 的 read / write
-- 建组装点工厂：Noop 加密 + IndexedDB adapter + repository
+- 交易列表改为渲染真实状态
+- 删掉 DashboardShell 里的硬编码数组
 
 产出：
 
-- ledgerRepository
-- noopEncryptionService
-- 组装点工厂
+- 实时的交易列表
 
 完成标准：
 
-- 上层只拿到 repository 接口，不知道底层是 IndexedDB
+- 新增一笔，列表立刻多一行
 
 ---
 
-## Day 4：7月6日，把页面切换到走保存层
+## Day 4：7月6日，接通价格输入与资产汇总
 
-今天只做一件事：让页面启动读、变更写，全走 repository。
+今天只做一件事：让资产汇总能实时算出持仓和盈亏。
 
 要做：
 
-- 启动时从 repository 读，每次变更后写
-- 页面 / service 仍然不直接碰 IndexedDB
+- 价格输入表单写入内存 priceSnapshots
+- 资产汇总改为调用 positionService 实时计算：持仓、均价、市值、未实现盈亏
 
 产出：
 
-- 接上持久化的应用
+- 可用的价格输入
+- 实时资产汇总
 
 完成标准：
 
-- 加交易后数据进了 IndexedDB
+- 持仓、均价、市值、未实现盈亏随交易和价格变化
 
 ---
 
-## Day 5：7月7日，验收持久化
+## Day 5：7月7日，手动验收与修 bug
 
-今天只做一件事：确认刷新后数据还在。
+今天只做一件事：把 5 条样例敲进页面，核对数字。
 
 要做：
 
-- 加几笔交易 → 刷新 → 数据还在
-- clearAll 后变空
-- 用浏览器 DevTools 的 Application 面板看到 IndexedDB 里有数据
-- 修 bug
+- 逐条输入 5 条样例交易，核对汇总数字与 Week2 测试一致
+- 手动输入 BTC 价格，核对未实现盈亏
+- 试一笔超卖，确认被拦
+- 修 UI bug
 
 产出：
 
-- 持久化验收记录
+- 手动验收记录
 
 完成标准：
 
-- 刷新页面数据仍在；交易 / 统计结果与持久化前一致
+- 页面数字与手算 / 测试一致
 
 ---
 
-## Day 6：7月8日，写日志、整理下周
+## Day 6：7月8日，截屏、写日志、整理下周
 
-今天只做一件事：沉淀存储架构素材。
+今天只做一件事：留演示证据并沉淀架构素材。
 
 要做：
 
-- 写日志：保存层三件套如何分工、为什么页面碰不到存储、换存储为什么只改组装点一行
+- 录一段 30 秒操作截屏（加交易 → 看汇总）
+- 写日志：页面如何只做展示、计算如何下沉到 service
 - 整理 Week 5 任务
 
 产出：
 
-- Week4 日志（进论文 Implementation 存储架构）
+- 操作截屏
+- Week 4 日志（进论文 System Design）
 
 完成标准：
 
-- 能讲清"换存储只改一行"的依赖倒置思路
+- 能用一段截屏演示完整加交易流程
 
 ---
 
@@ -135,7 +135,7 @@
 
 允许做：
 
-- 看一遍保存层代码
+- 看一遍本周页面与代码
 - 记录新问题
 
 不做：
@@ -147,20 +147,20 @@
 
 ## 本周产出物
 
-- indexedDbStorageAdapter、ledgerRepository、noopEncryptionService、组装点工厂
-- 接上持久化的可用应用
+- 能用的新增交易 / 交易列表 / 价格输入 / 资产汇总四块
+- tradeService、positionService
+- 操作截屏
 
 ## 验收标准
 
-- 刷新页面数据仍在
-- 页面和 service 没有任何一行直接操作 IndexedDB
-- 交易 / 统计结果与持久化前一致
+- 在浏览器里手动走完"加交易 → 看到持仓 / 均价 / 盈亏"全流程，数字与手算一致
+- 页面组件里没有计算逻辑、没有 localStorage
 
 ## 论文素材点
 
-- 可替换存储层的接口设计、whole-blob 第一版策略及未来分片优化路线 → 论文 Implementation
+- 分层架构（UI / Service / Calculator）的实际落地截图与说明 → 论文 System Design
 
 ## 落后时可砍
 
-- 本周是论文硬需求，不可砍
-- 若 IndexedDB 卡壳，缩小 IndexedDB 实现范围，只保留 whole-blob 读写和最小 repository；必要时保留 W3 内存态演示，但不把 localStorage 纳入正式路线
+- 价格输入与未实现盈亏可挪到 Week 5 初
+- 死守：能加交易 + 列表更新 + 持仓均价正确
