@@ -1,0 +1,42 @@
+{
+	"nodes":[
+		{"id":"title","type":"text","text":"# Week 3 Day 7 学习图：TradeDraft → tradeValidator → Trade[] → positionCalculator → Position[]\n\n今天只学账本命脉：不学 Next 页面、不学 IndexedDB、不学加密。目标是能用自己的话解释：不可信输入如何变成可保存交易事实，再如何推导当前持仓。红色是主链路；灰色是暂不进入的未来/周边链路。","x":-920,"y":-760,"width":2560,"height":170,"color":"#e03131"},
+		{"id":"lane-input","type":"text","text":"## 1 输入区\n表单 / 测试 fixture / 未来导入","x":-920,"y":-540,"width":300,"height":90,"color":"#1971c2"},
+		{"id":"lane-validate","type":"text","text":"## 2 校验区\ntradeValidator 只判断能不能入账","x":-310,"y":-540,"width":300,"height":90,"color":"#1971c2"},
+		{"id":"lane-facts","type":"text","text":"## 3 事实区\nTrade[] 是账本原始事实","x":320,"y":-540,"width":300,"height":90,"color":"#1971c2"},
+		{"id":"lane-calc","type":"text","text":"## 4 计算区\npositionCalculator 只推导结果","x":950,"y":-540,"width":300,"height":90,"color":"#1971c2"},
+		{"id":"lane-output","type":"text","text":"## 5 输出区\nPosition[] 给页面展示","x":1580,"y":-540,"width":300,"height":90,"color":"#1971c2"},
+		{"id":"validated-draft","type":"text","text":"## ValidatedTradeDraft\n\n校验成功后的草稿。\n\n返回：\n```ts\n{ ok: true, value }\n```\n\n变化：\n- `fee` 一定存在\n- 仍然还不是正式 `Trade`\n- 还缺 `id / createdAt / updatedAt` 等保存字段","x":310,"y":-360,"width":430,"height":280,"color":"#e03131"},
+		{"id":"trade-array","type":"text","text":"## Trade[]\n\n账本保存的交易事实数组。\n\n事实，不是结果：\n- 买了什么资产\n- 买/卖数量\n- 成交价\n- 成交总额\n- 发生时间\n- 币种 / 手续费\n\n关键边界：\n`Trade` 要保存；`Position` 不保存。\n\n核心文件：\n`src/models/types.ts`","x":880,"y":-360,"width":440,"height":360,"color":"#e03131"},
+		{"id":"prior-trades","type":"text","text":"## priorTrades 的作用\n\nvalidator 校验卖出时只用历史交易推导“可卖数量”。\n\n它不生成 Position，不算成本，不算盈亏。\n\n只回答一个问题：\n```text\n这笔 sell 会不会超卖？\n```","x":900,"y":90,"width":430,"height":260,"color":"#f08c00"},
+		{"id":"calculator","type":"text","text":"## calculatePositions(trades, priceSnapshots?)\n\n输入：\n- `Trade[]`\n- 可选 `PriceSnapshot[]`\n\n内部流程：\n1. 按 `occurredAt` 排序\n2. 同一时间保持原输入顺序\n3. 按资产聚合仓位\n4. buy：数量增加，成本增加\n5. sell：按卖出前平均成本结转成本\n6. 计算 realizedPnl\n7. 可选接入最新价格，计算 marketValue / unrealizedPnl\n\n核心文件：\n`src/calculators/positionCalculator.ts`","x":1470,"y":-390,"width":500,"height":470,"color":"#e03131"},
+		{"id":"accumulator","type":"text","text":"## PositionAccumulator\n\ncalculator 内部临时状态，不对外使用。\n\n保存计算过程：\n- assetSymbol\n- quantity\n- costBasis\n- realizedPnl\n- currency\n\n最后才转成正式 `Position`。\n\n理解它可以避免把“过程状态”和“最终结果”混在一起。","x":1470,"y":170,"width":500,"height":330,"color":"#7048e8"},
+		{"id":"position-array","type":"text","text":"## Position[]\n\n由 `Trade[]` 推导出来的当前持仓结果。\n\n字段：\n- quantity\n- costBasis\n- averageCost\n- realizedPnl\n- latestPrice?\n- marketValue?\n- unrealizedPnl?\n\n关键边界：\n`Position` 不是原始事实，不应该手填保存；需要时由交易事实重新计算。","x":2100,"y":-360,"width":460,"height":390,"color":"#e03131"},
+		{"id":"price-snapshot","type":"text","text":"## PriceSnapshot[] 是可选支线\n\n没有价格快照时：\n- latestPrice undefined\n- marketValue undefined\n- unrealizedPnl undefined\n\n有同资产、同币种快照时：\n- 取 recordedAt 最新的\n- 同时间取数组后出现的\n\n今天先把它当作 calculator 的附加输入。","x":2095,"y":130,"width":465,"height":300,"color":"#2f9e44"},
+		{"id":"pass-line","type":"text","text":"## 今日通过线\n\n你能不看代码说出：\n\n```text\nTradeDraft 是不可信草稿；\ntradeValidator 决定它能不能入账；\n通过后补齐 id / 时间戳成为 Trade；\nTrade[] 是唯一事实来源；\npositionCalculator 按时间和资产聚合交易；\n最终推导 Position[] 给页面展示。\n```\n\n能说清这段，就完成 Day 7 的核心目标。","x":1470,"y":580,"width":760,"height":310,"color":"#e03131"},
+		{"id":"trade-draft","type":"text","text":"## TradeDraft\n\n还没有进入账本的交易草稿。\n\n来源：\n- 用户表单\n- `sampleTradeDrafts`\n- 未来 NLP / JSON 导入\n\n特点：\n- `fee` 可省略\n- 字段运行时不可信\n- 不能直接保存\n\n核心文件：\n`src/models/types.ts`\n`src/test/fixtures.ts`","x":-1200,"y":-390,"width":430,"height":330,"color":"#e03131"},
+		{"id":"fixture","type":"text","text":"## 今天最好追踪的样例\n\n`sampleTradeDrafts`：\n1. BTC buy\n2. ETH buy\n3. ADA buy 41.58，总额 10\n4. ADA buy 126.6825，总额 32\n5. ADA sell 82.9381，总额 20\n\n最终 ADA：\n- quantity = 85.3244\n- costBasis ≈ 21.2978\n- averageCost ≈ 0.24961\n- realizedPnl ≈ -0.70218","x":-1135,"y":375,"width":430,"height":360,"color":"#2f9e44"},
+		{"id":"validator-fail","type":"text","text":"## 失败路径：不进账本\n\n返回：\n```ts\n{ ok: false, errors }\n```\n\n意义：\n错误只给 UI / 导入流程展示或阻止保存。\n\n重点：\n普通校验失败不是 throw。","x":-620,"y":210,"width":420,"height":250,"color":"#f08c00"},
+		{"id":"not-today","type":"text","text":"## 今天先不学\n\n这些是后续开发/架构，不是今天主链路：\n- Next 页面状态\n- Service 接线\n- Repository\n- IndexedDB\n- EncryptionService\n- normalize / fingerprint / duplicateDetector\n- Import / Export\n\n原因：你现在要先拿回核心业务链路。","x":-450,"y":580,"width":500,"height":310,"color":"#868e96"},
+		{"id":"validator","type":"text","text":"## validateTradeDraft(input, context)\n\n输入：\n- `input: unknown`\n- `assets`\n- `priorTrades`\n- 可选 `totalValueTolerance`\n\n检查：\n- 输入必须是对象\n- `type` 只能 buy / sell\n- asset 必须存在\n- quantity / price / totalValue > 0\n- fee >= 0，省略则变成 `\"0\"`\n- `quantity * price` 与 `totalValue` 在容差内\n- sell 不能超过已有持仓\n\n核心文件：\n`src/validators/tradeValidator.ts`","x":-480,"y":-360,"width":470,"height":420,"color":"#e03131"},
+		{"id":"tests","type":"text","text":"## 用测试验收理解\n\n先追这两个测试：\n\n1. `tradeValidator.test.ts`\n   `accepts all five fixed trade drafts`\n   看 5 条草稿如何逐条通过 validator 并进入 priorTrades。\n\n2. `positionCalculator.test.ts`\n   `calculates positions, average cost, and realized PnL from buy and sell trades`\n   看 `sampleTrades` 如何变成 BTC / ETH / ADA 三个 Position。","x":220,"y":520,"width":730,"height":310,"color":"#2f9e44"},
+		{"id":"create-trade","type":"text","text":"## createTradeFromDraft\n\n今天用测试里的 helper 理解这一步：\n\n```text\nValidatedTradeDraft\n-> 补 id\n-> 补 createdAt / updatedAt\n-> 补 feeCurrency\n-> Trade\n```\n\n核心文件：\n`src/test/fixtures.ts`\n\n未来真实 app 中，这一步会由 service 编排。","x":370,"y":68,"width":430,"height":285,"color":"#e03131"}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"trade-draft","fromSide":"right","toNode":"validator","toSide":"left","color":"#e03131","label":"不可信输入"},
+		{"id":"e2","fromNode":"validator","fromSide":"right","toNode":"validated-draft","toSide":"left","color":"#e03131","label":"ok: true"},
+		{"id":"e3","fromNode":"validator","fromSide":"bottom","toNode":"validator-fail","toSide":"top","color":"#f08c00","label":"ok: false"},
+		{"id":"e4","fromNode":"validated-draft","fromSide":"bottom","toNode":"create-trade","toSide":"top","color":"#e03131","label":"补保存字段"},
+		{"id":"e5","fromNode":"create-trade","fromSide":"right","toNode":"trade-array","toSide":"bottom","color":"#e03131","label":"形成 Trade"},
+		{"id":"e6","fromNode":"trade-array","fromSide":"right","toNode":"calculator","toSide":"left","color":"#e03131","label":"Trade[]"},
+		{"id":"e7","fromNode":"calculator","fromSide":"bottom","toNode":"accumulator","toSide":"top","color":"#7048e8","label":"遍历过程状态"},
+		{"id":"e8","fromNode":"calculator","fromSide":"right","toNode":"position-array","toSide":"left","color":"#e03131","label":"输出 Position[]"},
+		{"id":"e9","fromNode":"price-snapshot","fromSide":"left","toNode":"calculator","toSide":"right","color":"#2f9e44","label":"可选价格输入"},
+		{"id":"e10","fromNode":"fixture","fromSide":"top","toNode":"trade-draft","toSide":"bottom","color":"#2f9e44","label":"5 条样例草稿"},
+		{"id":"e11","fromNode":"tests","fromSide":"top","toNode":"validator","toSide":"bottom","color":"#2f9e44","label":"校验测试"},
+		{"id":"e12","fromNode":"tests","fromSide":"right","toNode":"calculator","toSide":"bottom","color":"#2f9e44","label":"计算测试"},
+		{"id":"e13","fromNode":"trade-array","fromSide":"bottom","toNode":"prior-trades","toSide":"top","color":"#f08c00","label":"给 sell 校验可用数量"},
+		{"id":"e14","fromNode":"prior-trades","fromSide":"left","toNode":"validator","toSide":"bottom","color":"#f08c00","label":"超卖检查"},
+		{"id":"e15","fromNode":"position-array","fromSide":"bottom","toNode":"pass-line","toSide":"top","color":"#e03131","label":"学习目标"}
+	]
+}
