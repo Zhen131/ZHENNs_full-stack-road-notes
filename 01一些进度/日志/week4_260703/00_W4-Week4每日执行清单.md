@@ -1,166 +1,197 @@
 # Week 4 每日执行清单
 
 时间：2026-07-03 至 2026-07-09  
-主题：让页面真正活起来（把计算接进页面，能真的加交易看结果）
+主题：让页面真正活起来（useReducer 内存账本状态地基）
 
-> 本周数据先放内存（React 状态），刷新会丢——存盘是 Week 5 的事。先把"输入 → 计算 → 展示"打通。
-> 起点：现在的 `DashboardShell.tsx` 是写死的假数据，本周换成真状态 + 真计算，并按 Week1 数据流接线（页面不做计算）。
+> 本周数据先放内存，刷新会丢。存盘是 Week 5 之后的事情。
+> 当前方案已从零散 `useState` 调整为 `useReducer + LedgerData`。先让页面状态、service 和 calculator 的边界稳定，再接新增交易和价格输入。
+> 起点：`DashboardShell.tsx` 仍有写死的 `summaryRows` 和 `trades`；`src/state/` 还不存在；`src/services/positionService.ts` 和 `tradeService.ts` 还不存在。
 
 ---
 
-## Day 1：7月3日，规划状态与服务
+## Gate 0：方案与入口同步
 
-今天只做一件事：想清楚页面状态长什么样、service 怎么分工。
+今天只做一件事：先把路线讲清楚，避免继续按旧计划推进。
 
 要做：
 
-- 复习 React 受控表单与 `useState / useReducer`
-- 设计页面状态形状（一个内存版 LedgerData）
-- 规划 `services/tradeService.ts`、`services/positionService.ts` 的职责
+- 阅读 `01A_W4-React状态与Service职责拆解.md`
+- 阅读 `01B_W4-useReducer状态地基执行与验收标准.md`
+- 更新当前开发状态、总路线图、Week 4 / Week 5 清单、README 和主架构图
 
 产出：
 
-- 状态与 service 设计草稿
+- 统一后的 Week 4 执行标准
 
 完成标准：
 
-- 能说清页面、service、calculator 各自负责什么
+- 能说清：Week 4 先做 reducer 内存态，不做 IndexedDB
+- 能说清：`Position[]` 不保存进 reducer state，而是由 service/calculator 推导
 
 ---
 
-## Day 2：7月4日，接通"新增交易"表单
+## Gate 1：建立 useReducer 状态地基
 
-今天只做一件事：让表单能真的提交一笔交易进内存。
+今天只做一件事：让页面拥有一个真正的内存版 `LedgerData`。
 
 要做：
 
-- 表单 → ManualTradeFormSource 整理成 TradeDraft → tradeValidator 校验 → 写入内存状态
-- 校验失败在表单上提示，不污染数据
+- 新建 `src/state/initialLedgerData.ts`
+- 新建 `src/state/ledgerReducer.ts`
+- 支持最小 action：
+  - `trade/add`
+  - `trade/delete`
+  - `ledger/reset`
+- 新建 `src/state/ledgerReducer.test.ts`
+- 确认 reducer 不校验交易、不计算持仓、不碰存储
 
 产出：
 
-- 可用的新增交易表单
+- `initialLedgerData`
+- `ledgerReducer`
+- reducer 测试
 
 完成标准：
 
-- 填表提交后，内存里多了一笔交易
-- 非法输入会被挡下并提示
+- `trade/add` 返回新 state，旧 state 不被修改
+- `trade/delete` 按 `trade.id` 删除
+- `ledger/reset` 回到初始账本
+- reducer 测试通过
 
 ---
 
-## Day 3：7月5日，接通"交易列表"
+## Gate 2：接通 positionService 和资产汇总
 
-今天只做一件事：让交易列表显示真实数据。
+今天只做一件事：让资产汇总来自当前账本计算结果，而不是写死数组。
 
 要做：
 
-- 交易列表改为渲染真实状态
-- 删掉 DashboardShell 里的硬编码数组
+- 新建 `src/services/positionService.ts`
+- `positionService` 调用 `calculatePositions(ledgerData.trades, ledgerData.priceSnapshots)`
+- 新建 `src/services/positionService.test.ts`
+- 修改 `DashboardShell.tsx`：
+  - 加 `"use client"`
+  - 使用 `useReducer(ledgerReducer, initialLedgerData)`
+  - 删除写死的 `summaryRows`
+  - 资产汇总渲染 `positions`
 
 产出：
 
-- 实时的交易列表
+- `positionService`
+- 真实计算驱动的资产汇总
 
 完成标准：
 
-- 新增一笔，列表立刻多一行
+- 页面组件不直接调用 `calculatePositions`
+- 页面组件不保存 `Position[]` state
+- 没有价格快照时，不乱显示 0 市值或 0 盈亏
 
 ---
 
-## Day 4：7月6日，接通价格输入与资产汇总
+## Gate 3：交易列表改读 LedgerData
 
-今天只做一件事：让资产汇总能实时算出持仓和盈亏。
+今天只做一件事：让交易列表显示 `ledgerData.trades`。
 
 要做：
 
-- 价格输入表单写入内存 priceSnapshots
-- 资产汇总改为调用 positionService 实时计算：持仓、均价、市值、未实现盈亏
+- 删除 `DashboardShell.tsx` 里写死的 `trades`
+- 交易列表改为渲染 `ledgerData.trades`
+- 空列表显示清晰空状态
+- 暂时不让保存交易按钮生成假交易
 
 产出：
 
-- 可用的价格输入
-- 实时资产汇总
+- 来源真实的交易列表
 
 完成标准：
 
-- 持仓、均价、市值、未实现盈亏随交易和价格变化
+- 初始交易列表显示“暂无交易”
+- 未来 dispatch `trade/add` 后，列表能自然更新
+- 页面里没有假交易数组
 
 ---
 
-## Day 5：7月7日，手动验收与修 bug
+## Gate 4：接通 tradeService 和新增交易
 
-今天只做一件事：把 5 条样例敲进页面，核对数字。
+今天只做一件事：让表单新增交易按正确流程入账。
 
 要做：
 
-- 逐条输入 5 条样例交易，核对汇总数字与 Week2 测试一致
-- 手动输入 BTC 价格，核对未实现盈亏
-- 试一笔超卖，确认被拦
-- 修 UI bug
+- 新建 `src/services/tradeService.ts`
+- 表单数据整理成 `TradeDraft`
+- 调用 `validateTradeDraft`
+- 校验成功后生成正式 `Trade`
+- 页面收到成功结果后 dispatch：
+
+```ts
+dispatch({ type: "trade/add", trade });
+```
+
+- 校验失败只展示错误，不 dispatch，不污染 `LedgerData.trades`
+
+产出：
+
+- 可用的新增交易流程
+
+完成标准：
+
+- 合法交易提交后，交易列表增加一行
+- 非法交易提交后，交易列表不变
+- 超卖提交后，交易列表不变
+
+---
+
+## Gate 5：价格输入、资产汇总和手动验收
+
+今天只做一件事：确认交易、价格和持仓汇总能形成完整内存态闭环。
+
+要做：
+
+- 接价格输入到 `LedgerData.priceSnapshots`
+- 资产汇总通过 `positionService` 实时更新
+- 逐条输入 Week 2 的 5 条样例交易
+- 输入 BTC 价格核对市值和未实现盈亏
+- 试一笔超卖确认被拦
 
 产出：
 
 - 手动验收记录
+- 可演示的内存态页面
 
 完成标准：
 
-- 页面数字与手算 / 测试一致
-
----
-
-## Day 6：7月8日，截屏、写日志、整理下周
-
-今天只做一件事：留演示证据并沉淀架构素材。
-
-要做：
-
-- 录一段 30 秒操作截屏（加交易 → 看汇总）
-- 写日志：页面如何只做展示、计算如何下沉到 service
-- 整理 Week 5 任务
-
-产出：
-
-- 操作截屏
-- Week 4 日志（进论文 System Design）
-
-完成标准：
-
-- 能用一段截屏演示完整加交易流程
-
----
-
-## Day 7：7月9日，休息与轻复盘
-
-今天不做重开发。
-
-允许做：
-
-- 看一遍本周页面与代码
-- 记录新问题
-
-不做：
-
-- 不开新功能
-- 不临时改 Week 5 目标
+- 页面数字与 Week 2 测试 / 手算一致
+- 刷新丢失数据是可接受限制
+- 页面组件没有计算逻辑、没有 localStorage、没有 IndexedDB
 
 ---
 
 ## 本周产出物
 
-- 能用的新增交易 / 交易列表 / 价格输入 / 资产汇总四块
-- tradeService、positionService
-- 操作截屏
+- `initialLedgerData`
+- `ledgerReducer`
+- `positionService`
+- `tradeService`
+- 接入 `useReducer` 的 `DashboardShell`
+- 交易列表和资产汇总不再依赖写死数组
+- Week 4 手动验收记录
 
-## 验收标准
+## 本周验收标准
 
-- 在浏览器里手动走完"加交易 → 看到持仓 / 均价 / 盈亏"全流程，数字与手算一致
-- 页面组件里没有计算逻辑、没有 localStorage
+- 页面状态由 `useReducer` 管理。
+- `LedgerData` 是页面唯一事实来源。
+- `Position[]` 由 `positionService` / `calculatePositions` 推导，不保存进 state。
+- 合法交易能进入内存账本。
+- 非法交易不会污染内存账本。
+- 页面组件不写 IndexedDB、不写 localStorage、不重写计算公式。
 
 ## 论文素材点
 
-- 分层架构（UI / Service / Calculator）的实际落地截图与说明 → 论文 System Design
+- React 状态地基与业务分层：`UI / reducer state / service / calculator`
+- 为什么先内存态再持久化
+- 为什么 `Position[]` 是派生结果而不是保存对象
 
 ## 落后时可砍
 
-- 价格输入与未实现盈亏可挪到 Week 5 初
-- 死守：能加交易 + 列表更新 + 持仓均价正确
+- 价格输入和未实现盈亏可挪到 Week 5 前置补课。
+- 死守：`useReducer + LedgerData`、交易列表真实状态、`positionService` 资产汇总。
