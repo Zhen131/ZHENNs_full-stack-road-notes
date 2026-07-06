@@ -5,15 +5,32 @@
 
 > 让数据刷新后还在。按 Week1 保存层设计实现 Repository → StorageAdapter，存储后端直接用 IndexedDB，加密层先用 Noop 占位。这是论文"typed repository layer over IndexedDB"的落地。
 > 起点：Week1 已设计好接口与"组装点一行切换实现"的思路（见 week1 文件夹《05B_W1-保存层设计说明》）。
+> 新前置条件：Week5 不能绕过 Week4 的 React 内存账本地基。只有当页面已经由 `useReducer + LedgerData` 管理，并且新增交易、删除交易、持仓派生展示都能在内存态跑通，才进入 IndexedDB。
+
+---
+
+## 进入 Week 5 前必须通过
+
+这些不是 Week5 的开发内容，而是 Week4 的交接标准：
+
+- `DashboardShell` 使用 `useReducer(ledgerReducer, initialLedgerData)`，不再靠硬编码数组当账本。
+- `LedgerData` 至少包含 `assets / trades / priceSnapshots / feeRules`。
+- `ledgerReducer` 至少支持 `trade/add`、`trade/delete` 和 `ledger/reset`。
+- `tradeService` 能把表单整理成 `TradeDraft`，通过 `validateTradeDraft` 后生成正式 `Trade`，失败时不改数据。
+- `positionService` 只负责从 `LedgerData.trades + LedgerData.priceSnapshots` 调用 `calculatePositions(...)`，输出页面可展示的 `Position[]`。
+- 页面交易列表和资产汇总都来自内存态 `LedgerData` 的真实派生结果，不再使用假数组。
+
+如果这些条件没过，7月10日的第一件事不是 IndexedDB，而是补完 Week4 欠账。
 
 ---
 
 ## Day 1：7月10日，学 IndexedDB、定方案
 
-今天只做一件事：搞懂 IndexedDB 基本模型，定第一版读写策略。
+今天只做一件事：先确认 Week4 交接，再搞懂 IndexedDB 基本模型，定第一版读写策略。
 
 要做：
 
+- 复核 Week4 前置条件：内存账本能新增交易、删除交易、派生持仓、刷新丢失但运行正确
 - 学 IndexedDB：database / objectStore / 事务 / 异步
 - 建议用轻量封装库 `idb` 降低异步复杂度
 - 规划第一版"整坨 LedgerData 读写"（whole-blob）
@@ -25,6 +42,7 @@
 完成标准：
 
 - 能说清为什么第一版先整坨读写、未来再分片
+- 能说清 Week5 只是把 Week4 已经跑通的 `LedgerData` 持久化，不重新发明页面状态
 
 ---
 
@@ -142,6 +160,7 @@
 
 - 不开新功能
 - 不临时改 Week 6 目标
+- 不为了省事改用 `localStorage`
 
 ---
 
@@ -154,6 +173,8 @@
 
 - 刷新页面数据仍在
 - 页面和 service 没有任何一行直接操作 IndexedDB
+- `ledgerReducer` 仍然只管理账本状态，不直接读写 IndexedDB
+- `positionService` 仍然只派生持仓，不保存派生结果
 - 交易 / 统计结果与持久化前一致
 
 ## 论文素材点
