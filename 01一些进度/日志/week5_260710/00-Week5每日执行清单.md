@@ -1,187 +1,264 @@
 # Week 5 每日执行清单
 
-时间：2026-07-10 至 2026-07-16  
-主题：数据存得住（IndexedDB 持久化）
+时间：2026-07-10 至 2026-07-16
 
-> 让数据刷新后还在。按 Week1 保存层设计实现 Repository → StorageAdapter，存储后端直接用 IndexedDB，加密层先用 Noop 占位。这是论文"typed repository layer over IndexedDB"的落地。
-> 起点：Week1 已设计好接口与"组装点一行切换实现"的思路（见 week1 文件夹《05B_W1-保存层设计说明》）。
-> 新前置条件：Week5 不能绕过 Week4 的 React 内存账本地基。只有当页面已经由 `useReducer + LedgerData` 管理，并且新增交易、删除交易、持仓派生展示都能在内存态跑通，才进入 IndexedDB。
+主题：补完 React 内存态 I（Gate 2、Gate 3 与 Gate 4 service 地基）
 
----
+> 2026-07-10 重排说明：原 Week 5 IndexedDB 计划因 Week 4 Gate 2-5 未通过而停止执行。Week 5 不做持久化，先让真实 `LedgerData`、service 和 Dashboard 跑起来。
 
-## 进入 Week 5 前必须通过
+本周结论：
 
-这些不是 Week5 的开发内容，而是 Week4 的交接标准：
-
-- `DashboardShell` 使用 `useReducer(ledgerReducer, initialLedgerData)`，不再靠硬编码数组当账本。
-- `LedgerData` 至少包含 `assets / trades / priceSnapshots / feeRules`。
-- `ledgerReducer` 至少支持 `trade/add`、`trade/delete` 和 `ledger/reset`。
-- `tradeService` 能把表单整理成 `TradeDraft`，通过 `validateTradeDraft` 后生成正式 `Trade`，失败时不改数据。
-- `positionService` 只负责从 `LedgerData.trades + LedgerData.priceSnapshots` 调用 `calculatePositions(...)`，输出页面可展示的 `Position[]`。
-- 页面交易列表和资产汇总都来自内存态 `LedgerData` 的真实派生结果，不再使用假数组。
-
-如果这些条件没过，7月10日的第一件事不是 IndexedDB，而是补完 Week4 欠账。
+```text
+Day 1 只盘点和重排，不写源码
+Day 2-5 每天一个主任务
+Day 6 做真实交易列表和本周 Gate
+Day 7 休息
+```
 
 ---
 
-## Day 1：7月10日，学 IndexedDB、定方案
+## 本周起点
 
-今天只做一件事：先确认 Week4 交接，再搞懂 IndexedDB 基本模型，定第一版读写策略。
+源码已经实现：
+
+- `positionCalculator`。
+- `tradeValidator`。
+- `initialLedgerData`。
+- `ledgerReducer`。
+- `trade/add`、`trade/delete`、`ledger/reset`。
+
+源码尚未实现：
+
+- `positionService`。
+- `tradeService`。
+- Dashboard `useReducer` 接线。
+- 生产资产来源。
+- 真实资产汇总和交易列表。
+
+当前 `DashboardShell.tsx` 仍有写死的 `summaryRows` 和 `trades`。这些是占位数据，不是账本事实。
+
+---
+
+## Day 1：7月10日，事实盘点与路线重排
+
+今天只做一件事：重新确认项目事实，并锁定 Week 5-13 的 Gate 顺序。
 
 要做：
 
-- 复核 Week4 前置条件：内存账本能新增交易、删除交易、派生持仓、刷新丢失但运行正确
-- 学 IndexedDB：database / objectStore / 事务 / 异步
-- 建议用轻量封装库 `idb` 降低异步复杂度
-- 规划第一版"整坨 LedgerData 读写"（whole-blob）
+- 阅读当前状态、总路线、Week 4/5、Week 6-13 checklist 和指定源码。
+- 区分已实现、类型/fixture 支撑、占位和未来计划。
+- 确认 Week 4 Gate 1 已完成，Gate 2-5 未完成。
+- 明确 Week 5-6 先补内存态，Week 7 才进入 IndexedDB。
+- 明确 P0、压缩顺序和 Gate 失败分支。
+- 同步当前状态、总路线和周计划。
 
 产出：
 
-- IndexedDB 学习笔记 + 方案决定
+- 2026-07-10 事实基线。
+- 新版 Week 5-13 路线。
+- 每周两份 `00-` 入口规范。
 
 完成标准：
 
-- 能说清为什么第一版先整坨读写、未来再分片
-- 能说清 Week5 只是把 Week4 已经跑通的 `LedgerData` 持久化，不重新发明页面状态
+- 当天不写源码。
+- 不把 Dashboard 占位数据当成已实现功能。
+- 不把 `PriceSnapshot` 类型或 fixture 当成价格功能。
+- 不把 `services/README.md` 当成 service 已实现。
+- 下一项源码任务明确为 `positionService`。
 
 ---
 
-## Day 2：7月11日，写 IndexedDB 存取工
+## Day 2：7月11日，实现 positionService
 
-今天只做一件事：实现 storage adapter 的读和写。
+今天只做一件事：建立持仓派生 service，不重写 Calculator。
 
 要做：
 
-- 实现 `adapters/indexedDbStorageAdapter.ts`
-- read() 返回整个 LedgerData（空库返回默认空结构、不崩）
-- write(data) 整坨写回
+- 新建 `src/services/positionService.ts`。
+- 只读取 `LedgerData.trades` 和 `LedgerData.priceSnapshots`。
+- 调用既有 `calculatePositions(...)`。
+- 新建 `src/services/positionService.test.ts`。
+- 覆盖空账本、无价格快照和有价格快照场景。
 
 产出：
 
-- indexedDbStorageAdapter
+- `positionService`。
+- service 单元测试。
 
 完成标准：
 
-- 能把一个 LedgerData 写进去再读回来，内容一致
+- service 不保存 `Position[]`。
+- service 不复制成本、盈亏或价格选择公式。
+- service 不读写浏览器存储。
+- 相关测试、全量测试、lint 和 build 通过后才结束。
 
 ---
 
-## Day 3：7月12日，写账本总管 + 组装点
+## Day 3：7月12日，Dashboard 接入真实持仓
 
-今天只做一件事：实现 Repository，并在一个组装点拼好实现。
+今天只做一件事：让资产汇总由 `LedgerData` 派生，而不是读取 `summaryRows`。
 
 要做：
 
-- 实现 `repositories/ledgerRepository.ts`：getLedgerData / listTrades / saveTrade / savePriceSnapshot / clearAll
-- 内部全部翻译成 adapter 的 read / write
-- 建组装点工厂：Noop 加密 + IndexedDB adapter + repository
+- 将 Dashboard 变为 client component。
+- 使用 `useReducer(ledgerReducer, initialLedgerData)` 管理 `LedgerData`。
+- 调用 `positionService` 得到临时 `Position[]`。
+- 删除写死的 `summaryRows`。
+- 渲染真实持仓；没有交易时显示空状态。
 
 产出：
 
-- ledgerRepository
-- noopEncryptionService
-- 组装点工厂
+- Dashboard 持仓垂直切片。
 
 完成标准：
 
-- 上层只拿到 repository 接口，不知道底层是 IndexedDB
+- reducer state 只保存 `LedgerData`。
+- 不新增 `Position[]` state/action。
+- 页面不直接调用 `calculatePositions(...)`。
+- 无价格时不制造 0 市值或 0 未实现盈亏。
+- 测试、lint、build 通过。
 
 ---
 
-## Day 4：7月13日，把页面切换到走保存层
+## Day 4：7月13日，确定生产资产来源
 
-今天只做一件事：让页面启动读、变更写，全走 repository。
+今天只做一件事：解决 `assets: []` 导致所有交易被 Validator 拒绝的问题。
+
+第一版决定：
+
+- 使用独立的生产内建资产目录，不从 `src/test/fixtures.ts` 导入。
+- 第一版只覆盖 golden 验收需要的 BTC、ETH、ADA。
+- 资产元数据进入 `LedgerData.assets`，供 `tradeValidator` 使用。
+- `ledger/reset` 后恢复内建资产目录，清空用户交易、价格和手续费规则。
+- hydrate/import 以已保存账本资产为准；未知或非法资产在导入校验阶段拒绝。
+- 本周不做资产管理 UI。
 
 要做：
 
-- 启动时从 repository 读，每次变更后写
-- 页面 / service 仍然不直接碰 IndexedDB
+- 建立生产资产定义和初始化策略。
+- 调整初始账本与 reset 测试。
+- 验证每次初始化返回独立数组引用。
 
 产出：
 
-- 接上持久化的应用
+- 可供生产 Validator 使用的资产来源。
 
 完成标准：
 
-- 加交易后数据进了 IndexedDB
+- 运行时代码不导入测试 fixtures。
+- BTC、ETH、ADA 可以通过资产存在校验。
+- 未知资产仍被拒绝。
+- reset、初始化和现有 reducer 测试通过。
 
 ---
 
-## Day 5：7月14日，验收持久化
+## Day 5：7月14日，实现 tradeService
 
-今天只做一件事：确认刷新后数据还在。
+今天只做一件事：把不可信表单草稿转换为可 dispatch 的正式 `Trade`。
 
 要做：
 
-- 加几笔交易 → 刷新 → 数据还在
-- clearAll 后变空
-- 用浏览器 DevTools 的 Application 面板看到 IndexedDB 里有数据
-- 修 bug
+- 新建 `src/services/tradeService.ts`。
+- 输入为 `unknown / TradeDraft` 和当前 `LedgerData`。
+- 调用既有 `validateTradeDraft(...)`。
+- 传入 `ledgerData.assets` 和 `ledgerData.trades`。
+- 校验成功后补齐正式 Trade 的 id、feeCurrency、createdAt、updatedAt。
+- 返回结构化成功或错误结果，不直接 dispatch。
+- 新建 service 测试。
 
 产出：
 
-- 持久化验收记录
+- `tradeService`。
+- 正式 Trade 生成规则与测试。
 
 完成标准：
 
-- 刷新页面数据仍在；交易 / 统计结果与持久化前一致
+- 不重写 Validator。
+- 合法买入成功。
+- 未知资产、非法十进制和超卖返回错误。
+- 失败不修改 `LedgerData`。
+- 生成的 Trade 字段完整、ID 不碰撞。
 
 ---
 
-## Day 6：7月15日，写日志、整理下周
+## Day 6：7月15日，交易列表改读 LedgerData
 
-今天只做一件事：沉淀存储架构素材。
+今天只做一件事：完成 Gate 3，让交易列表不再显示写死数组。
 
 要做：
 
-- 写日志：保存层三件套如何分工、为什么页面碰不到存储、换存储为什么只改组装点一行
-- 整理 Week 6 任务
+- 删除 Dashboard 中写死的 `trades`。
+- 交易列表渲染 `ledgerData.trades`。
+- 初始为空时显示“暂无交易”。
+- 确认 dispatch 一笔测试 Trade 后列表自然更新。
+- 记录 Week 5 Gate 结果、验证证据、风险和 Week 6 唯一入口。
 
 产出：
 
-- Week 5 日志（进论文 Implementation 存储架构）
+- 真实交易列表。
+- Week 5 Gate 记录。
 
 完成标准：
 
-- 能讲清"换存储只改一行"的依赖倒置思路
+- 页面不存在写死交易数组。
+- 交易列表和资产汇总来自同一个 `LedgerData`。
+- Gate 2、Gate 3、生产资产来源和 `tradeService` 均通过。
+- 未通过项明确顺延，不挪用 Day 7。
 
 ---
 
-## Day 7：7月16日，休息与轻复盘
+## Day 7：7月16日，休息
 
-今天不做重开发。
+今天不做开发、不补欠账。
 
 允许做：
 
-- 看一遍保存层代码
-- 记录新问题
+- 记录突然想到的问题。
 
 不做：
 
-- 不开新功能
-- 不临时改 Week 6 目标
-- 不为了省事改用 `localStorage`
+- 不开 IndexedDB。
+- 不补 Day 6 未完成代码。
+- 不改 Week 6 范围。
 
 ---
 
 ## 本周产出物
 
-- indexedDbStorageAdapter、ledgerRepository、noopEncryptionService、组装点工厂
-- 接上持久化的可用应用
+- `positionService` 与测试。
+- Dashboard `useReducer + LedgerData` 持仓切片。
+- 生产资产来源。
+- `tradeService` 与测试。
+- 真实交易列表与空状态。
+- Week 5 Gate 记录。
 
-## 验收标准
+## 本周验收标准
 
-- 刷新页面数据仍在
-- 页面和 service 没有任何一行直接操作 IndexedDB
-- `ledgerReducer` 仍然只管理账本状态，不直接读写 IndexedDB
-- `positionService` 仍然只派生持仓，不保存派生结果
-- 交易 / 统计结果与持久化前一致
+- `summaryRows` 和写死 `trades` 已删除。
+- `Position[]` 只派生，不保存。
+- `positionService` 复用 `calculatePositions(...)`。
+- `tradeService` 复用 `validateTradeDraft(...)`。
+- 生产代码不导入测试 fixtures。
+- 测试、lint、build 通过。
+
+## 本周不可做
+
+- 不做 IndexedDB / localStorage。
+- 不做导入导出和加密。
+- 不接价格输入。
+- 不做资产管理 UI。
+- 不做 UI 美化。
 
 ## 论文素材点
 
-- 可替换存储层的接口设计、whole-blob 第一版策略及未来分片优化路线 → 论文 Implementation
+- React 单一事实源。
+- state / service / calculator / validator 的职责边界。
+- 为什么先内存态、后持久化。
+- 生产 seed 与测试 fixture 的边界。
 
-## 落后时可砍
+## 落后时处理
 
-- 本周是论文硬需求，不可砍
-- 若 IndexedDB 卡壳，缩小 IndexedDB 实现范围，只保留 whole-blob 读写和最小 repository；必要时保留 W4 内存态演示，但不把 localStorage 纳入正式路线
+- 未完成项顺延到 Week 6。
+- Week 7 IndexedDB 随 Gate 顺延。
+- 不合并多个大功能到同一天。
+- Day 7 保持休息。
