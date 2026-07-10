@@ -7,6 +7,8 @@
 > 当前方案已从零散 `useState` 调整为 `useReducer + LedgerData`。先让页面状态、service 和 calculator 的边界稳定，再接新增交易和价格输入。
 > 起点：`DashboardShell.tsx` 仍有写死的 `summaryRows` 和 `trades`；`src/state/` 还不存在；`src/services/positionService.ts` 和 `tradeService.ts` 还不存在。
 
+> 2026-07-10 实际终态：本周只完成 Gate 0 主方案和 Gate 1 reducer 状态地基；Gate 2-5 未完成，分别顺延到 Week 5-6。本文保留原始执行顺序作为历史标准，不把顺延工作倒填为 Week 4 成果。
+
 ---
 
 ## Gate 0：方案与入口同步
@@ -195,3 +197,14 @@ dispatch({ type: "trade/add", trade });
 
 - 价格输入和未实现盈亏可挪到 Week 5 前置补课。
 - 死守：`useReducer + LedgerData`、交易列表真实状态、`positionService` 资产汇总。
+
+## Week 4 最终结果（2026-07-10 回填）
+
+| Gate | 最终状态 | 后续位置 |
+| --- | --- | --- |
+| Gate 0 | 主方案完成；入口同步未在 Week 4 收口 | Week 5 Day 1 |
+| Gate 1 | 已完成并验证 | 保留 `02A_W4-Gate1-reducer状态地基实现记录.md` |
+| Gate 2 | 未完成 | Week 5 |
+| Gate 3 | 未完成 | Week 5 |
+| Gate 4 | 未完成 | Week 5-6 |
+| Gate 5 | 未完成 | Week 6 |
