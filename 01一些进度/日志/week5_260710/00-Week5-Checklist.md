@@ -15,7 +15,7 @@
 | 日期 | 唯一主任务 | 状态 |
 | --- | --- | --- |
 | 7月10日 | Day 1：事实盘点与路线重排，不写源码 | 已完成 |
-| 7月11日 | Day 2：实现 `positionService` | 未开始 |
+| 7月11日 | Day 2：实现 `positionService` | 已完成 |
 | 7月12日 | Day 3：Dashboard 接入真实持仓 | 未开始 |
 | 7月13日 | Day 4：确定生产资产来源 | 未开始 |
 | 7月14日 | Day 5：实现 `tradeService` | 未开始 |
@@ -35,10 +35,12 @@
 
 ## Day 2：positionService
 
-- [ ] 新建 `positionService.ts`
-- [ ] 只调用 `calculatePositions(...)`
-- [ ] 新建 service 测试
-- [ ] 不保存 `Position[]`
+- [x] 新建 `positionService.ts`
+- [x] 只调用 `calculatePositions(...)`
+- [x] 新建 service 测试
+- [x] 不保存 `Position[]`
+
+> Day 2 已完成 service 地基；完整 Gate 2 仍等待 Day 3 Dashboard 真实持仓接线。
 
 ## Day 3：Dashboard 真实持仓
 
