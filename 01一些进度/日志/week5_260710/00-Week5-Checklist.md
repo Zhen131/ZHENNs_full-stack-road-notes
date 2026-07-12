@@ -12,15 +12,15 @@
 
 ## 总览
 
-| 日期 | 唯一主任务 | 状态 |
-| --- | --- | --- |
-| 7月10日 | Day 1：事实盘点与路线重排，不写源码 | 已完成 |
-| 7月11日 | Day 2：实现 `positionService` | 已完成 |
-| 7月12日 | Day 3：Dashboard 接入真实持仓 | 未开始 |
-| 7月13日 | Day 4：确定生产资产来源 | 未开始 |
-| 7月14日 | Day 5：实现 `tradeService` | 未开始 |
+| 日期    | 唯一主任务                            | 状态  |
+| ----- | -------------------------------- | --- |
+| 7月10日 | Day 1：事实盘点与路线重排，不写源码             | 已完成 |
+| 7月11日 | Day 2：实现 `positionService`       | 已完成 |
+| 7月12日 | Day 3：Dashboard 接入真实持仓           | 已完成 |
+| 7月13日 | Day 4：确定生产资产来源                   | 未开始 |
+| 7月14日 | Day 5：实现 `tradeService`          | 未开始 |
 | 7月15日 | Day 6：交易列表改读 `LedgerData.trades` | 未开始 |
-| 7月16日 | Day 7：休息 | 未开始 |
+| 7月16日 | Day 7：休息                         | 未开始 |
 
 ---
 
@@ -40,14 +40,14 @@
 - [x] 新建 service 测试
 - [x] 不保存 `Position[]`
 
-> Day 2 已完成 service 地基；完整 Gate 2 仍等待 Day 3 Dashboard 真实持仓接线。
+> Day 2 完成 service 地基；Day 3 已接通 Dashboard 真实持仓，Gate 2 现已通过。
 
 ## Day 3：Dashboard 真实持仓
 
-- [ ] 接入 `useReducer + LedgerData`
-- [ ] 删除 `summaryRows`
-- [ ] 渲染 `positionService` 派生结果
-- [ ] 空账本显示空状态
+- [x] 接入 `useReducer + LedgerData`
+- [x] 删除 `summaryRows`
+- [x] 渲染 `positionService` 派生结果
+- [x] 空账本显示空状态
 
 ## Day 4：生产资产来源
 
@@ -79,7 +79,7 @@
 
 ## Week 5 通过线
 
-- [ ] Gate 2 通过
+- [x] Gate 2 通过
 - [ ] Gate 3 通过
 - [ ] 生产资产来源通过
 - [ ] `tradeService` 通过
