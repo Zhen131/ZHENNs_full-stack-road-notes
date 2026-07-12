@@ -150,6 +150,15 @@ Day 7 休息
 - 未知资产仍被拒绝。
 - reset、初始化和现有 reducer 测试通过。
 
+执行结果（2026-07-13）：
+
+- 已新增独立生产资产目录，固定提供 BTC、ETH、ADA。
+- 初始账本与 reset 已接入生产资产；每次创建均返回独立数组和独立 Asset 对象。
+- Validator 的 golden 草稿已使用生产初始化资产，DOGE 仍返回 `ASSET_NOT_FOUND`。
+- 生产代码未导入测试 fixture，也未引入网络、随机 ID、动态时间、新依赖或 schema 变化。
+- 7 个测试文件、57 项测试、lint 和 build 全部通过。
+- 源码保留在 `zhennn/week5-day4-built-in-assets`，尚未合入 `main`、尚未推送远端。
+
 ---
 
 ## Day 5：7月14日，实现 tradeService
