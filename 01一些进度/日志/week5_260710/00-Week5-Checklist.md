@@ -56,7 +56,7 @@
 - [x] reset 恢复内建资产目录
 - [x] 生产代码不导入 test fixtures
 
-> Day 4 已于 2026-07-13 在 `zhennn/week5-day4-built-in-assets` 完成并验证：7 个测试文件、57 项测试通过，lint 和 build 通过；分支尚未合入 `main`、尚未推送远端。
+> Day 4 已于 2026-07-13 完成复审：7 个测试文件、57 项测试通过，lint 和 build 通过；源码已合入并推送 `main`，功能分支已删除，本地与远端同步。
 
 ## Day 5：tradeService
 
