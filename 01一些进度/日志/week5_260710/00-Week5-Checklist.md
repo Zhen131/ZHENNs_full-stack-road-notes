@@ -17,7 +17,7 @@
 | 7月10日 | Day 1：事实盘点与路线重排，不写源码             | 已完成 |
 | 7月11日 | Day 2：实现 `positionService`       | 已完成 |
 | 7月12日 | Day 3：Dashboard 接入真实持仓           | 已完成 |
-| 7月13日 | Day 4：确定生产资产来源                   | 未开始 |
+| 7月13日 | Day 4：确定生产资产来源                   | 已完成 |
 | 7月14日 | Day 5：实现 `tradeService`          | 未开始 |
 | 7月15日 | Day 6：交易列表改读 `LedgerData.trades` | 未开始 |
 | 7月16日 | Day 7：休息                         | 未开始 |
@@ -51,10 +51,12 @@
 
 ## Day 4：生产资产来源
 
-- [ ] 建立独立生产资产目录
-- [ ] BTC、ETH、ADA 进入初始 `LedgerData.assets`
-- [ ] reset 恢复内建资产目录
-- [ ] 生产代码不导入 test fixtures
+- [x] 建立独立生产资产目录
+- [x] BTC、ETH、ADA 进入初始 `LedgerData.assets`
+- [x] reset 恢复内建资产目录
+- [x] 生产代码不导入 test fixtures
+
+> Day 4 已于 2026-07-13 在 `zhennn/week5-day4-built-in-assets` 完成并验证：7 个测试文件、57 项测试通过，lint 和 build 通过；分支尚未合入 `main`、尚未推送远端。
 
 ## Day 5：tradeService
 
@@ -81,7 +83,7 @@
 
 - [x] Gate 2 通过
 - [ ] Gate 3 通过
-- [ ] 生产资产来源通过
+- [x] 生产资产来源通过
 - [ ] `tradeService` 通过
 - [ ] Dashboard 不再读取硬编码资产和交易
 - [ ] 测试、lint、build 通过
