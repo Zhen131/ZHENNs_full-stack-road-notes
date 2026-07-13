@@ -18,7 +18,7 @@
 | 7月11日 | Day 2：实现 `positionService`       | 已完成 |
 | 7月12日 | Day 3：Dashboard 接入真实持仓           | 已完成 |
 | 7月13日 | Day 4：确定生产资产来源                   | 已完成 |
-| 7月14日 | Day 5：实现 `tradeService`          | 未开始 |
+| 7月14日 | Day 5：实现 `tradeService`          | 已完成 |
 | 7月15日 | Day 6：交易列表改读 `LedgerData.trades` | 未开始 |
 | 7月16日 | Day 7：休息                         | 未开始 |
 
@@ -60,10 +60,15 @@
 
 ## Day 5：tradeService
 
-- [ ] 调用 `validateTradeDraft(...)`
-- [ ] 传入当前 assets 和 priorTrades
-- [ ] 生成字段完整的正式 Trade
-- [ ] 合法、非法、超卖测试通过
+- [x] 调用 `validateTradeDraft(...)`
+- [x] 传入当前 assets 和 priorTrades
+- [x] 生成字段完整的正式 Trade
+- [x] 完整时间线超卖与同资产混合币种被 Validator 拒绝
+- [x] 校验失败与 Service 运行失败分层返回
+- [x] ID 最多尝试 3 次，唯一 ID 生成后只读取一次时间
+- [x] 合法、非法、超卖、依赖失败和不可变性测试通过
+
+> Day 5 已于 2026-07-14 完成实现与独立复审：8 个测试文件、85 项测试通过，lint 和生产 build 通过；源码通过合并提交 `7ed6ca5` 进入并推送 `main`，功能分支已删除，本地与远端同步。`tradeService` 只返回正式 `Trade`，尚未接入 UI dispatch。
 
 ## Day 6：真实交易列表
 
@@ -84,9 +89,9 @@
 - [x] Gate 2 通过
 - [ ] Gate 3 通过
 - [x] 生产资产来源通过
-- [ ] `tradeService` 通过
+- [x] `tradeService` 通过
 - [ ] Dashboard 不再读取硬编码资产和交易
-- [ ] 测试、lint、build 通过
+- [x] 当前源码测试、lint、build 通过
 
 ## Week 5 不做
 

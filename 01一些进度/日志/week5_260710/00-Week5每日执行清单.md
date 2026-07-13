@@ -188,6 +188,17 @@ Day 7 休息
 - 失败不修改 `LedgerData`。
 - 生成的 Trade 字段完整、ID 不碰撞。
 
+执行结果（2026-07-14）：
+
+- `tradeValidator` 已补齐候选交易加入完整时间线后的超卖检查，未来买入不能支撑更早卖出，回填卖出也不能破坏后续已有卖出。
+- 同资产交易币种必须与 Asset `quoteCurrency` 及已有交易一致；不一致时返回 `CURRENCY_MISMATCH`。
+- 已新增 `createValidatedTrade(...)`，复用 Validator，并将校验失败、ID/时钟依赖失败和成功结果分层返回。
+- ID 只与已有 Trade ID 比较，最多尝试 3 次；获得唯一 ID 后只读取一次时间，`createdAt` 与 `updatedAt` 使用同一值。
+- Service 不 dispatch、不调用 Calculator、不修改输入或 `LedgerData`；测试使用深度冻结验证成功和失败路径的不可变性。
+- 独立复审未发现阻断、高风险或中风险问题；8 个测试文件、85 项测试、lint、生产 build 和 diff-check 全部通过。
+- 源码已通过中文提交和合并提交 `7ed6ca5` 进入并推送 `main`，功能分支已删除，本地与远端同步。
+- 本日没有接入表单、dispatch 或真实交易列表；下一入口仍是 Day 6。
+
 ---
 
 ## Day 6：7月15日，交易列表改读 LedgerData
