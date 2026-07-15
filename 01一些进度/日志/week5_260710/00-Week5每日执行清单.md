@@ -210,7 +210,7 @@ Day 7 休息
 - 删除 Dashboard 中写死的 `trades`。
 - 交易列表渲染 `ledgerData.trades`。
 - 初始为空时显示“暂无交易”。
-- 确认 dispatch 一笔测试 Trade 后列表自然更新。
+- 通过 Reducer 输出到纯 `TradeTable` 的契约测试确认新增 Trade 可被视图渲染；不把它描述成真实 Dashboard dispatch 测试。
 - 记录 Week 5 Gate 结果、验证证据、风险和 Week 6 唯一入口。
 
 产出：
@@ -225,6 +225,15 @@ Day 7 休息
 - Gate 2、Gate 3、生产资产来源和 `tradeService` 均通过。
 - 未通过项明确顺延，不挪用 Day 7。
 
+执行结果（2026-07-15 至 2026-07-16）：
+
+- 已删除文件级写死交易数组，并以 `<TradeTable trades={ledgerData.trades} />` 显式接通同一份内存账本。
+- `TradeTable` 只接收 `readonly Trade[]`，不使用 hook、dispatch、Service、Validator、Calculator 或第二份交易 state。
+- 六列空状态、正式字段、`buy / sell` 映射、输入顺序、不可变性和 Reducer 到纯视图契约已通过隔离测试。
+- Dashboard 定向测试 1 个文件、7 项测试；全量 8 个文件、90 项测试；lint、生产 build、diff-check 和静态边界扫描全部通过。
+- 浏览器只验证初始空状态和页面稳定性；非空 Dashboard 真实 dispatch 回归顺延 Gate 4。
+- Gate 3 已关闭。未来导入运行时校验、交易显示顺序和长列表性能作为后续风险记录，不扩大 Day 6 范围解决。
+
 ---
 
 ## Day 7：7月16日，休息
@@ -234,6 +243,7 @@ Day 7 休息
 允许做：
 
 - 记录突然想到的问题。
+- 完成 Week 5 文档、风险记录和 Git 发布收口。
 
 不做：
 

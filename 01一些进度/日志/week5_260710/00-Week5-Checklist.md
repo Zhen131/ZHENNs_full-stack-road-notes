@@ -19,8 +19,8 @@
 | 7月12日 | Day 3：Dashboard 接入真实持仓           | 已完成 |
 | 7月13日 | Day 4：确定生产资产来源                   | 已完成 |
 | 7月14日 | Day 5：实现 `tradeService`          | 已完成 |
-| 7月15日 | Day 6：交易列表改读 `LedgerData.trades` | 未开始 |
-| 7月16日 | Day 7：休息                         | 未开始 |
+| 7月15日 | Day 6：交易列表改读 `LedgerData.trades` | 已完成 |
+| 7月16日 | Day 7：休息                         | 已遵守（仅文档 / Git 收口） |
 
 ---
 
@@ -72,26 +72,33 @@
 
 ## Day 6：真实交易列表
 
-- [ ] 删除写死 `trades`
-- [ ] 渲染 `ledgerData.trades`
-- [ ] 增加空状态
-- [ ] 记录 Week 5 Gate
+- [x] 删除写死 `trades`
+- [x] 渲染 `ledgerData.trades`
+- [x] 增加六列交易空状态
+- [x] 隔离验证正式 Trade 六列字段、类型映射、顺序和不可变性
+- [x] 记录自动化、显式接线审查与浏览器证据边界
+- [x] 记录 Week 5 Gate 与后续补漏项
+
+> Day 6 已于 2026-07-15 完成实现，并于 2026-07-16 复审：Dashboard 定向测试 7 项、全量 90 项测试、lint、生产 build、diff-check、静态边界扫描和浏览器初始空状态冒烟通过。Gate 3 已关闭；真实表单 dispatch 仍属于 Gate 4。
 
 ## Day 7：休息
 
-- [ ] 不开发
-- [ ] 不挪用
+- [x] 不开发
+- [x] 不挪用到 IndexedDB 或 Week 6 功能
+- [x] 仅完成 Week 5 文档、风险记录和 Git 发布收口
 
 ---
 
 ## Week 5 通过线
 
 - [x] Gate 2 通过
-- [ ] Gate 3 通过
+- [x] Gate 3 通过
 - [x] 生产资产来源通过
 - [x] `tradeService` 通过
-- [ ] Dashboard 不再读取硬编码资产和交易
+- [x] Dashboard 不再读取硬编码资产和交易
 - [x] 当前源码测试、lint、build 通过
+
+> Week 5 通过线已满足。Gate 4-5、未来导入运行时校验、交易显示顺序和大列表性能仍进入后续补漏清单，不得从 Gate 3 推导出完整页面交易闭环。
 
 ## Week 5 不做
 
