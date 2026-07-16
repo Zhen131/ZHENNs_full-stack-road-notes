@@ -250,7 +250,7 @@ Day 7 休息
 
 边界：
 
-- 功能仍在 `zhennn/close-week6-week7-07a-risks`，未合并、未推送。
+- 功能已通过 `d936463` 合入并推送源码 `main`。
 - 5 条 golden 生产 UI 人工验收和浏览器 DevTools 刷新/clear 仍未完成。
 
 ---
