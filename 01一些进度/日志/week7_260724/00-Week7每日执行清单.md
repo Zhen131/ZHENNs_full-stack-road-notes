@@ -6,6 +6,10 @@
 
 > Week 7 只解决保存与恢复。先防止 hydration 覆盖旧数据，再谈刷新后仍在；本周真加密仍使用 Noop 实现。
 
+> 状态校正（2026-07-16）：07A 补漏已在独立功能分支提前完成 Adapter、
+> Repository、Noop、组装点、安全 hydration 和串行保存。自动化重挂载已证明
+> 交易与价格可恢复；真实浏览器刷新、clear 和 DevTools envelope 检查仍保留。
+
 本周结论：
 
 ```text
