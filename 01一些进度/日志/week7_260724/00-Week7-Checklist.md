@@ -9,6 +9,9 @@
 > 提前实施说明（2026-07-16）：为关闭 07A 风险，Day 1-5 和 Day 6 的自动化
 > 地基已在功能分支提前完成；浏览器人工刷新/clear 验收仍未完成。
 
+> 前置 Gate 更新（2026-07-17）：Week 6 React Gate 已 Go。Week 7 只补真实
+> 浏览器刷新、clear、envelope 与失败场景，不重写持久化地基。
+
 ---
 
 ## 总览
@@ -27,8 +30,8 @@
 
 ## 前置 Gate
 
-- [ ] Week 6 Gate 2-5 全绿
-- [ ] golden / 价格 / 超卖通过
+- [x] Week 6 Gate 2-5 全绿
+- [x] golden / 价格 / 超卖通过
 - [x] test / lint / build 通过
 
 ## Day 1：契约
