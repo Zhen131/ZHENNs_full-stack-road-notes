@@ -10,6 +10,9 @@
 > Repository、Noop、组装点、安全 hydration 和串行保存。自动化重挂载已证明
 > 交易与价格可恢复；真实浏览器刷新、clear 和 DevTools envelope 检查仍保留。
 
+> 前置 Gate 更新（2026-07-17）：Week 6 已完成 golden、价格、超卖、删除和
+> 宽窄屏生产验收，React Gate 为 Go。Week 7 从浏览器持久化人工验收开始。
+
 本周结论：
 
 ```text
