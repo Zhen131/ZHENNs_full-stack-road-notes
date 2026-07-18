@@ -12,7 +12,7 @@
 
 02A 的 33 项问题全部有对应处理方式。只有 `G-01 / G-02` 是现行 Week 7 正式 Gate；其他问题不得伪装成 Gate，也不得一次性混成超大提交。
 
-固定顺序：Gate 证据 → 持久化可靠性 → Week 8 输入/导出边界 → 产品切片 → 后续安全与性能。前一批未验收，后一批不得开始。
+固定顺序：持久化可靠性 → Week 8 前资源/导出边界 → 最终候选 commit 的 Gate 证据 → 入口同步 → Week 8。Gate 后若再改受影响源码，必须重做对应证据。
 
 ## 执行规则
 
@@ -22,7 +22,7 @@
 - 不改变 `LedgerData.schemaVersion`、Adapter、Repository、计算口径或依赖时，不得顺手重构这些区域。
 - 必须修改 schema、Adapter、Repository、Validator、Calculator、依赖大版本或业务口径时，立即停止并提交失败证据、目标文件和最小理由，获得确认后再单独实施。
 - 新校验不得让既有合法 IndexedDB/backup 突然无法读取；必须先定义兼容、迁移、只读导出或回滚路径。
-- 新错误码必须归属既有 Validator、Service 或 Repository；不得建立平行错误体系。
+- 新错误码必须归属拥有该失败的 Validator、ResourcePolicy、Service 或 Repository；UI 只映射，不复制一套。
 - Git 合并、推送和历史文档改写只在明确授权后执行。
 - 每项关闭时，把实际文件、测试、浏览器值和 commit 写入后续验收记录；没有证据就保持未关闭。
 
@@ -30,12 +30,14 @@
 
 | 批次 | 项目 | 开始条件 |
 | --- | --- | --- |
-| A：Gate | G-01、G-02、D-08 | 立即执行；全绿后才能写 Week 7 Go |
-| B：可靠性 | S-01 → S-02 → S-03、S-06 | A 已验收；mutation version 先于重试和离开保护 |
-| C：Week 8 边界 | S-07、D-09 | A、B 已验收；定案后才能写导入/导出代码 |
-| D：独立补漏 | S-09、S-10、P-01 至 P-10、D-01 至 D-07 | 每次只领取一个可独立验收的小项 |
+| B：可靠性 | S-01 → S-02 → S-03 | 从当前 main 建独立分支；mutation version 先于重试和离开保护 |
+| C：Week 8 前边界 | S-07、D-09 契约 | B 已验收；实现资源策略，只定案导出契约，不写导入/导出功能 |
+| A：最终 Gate | G-01 → G-02 | B、C 的源码与文档定案；两项绑定最终候选 hash，全绿后判 Go |
+| A2：入口同步 | D-08 | A 已 Go；只同步真实 Gate 结果，不参与 Go 判定 |
+| D：独立补漏 | S-06、S-09、S-10、P-01 至 P-10、D-03 至 D-07 | 每次只领取一个可独立验收的小项 |
+| D2：架构同步 | D-01、D-02 | 每个相关源码批次验收后执行，不得提前画成已实现 |
 | E：路线后续 | S-04、S-05、S-08 | 分别进入多标签页 hardening、Week 9、Week 11 |
-| F：Git | R-01、R-02 | 只按执行时事实和用户授权操作 |
+| F：Git | R-01、R-02 | 分支在 B 前准备；合并/推送只在 Gate Go 和用户授权后执行 |
 
 ## 优先级边界
 
@@ -69,9 +71,10 @@
 
 ### S-01 页面保存文案与真实持久化状态一致
 
-- 处理：Hook 为每次被接受的 mutation 分配递增 version，保存任务捕获该 version；只有 `persistedVersion === mutationVersion` 才显示“已保存到本地”，旧 Promise 完成不得覆盖新状态。这里是页面内 version，不得与 S-04 storage revision 混用。
-- 修改：页面写入口返回 accepted/rejected 结果；表单仅在 action 真正进入 reducer 后显示“已加入账本”。Dashboard 从 version 派生 `clean | pending | error`，不维护第二套真假状态。
-- 测试：覆盖 dispatch 被拒、A 成功但 B pending、旧 Promise 后完成、save 失败和连续写入。
+- 状态：Hook 内部使用 `{ ledgerData, mutationVersion }`。`applyLedgerAction` 先以当前 ref 调用纯 reducer；返回同一 state 时给出 `noop` 且不增版本，真实变化才同步更新 ref、dispatch replace 并返回 `applied`；门禁失败返回 `rejected`。
+- 基线：hydration、空库初始化、clear 成功和获 S-03 许可的 Repository 切换分别创建新 generation，并把 `mutationVersion/persistedVersion` 重置为 `0/0`；空库与 clear 后仍不自动写 record。异步结果必须同时匹配 generation 与 version。
+- 页面：表单只在 `applied` 后显示“已加入账本”；只有 `persistedVersion === mutationVersion` 才显示“已保存到本地”。这里是页面内 version，不得与 S-04 storage revision 混用。
+- 测试：覆盖 applied/noop/rejected、hydration、空库、clear、Repository 切换、A 成功但 B pending、旧 generation/Promise 和 save 失败。
 - 通过：用户能区分内存已更新、正在保存、本地已保存和保存失败。
 
 ### S-02 save 失败可以安全重试最新账本
@@ -90,10 +93,11 @@
 
 ### S-04 防止多标签页在 clear 后复活旧账本
 
-- 处理：该项会改变 Adapter/Repository 契约，必须先停下确认。获准后定义无用户账本内容的 `ledger:meta` revision；BroadcastChannel 只做即时提示，不能充当一致性保证。
-- 规则：save 必须在同一 IndexedDB readwrite transaction 内校验 expected storage revision、写 `ledger:v1`、再递增 revision；clear 在同一事务内递增 revision 并删除 record。revision 不匹配即拒写并进入只读 reload-required 状态。
+- 处理：该项会改变 Adapter/Repository 契约，必须先停下确认。获准后定义无用户账本内容的 `ledger:meta`；不存在时 revision 为 `0`，类型为非负 safe integer，达到 `MAX_SAFE_INTEGER` 时拒绝继续写。
+- 接口：`load()` 返回 `{ ledgerData, storageRevision }`；`save(data, expectedRevision)` 与 `clear(expectedRevision)` 返回新 revision。Adapter 在同一 readwrite transaction 内校验 expected、写入/删除、递增 meta；冲突使用一个 Repository `REVISION_CONFLICT`，不复用 clear 失败码。
+- 规则：Hook 保存最新 revision；冲突后禁止写并进入只读 reload-required。BroadcastChannel 只做即时提示，不能充当一致性保证。
 - 边界：页面不得直接使用 `BroadcastChannel` 或 IndexedDB；不采用仅靠内存消息、容易被休眠标签页漏收的方案。
-- 测试：覆盖两个实例同 revision 竞写、clear 与 stale save 穿插、休眠恢复、事务失败和重载；G-02 仍只要求 `ledger:v1` 不存在，meta 不得含账本数据。
+- 测试：覆盖 meta 缺失、revision 返回/溢出、两个实例竞写、clear 与 stale save 穿插、休眠恢复、事务失败和重载；G-02 仍只要求 `ledger:v1` 不存在，meta 不得含账本数据。
 - 通过：任何 clear 之前打开的标签页都不能重新写回旧账本。
 
 ### S-05 用真实加密替换 Noop 明文
@@ -105,17 +109,17 @@
 
 ### S-06 删除交易增加误触保护
 
-- 处理：点击删除先显示交易日期、类型、资产、数量和金额；确认后才调用既有 `tradeRemovalService`。成功删除保留一次性 undo snapshot，下一次账本 mutation、clear、Repository 切换或卸载后失效。
-- 边界：undo 仍需完整时间线校验并进入正常保存队列；取消不得 dispatch。Week 8 备份完成前明确“仅当前页面可撤销”。
-- 测试：覆盖取消、确认、安全删除、阻断删除、undo、undo 失效、重复点击和 undo 保存失败。
+- 处理：点击删除先显示交易事实；确认后才调用既有 Service。成功删除保存一次 pre-delete 页面 snapshot；下一次其他 mutation、clear、Repository 切换或卸载后失效。
+- 边界：undo 恢复并验证 pre-delete snapshot。若它等于最后成功持久化 snapshot，直接恢复 clean 且不重复保存；否则作为最新 mutation 进入正常队列。删除 save 失败时不得假定本地状态，只按 snapshot 相等性判断。
+- 测试：覆盖取消、确认、阻断删除、delete save 成功/失败后的 undo、undo 保存失败、失效和重复点击。
 - 通过：单击不立即删除，且成功删除至少有一种真实恢复路径。
 
 ### S-07 为完整账本和导入输入设置资源上限
 
-- 处理：禁止直接采用未经测量的 5 MiB/50k/100k 数字。先用确定性生成器记录 1k/10k/目标上限账本的 JSON 字节数与 validate/parse 时间，再提交一组彼此一致的 file、collection、ID、name、note/rawText 上限等待确认。
-- 修改：获准后由唯一 `ledgerLimits` 提供常量；文件在 `JSON.parse` 前检查 bytes，Service/import 在 mutation 前检查，完整 Validator 复用同一常量。
-- 兼容：新上限不得直接阻断既有 record hydration；超限旧数据至少允许只读打开和导出，不得自动覆盖或清空。
-- 测试：等于上限通过、超一单位失败；UI 不能先接受超限 state 再等 save 失败；错误码归入既有 Validator/Service。
+- 测量：用同一确定性生成器测 1k/5k/10k/25k/50k trades 及成比例 snapshots，记录 JSON bytes、parse、结构校验和计算耗时；只提交结果与候选上限，等待用户确认，不自行宣布阈值。
+- 分层：`validateLedgerData` 只负责结构、引用和业务时间线，保持既有 load 兼容；新增 `evaluateLedgerResourcePolicy` 负责 file/collection/string 策略。文件 bytes 在 parse 前检查，新 UI/import 在 mutation/replace 前执行策略。
+- 兼容：Repository load 先通过结构校验；Hook 再评估策略。超限旧账本以 read-only 状态 hydrate，现阶段只允许查看，Week 8 实现 D-09 后才允许救援导出；禁止 mutation/自动保存，不得覆盖或清空。
+- 测试：等于上限通过、超一单位失败；UI 不能先接受超限 state 再等 save 失败；错误只由 ResourcePolicy 返回，UI 不复制错误码。
 - 通过：不受控输入无法制造无限内存、校验或渲染负载。
 
 ### S-08 建立大账本性能通过线
@@ -127,7 +131,7 @@
 
 ### S-09 增加语义重复交易检测
 
-- 处理：表单 submitting 锁先解决快速双击；fingerprint 只作为“疑似重复”提示，不作为 Validator 错误。当前模型没有账户、平台或订单 ID，禁止据此拒绝、合并或删除交易。
+- 处理：表单 submitting 锁先解决快速双击；fingerprint 只作为提示，不作为 Validator 错误。fingerprint 使用 `assetSymbol / occurredAt / timePrecision / type / quantity / price / totalValue / currency / fee / feeCurrency`，Decimal 用 decimal.js 规范化，字段用稳定 JSON 序列化；note/rawText/id/时间戳不参与，但在确认 UI 中展示。
 - 规则：用户可明确确认两笔相同经济字段的真实交易；导入保留合法重复，只报告疑似数量。未来增加可靠外部交易 ID 后再评估强去重。
 - 测试：覆盖快速双击被阻止、相同字段经确认可保存、不同 ID 的备份可导入、Decimal 表示差异只触发同一提示。
 - 通过：防止误操作，同时不破坏合法旧账本和 round-trip。
@@ -159,7 +163,7 @@
 ### P-03 建立 FeeRule 生产操作链
 
 - 处理：新增 FeeRule draft、Validator、Service、Reducer add/update/delete action 和管理 UI；规则字段使用现有 `name / platform / type / rate / currency`。
-- 规则：`rate` 使用小数比例，`0.001 = 0.1%`，范围 `0..1`；建议 fee 用 decimal.js 计算 `totalValue * rate` 并保存规范化 DecimalString，不用 Number。被 Trade 引用的规则不可原地修改或删除；变更时创建新规则。
+- 规则：`rate` 使用小数比例，`0.001 = 0.1%`，范围 `0..1`；只允许选择 `feeRule.currency === trade.currency` 的规则。建议 fee 用 decimal.js 计算 `totalValue * rate` 并保存规范化 DecimalString，不用 Number。被 Trade 引用的规则不可原地修改或删除；变更时创建新规则。
 - 接线：交易表单可选择规则并显示建议 fee，用户可覆盖；最终 Trade 保存实际 `fee / feeCurrency / feeRuleId`，历史交易不随规则变化重算。
 - 测试：覆盖创建、编辑、引用、删除保护、手动 fee 覆盖和非空 `feeRules` 持久化 round-trip。
 - 通过：用户可在生产页面自然生成并核对非空 `feeRules`。
@@ -167,7 +171,7 @@
 ### P-04 建立自定义资产管理入口
 
 - 处理：新增 Asset draft、Validator、Service、Reducer add/update/delete action 和资产管理 UI。
-- 规则：symbol/currency trim 后统一大写并全账本唯一，id 由 Service 依赖生成；decimals 为 0–18 整数。被交易或价格引用的资产禁止删除，symbol、quoteCurrency、decimals 不可原地修改。
+- 规则：仅生产新增入口把 symbol/currency trim 后统一大写；id 由 Service 依赖生成，decimals 为 0–18 整数。导入不得静默改写 symbol 或引用；不符合规范就返回结构化错误，未来迁移必须另立契约。被引用资产禁止删除，symbol、quoteCurrency、decimals 不可原地修改。
 - 边界：hydrate/import 继续以完整 `LedgerData.assets` 为准，不自动混入内置资产。
 - 测试：覆盖新增、自定义资产交易、重复 symbol、合法编辑、引用删除保护和持久化恢复。
 - 通过：生产页面能创建自定义资产并完成交易与价格链。
@@ -190,15 +194,15 @@
 
 ### P-07 统一交易显示顺序
 
-- 处理：新增共享时间比较 helper 和纯展示 selector。date-only 按日历日比较；datetime 按带 offset 的实际时间比较；混合且同一日时不推断时区，保留账本原顺序。列表整体按新到旧展示。
-- 边界：Calculator 继续使用自己的正向安全时间线；selector 不修改 `LedgerData.trades`，不改变持久化顺序。
-- 测试：覆盖 date-only、带 offset datetime、混合格式、回填、同时间稳定顺序、原数组和计算结果不变。
+- 处理：这是 Calculator 口径修改，先停下确认。获准后让 Calculator、Validator 时间线和展示 selector 共用一个 comparator：date-only 按日历日；datetime 按 epoch；混合先比较字符串中的日历日期，同日保留账本原顺序。Calculator 正序、UI 倒序仅方向不同。
+- 边界：selector 不修改持久化顺序；现有 day-only golden 结果必须不变。
+- 测试：覆盖 date-only、不同 offset 但同一 instant、混合格式、回填、同时间稳定顺序、原数组和持仓结果。
 - 通过：列表顺序可预测，且不会偷偷改变业务计算顺序。
 
 ### P-08 落地统一展示格式层
 
-- 处理：新增纯 formatter 配置：USD 金额/市值/盈亏显示 2 位；其他 currency 未定义 minor unit 前保留必要精度，不擅自套 2 位。数量按 Asset decimals 限制并去掉无意义尾零；均价保留必要精度。
-- 规则：显示舍入统一使用 decimal.js `ROUND_HALF_UP`；只格式化展示，禁止把结果写回 LedgerData，禁止 Number 浮点参与业务计算。
+- 处理：USD 金额/市值/盈亏用 decimal.js `ROUND_HALF_UP` 显示 2 位；其他 currency 和缺失 Asset.decimals 时显示规范化完整 DecimalString，不擅自截断。已定义 decimals 的数量按其限制并去尾零，负零显示 `0`。
+- 规则：这是展示口径，执行前在该项验收样例中确认；只格式化展示，禁止写回 LedgerData 或使用 Number 计算。
 - 日期：date-only 保持原日历日期；datetime formatter 显式接收 timeZone，生产默认浏览器时区，不硬编码 `Asia/Shanghai`。
 - 测试：覆盖舍入模式、负零、长 DecimalString、极小数、尾零、date-only、UTC/offset datetime 和缺失值。
 - 通过：页面不再出现 38 位无意义小数或原始 ISO 字符串。
@@ -212,7 +216,7 @@
 
 ### P-10 移除虚假可用控件
 
-- 处理：只保留能对应真实 DOM section 的导航；买入/卖出若共用一个交易表单，则导航必须同时聚焦表单并设置 type，否则移除。未实现的“报告、设置”和无口径时间筛选先移除。
+- 处理：锁定唯一结果：删除“买入、卖出、报告、设置”和无口径时间筛选，只保留能对应真实 DOM section 的“总览、价格、交易记录”导航；不通过导航修改未提交表单 state。
 - 修改：删除 “Day 4 only reserves the space” 等开发占位文案；未来功能只有实现行为和测试后才重新出现。
 - 测试：扫描无 `href="#"`，交互测试验证导航到真实区域，键盘焦点和按钮语义正确。
 - 通过：页面上每个可交互控件都有可观察行为。
@@ -221,6 +225,19 @@
 
 - P-01 至 P-10 每项完成后使用 production build、独立端口、隔离环境和固定样例验收；记录页面实际值、刷新恢复、390/1280 宽度和控制台。
 - 写入类功能还要核对保存状态与 IndexedDB 恢复；发现保存失败时按“失败测试 → 最小修复 → 全量验证 → 重做受影响浏览器步骤”处理。
+
+| 项目 | 固定样例与预期 |
+| --- | --- |
+| P-01 | BTC `fee=1 USD`、`note=测试`；列表逐字段一致 |
+| P-02 | 买 `1 BTC / 100 / total 100 / fee 1`，卖 `0.4 / 120 / total 48 / fee 0.5`；剩余数量 `0.6`、成本 `60.6`、已实现 `7.1 USD` |
+| P-03 | USD rate `0.001`、total `1000`；建议 fee `1 USD`，手动覆盖 `2 USD` 后 Trade 保存 `2` |
+| P-04 | 新增 `DOGE / USD / decimals 8`，买 `10 @ 0.2 / total 2`，刷新恢复 |
+| P-05 | DOGE 买入原位改为 `12 @ 0.2 / total 2.4`，ID/index 不变，刷新恢复 |
+| P-06 | DOGE 价格 `0.25`、`0.30`；编辑最新为 `0.28`，删除后回退 `0.25` |
+| P-07 | 按数组输入 `2026-07-15`、`2026-07-15T09:00:00+08:00`、`2026-07-15T01:00:00Z`；后两条同 instant 保持原顺序，混合 date-only 同日也不推断时区 |
+| P-08 | USD `1.005 -> 1.01`、`-0.004 -> 0.00`；无 decimals 的数量不截断 |
+| P-09 | clock 固定 `2026-07-18`；交易和价格日期默认 `2026-07-18` |
+| P-10 | 只存在总览/价格/交易记录导航；无 `href="#"`、假筛选或占位文案 |
 
 ## 四、文档与认知问题
 
@@ -257,7 +274,7 @@
 
 ### D-06 同步历史周文档状态
 
-- 处理：只修改以下已核实目标：Week 1 Checklist Day 7、Week 2 `06A` 状态、Week 5 `06A` 状态、Week 5 每日清单的 IndexedDB/价格输入冲突；每处保留原计划、实际结果和证据。
+- 处理：只修改以下已核实目标：Week 1 Checklist Day 7、Week 2 `06A`、Week 5 `06A`、Week 5 每日清单冲突，以及 `00-当前开发状态.md` 中仍写旧 Week 7 功能分支/未合并的段落；每处保留原计划、实际结果和证据。
 - 范围：发现新冲突时另行报告，不得用“逐份同步”扩大历史改写范围。
 - 边界：只改状态与勘误，不重写历史计划内容。
 - 通过：Checklist、周日志、当前状态和 Git 结果不再给出相反结论。
@@ -276,18 +293,20 @@
 
 ### D-09 锁定导出数据真相来源
 
-- 处理：导出真相统一为点击时捕获一次的页面 `LedgerData` immutable snapshot；先完整验证，再传给既定 `createBackupEnvelope(ledgerData, metadata)`。不得从 Repository 二次读取覆盖它。
+- 处理：点击时立即调用 `validateLedgerData(ledgerData)`；只把成功结果中重新构造的 `value` 作为 immutable export snapshot，再传给既定 `createBackupEnvelope`。不得继续引用活跃页面对象，也不得从 Repository 二次读取覆盖。
 - 状态边界：hydration 未 ready 或 clearing 时禁止导出；pending/error 时允许救援导出，但 UI 必须明确“该备份可能新于最后成功保存版本”。不得向固定 `BackupEnvelopeV1` 擅加 persistence 字段。
-- 测试：覆盖 ready、pending、error、clearing、点击后页面继续变化、Repository 旧于页面 state；导出内容必须是点击瞬间 snapshot。
-- 通过：导出与用户点击时看到的账本一致，且不破坏既定 backup 字段和规范化规则。
+- C 阶段：只把以上决定和测试清单同步到 Week 8 入口；不提前实现 export。
+- Week 8 测试：覆盖 ready、pending、error、clearing、点击后页面继续变化、Repository 旧于页面 state；导出必须是点击瞬间 snapshot。
+- 通过：C 阶段以契约无冲突为准；Week 8 实现后再以真实导出结果关闭功能项。
 
 ## 五、Git 交接
 
 ### R-01 确认 Week 7 源码开发基线
 
 - 当前事实：源码本地 `main` 已包含 `02e28f3` 与 `8f96cc6`，无需再次合并；执行时先重新验证，不得假定旧功能分支仍存在。
-- 处理：G-01 / G-02 全绿后，从已验证的源码 `main` 创建 Week 8 独立分支；创建分支仍需明确授权。
-- 通过：`git branch --contains` 可定位两个提交，工作树干净，Week 8 基线 hash 写入验收记录。
+- 分支：获准后在 B 前从该 main 创建 `zhennn/week7-gap-hardening`；B/C 和最终 Gate 都绑定该分支的候选 hash，不在 main 直接开发。
+- 收口：Gate Go 且获得授权后合入 main；确认 B/C 提交均可追溯、全量验证仍通过，再从该 main 创建 Week 8 独立分支。
+- 通过：`git branch --contains` 可定位 Week 7 与 hardening 提交，工作树干净，最终 main hash 写入验收记录。
 
 ### R-02 发布本地代码与文档
 
@@ -301,14 +320,15 @@
 | --- | --- |
 | 问题映射 | G 2 项、S 10 项、P 10 项、D 9 项、R 2 项，共 33 项 |
 | Gate 边界 | 只有 G-01 / G-02 沿用现行正式 Gate；没有擅自重定义 Week 7 |
-| 执行依赖 | B 完成后才做 C；后续项不得跨批次混写 |
+| 执行依赖 | B → C → A → A2；Gate 必须绑定所有前置源码完成后的候选 hash |
 | 快照安全 | 旧 version、旧 retry、旧 Repository 结果均不能覆盖最新 state |
 | 离开保护 | pending 与 error 都是 dirty；不能在 save 失败后解除警告 |
 | 多标签页 | revision 校验/写入与 revision 推进/clear 分别保持同事务原子性 |
-| 兼容性 | 新 limit、duplicate、fee 规则不得让合法旧数据突然无法读取 |
+| 兼容性 | 结构 Validator 与 ResourcePolicy 分开；新规则不得让合法旧数据突然无法读取 |
 | 分层边界 | 页面不直接碰 Repository、Reducer 或浏览器存储/加密 API |
 | 业务变更 | Calculator、跨币种 fee、schema、crypto 参数必须先停下确认 |
 | 重复交易 | 无可靠外部 ID 时只警告，不由完整 Validator 强拒绝 |
+| 产品验收 | P-01 至 P-10 各有固定输入、实际值、刷新与 production 证据 |
 | 文档真实性 | 当前实现与未来计划分开，历史错误用勘误保留 |
 | Git 安全 | 以执行时事实为准；合并、建分支、推送必须获授权，禁止 force push |
 
