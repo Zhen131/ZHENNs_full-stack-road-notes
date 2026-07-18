@@ -12,6 +12,10 @@
 > 前置 Gate 更新（2026-07-17）：Week 6 React Gate 已 Go。Week 7 只补真实
 > 浏览器刷新、clear、envelope 与失败场景，不重写持久化地基。
 
+> 执行结果（2026-07-18）：安全 clear、故障注入、固定数据刷新与 clear 主链、
+> test / lint / build 已通过；production DevTools envelope 与 clear 后 record
+> 未取得直接读取证据。Storage Gate 严格判定 No-Go，Week 8 不得开始。
+
 ---
 
 ## 总览
@@ -23,7 +27,7 @@
 | 7月26日 | Day 3：实现 ledgerRepository | 已提前完成 |
 | 7月27日 | Day 4：实现 Noop 加密与组装点 | 已提前完成 |
 | 7月28日 | Day 5：页面启动时安全 hydrate | 已提前完成 |
-| 7月29日 | Day 6：guarded write 与持久化验收 | 自动化完成，人工验收待定 |
+| 7月29日 | Day 6：guarded write 与持久化验收 | 主链通过；envelope 证据未通过 |
 | 7月30日 | Day 7：休息 | 未开始 |
 
 ---
@@ -75,8 +79,11 @@
 - [x] ready 后才保存
 - [x] 快速连续写顺序正确
 - [x] 写失败保留旧数据
-- [ ] 新增 / 删除 / 价格 / clear 刷新通过
+- [x] 新增 / 删除 / 价格 / clear 刷新通过
 - [x] test / lint / build 通过
+- [x] load / save / clear 确定性故障注入通过
+- [x] clear 后不自动保存初始账本；首次新写入可恢复
+- [ ] production DevTools envelope 与 clear 后 record 直接读取通过
 
 ## Day 7：休息
 
@@ -93,6 +100,8 @@
 - [x] 失败不破坏旧数据
 - [x] 上层无 IndexedDB API
 - [x] test / lint / build 通过
+- [x] 单标签页与 Noop 明文限制已记录
+- [ ] production envelope / clear record 人工证据通过
 
 ## Week 7 不做
 
@@ -105,4 +114,8 @@
 ## Week 8 Go / No-Go
 
 - [ ] 全部通过：Week 8 可以开始导入导出
-- [ ] 任一失败：Week 8 Day 1 继续补持久化欠账
+- [x] 任一失败：Week 8 Day 1 继续补持久化欠账
+
+结论：**Week 7 Storage Gate: No-Go**。唯一阻断项是 production DevTools
+IndexedDB envelope 与 clear 后 record 的直接证据未完成；自动化 fake IndexedDB
+证据不能替代该人工 Gate。

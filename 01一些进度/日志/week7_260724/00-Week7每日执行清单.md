@@ -13,6 +13,10 @@
 > 前置 Gate 更新（2026-07-17）：Week 6 已完成 golden、价格、超卖、删除和
 > 宽窄屏生产验收，React Gate 为 Go。Week 7 从浏览器持久化人工验收开始。
 
+> 执行结果（2026-07-18）：源码、故障注入和固定 production 主链已完成；
+> production DevTools envelope / clear record 没有取得直接读取证据，
+> Week 7 Storage Gate 为 No-Go，禁止进入 Week 8。
+
 本周结论：
 
 ```text
@@ -196,6 +200,9 @@
 - 页面、service、reducer 没有 IndexedDB 调用。
 - 红灯时 Week 8 不开始导入导出。
 
+实际结果：新增、价格、删除、clear、刷新、首次新写入再恢复均通过；
+DevTools envelope 与 clear 后 record 直接读取未完成，因此本日 No-Go。
+
 ---
 
 ## Day 7：7月30日，休息
@@ -232,13 +239,17 @@
 
 ## Week 8 进入条件
 
-- [ ] adapter round-trip 通过
-- [ ] repository round-trip 通过
-- [ ] hydration 防覆盖通过
-- [ ] 快速连续写通过
-- [ ] 写失败保留旧数据
-- [ ] 刷新与 clear 手动验收通过
-- [ ] test / lint / build 通过
+- [x] adapter round-trip 通过
+- [x] repository round-trip 通过
+- [x] hydration 防覆盖通过
+- [x] 快速连续写通过
+- [x] 写失败保留旧数据
+- [x] 刷新与 clear 手动验收通过
+- [x] test / lint / build 通过
+- [ ] production DevTools envelope / clear record 直接读取通过
+
+2026-07-18 复核：前七项均已有源码、自动化或 production 主链证据；最后一项
+未通过。Week 8 禁止开始，详细证据见 [[01B_W7-持久化Gate验收记录]]。
 
 任一未通过：Week 8 禁止开始导入导出。
 
