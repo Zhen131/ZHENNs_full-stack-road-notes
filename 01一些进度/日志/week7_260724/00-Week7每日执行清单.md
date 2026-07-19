@@ -17,6 +17,10 @@
 > production DevTools envelope / clear record 没有取得直接读取证据，
 > Week 7 Storage Gate 为 No-Go，禁止进入 Week 8。
 
+> 补漏更新（2026-07-19）：S-01 / S-02 / S-03 已完成并合入、推送源码 `main`；
+> 当前为 19 个测试文件、188 项测试。D-08 / D-09 文档入口已同步，
+> S-07 资源阈值与 G-01 / G-02 直接证据仍未关闭。
+
 本周结论：
 
 ```text
@@ -246,10 +250,14 @@ DevTools envelope 与 clear 后 record 直接读取未完成，因此本日 No-G
 - [x] 写失败保留旧数据
 - [x] 刷新与 clear 手动验收通过
 - [x] test / lint / build 通过
+- [x] S-01 / S-02 / S-03 可靠性补漏通过
+- [x] D-08 / D-09 入口与导出真相契约已同步
+- [ ] S-07 资源阈值确认与 ResourcePolicy 实现
 - [ ] production DevTools envelope / clear record 直接读取通过
 
-2026-07-18 复核：前七项均已有源码、自动化或 production 主链证据；最后一项
-未通过。Week 8 禁止开始，详细证据见 [[01B_W7-持久化Gate验收记录]]。
+2026-07-19 复核：持久化主链、B 批次补漏和 D-08 / D-09 文档契约已通过；
+S-07 与 production G-01 / G-02 仍未通过。Week 8 禁止开始，详细证据见
+[[01B_W7-持久化Gate验收记录]]与 [[02B_W7-Week 1–7 查缺补漏解决方案]]。
 
 任一未通过：Week 8 禁止开始导入导出。
 

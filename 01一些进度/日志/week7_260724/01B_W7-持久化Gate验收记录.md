@@ -10,9 +10,10 @@
 
 | 项目 | 结果 |
 | --- | --- |
-| 分支 | `zhennn/week7-storage-gate` |
+| 原执行分支 | `zhennn/week7-storage-gate` |
 | 行为提交 | `02e28f3 功能：完成第七周安全清空与存储互斥` |
 | README 同步 | `8f96cc6 文档：记录第七周Storage Gate验收结果` |
+| 当前源码基线 | `main` / `origin/main` 均包含合并提交 `529983e` |
 | Adapter / Repository / schema | 未修改 |
 | Week 8 代码 | 未开始 |
 
@@ -26,6 +27,21 @@ src/components/dashboard/DashboardShell.test.ts
 src/components/dashboard/DashboardShell.interaction.test.tsx
 README.md
 ```
+
+2026-07-19 后续可靠性补漏又修改了：
+
+```text
+src/hooks/usePersistentLedger.ts
+src/hooks/usePersistentLedger.test.tsx
+src/components/dashboard/DashboardShell.tsx
+src/components/dashboard/DashboardShell.golden.test.tsx
+src/components/dashboard/DashboardShell.interaction.test.tsx
+src/components/trades/TradeForm.tsx
+src/components/prices/PriceForm.tsx
+```
+
+补漏内容为 S-01 保存状态语义、S-02 失败安全重试和 S-03 dirty 离开/
+Repository 切换保护；不改变本记录 G-01 / G-02 未通过的结论。
 
 ## 2. 自动化与确定性故障注入
 
@@ -86,7 +102,7 @@ fake IndexedDB 真实组装链也直接证明 clear 后 `load() === null` 且初
 ## 5. 验证命令
 
 ```text
-npm test         -> 19 files passed, 169 tests passed
+npm test         -> Storage Gate 基线 19 files / 169 tests；补漏后 19 files / 188 tests
 npm run lint     -> No ESLint warnings or errors
 npm run build    -> Compiled successfully
 git diff --check -> 通过
