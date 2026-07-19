@@ -4,11 +4,15 @@
 
 版本：v2（风险审查修订版）
 
-状态：待执行
+状态：已执行；Storage Gate No-Go，待补 G-01 / G-02 production 直接证据
 
 读者：负责修改 `LocalFirstTradingLedger` 源码的 AI Agent
 
 > 原 Week 7 每日清单保留为路线基线；当前实施以源码事实和本 `01A` 为准。不要重写已完成的持久化地基。
+
+> 执行更新（2026-07-19）：安全 clear、故障注入和固定 production 主链已完成；
+> S-01 / S-02 / S-03 后续补漏已通过 `529983e` 进入并推送源码 `main`，
+> 当前自动化为 19 个文件、188 项测试。S-07 资源阈值与 G-01 / G-02 仍未关闭。
 
 ## 1. 结论
 
@@ -373,7 +377,7 @@ Week 7 状态、Checklist、01B 验收记录和周日志
 - 开始和结束分别检查两个仓库的 status、diff、diff-check 和 `origin/main...main`。
 - 未执行 fetch 时，ahead/behind 只能表述为“相对本地远端跟踪引用”；不得声称已核对服务器最新状态。
 - 保留用户已有改动，不混合两个仓库的 staging、commit 或分支。
-- 无相反指令时，源码使用 `zhennn/week7-storage-gate` 功能分支；提交备注使用中文。
+- 实际执行曾使用 `zhennn/week7-storage-gate` 功能分支；相关提交现已进入源码 `main`。
 - Week 7、Week 8 衔接和文档同步分开提交；未经授权不推送、合并或删除分支。
 
 ### 11.2 源码验证

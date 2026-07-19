@@ -6,6 +6,9 @@
 
 详细执行：[[00-Week8每日执行清单]]
 
+> 入口更新（2026-07-19）：Week 7 Storage Gate 仍为 No-Go。S-07 ResourcePolicy
+> 与 production G-01 / G-02 直接证据未关闭前，Week 8 禁止开始。
+
 ---
 
 ## 总览
@@ -24,10 +27,14 @@
 
 ## 前置 Gate
 
-- [ ] Week 7 hydration 防覆盖通过
-- [ ] whole-blob round-trip 通过
-- [ ] 写失败保留旧数据
-- [ ] test / lint / build 通过
+- [x] Week 7 hydration 防覆盖通过
+- [x] whole-blob round-trip 通过
+- [x] 写失败保留旧数据，并可安全重试
+- [x] dirty 账本离开与 Repository 切换保护通过
+- [x] test / lint / build / diff-check 通过
+- [ ] S-07 资源阈值与 ResourcePolicy 通过
+- [ ] G-01 production `ledger:v1` envelope 直接读取通过
+- [ ] G-02 production clear 后 record 不存在直接读取通过
 
 ## Day 1：Envelope
 
@@ -38,7 +45,9 @@
 
 ## Day 2：导出
 
-- [ ] 读取完整账本
+- [ ] 验证并冻结点击瞬间页面完整账本快照
+- [ ] 不从 Repository 二次读取覆盖快照
+- [ ] ready / pending / error / clearing 导出边界正确
 - [ ] 规范化序列化
 - [ ] Blob 下载
 - [ ] 明文警告

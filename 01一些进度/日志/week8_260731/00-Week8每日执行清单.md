@@ -6,6 +6,9 @@
 
 > Week 8 只做明文 JSON 全量备份。导入不是“逐条交易写进去”，而是先验证完整版本化账本，再一次性替换；任何失败都保留原账本。
 
+> 入口更新（2026-07-19）：Week 7 Storage Gate 仍为 No-Go。S-07 ResourcePolicy、
+> G-01 production envelope 与 G-02 clear record 直接证据未关闭前，本周不得开始。
+
 本周结论：
 
 ```text
@@ -21,11 +24,16 @@ backup envelope
 
 ## 进入 Week 8 前必须通过
 
-- Week 7 hydration 防覆盖通过。
-- whole-blob adapter / repository round-trip 通过。
-- 快速连续写顺序正确。
-- 写失败保留上一次成功数据。
-- 新增、删除、价格和 clear 刷新验收通过。
+- [x] Week 7 hydration 防覆盖通过。
+- [x] whole-blob adapter / repository round-trip 通过。
+- [x] 快速连续写顺序正确。
+- [x] 写失败保留上一次成功数据，并可安全重试最新账本。
+- [x] dirty 账本离开与 Repository 切换边界通过。
+- [x] 新增、删除、价格和 clear 刷新验收通过。
+- [x] test / lint / build / diff-check 通过。
+- [ ] S-07 文件、数组和字符串资源阈值已确认并落地 ResourcePolicy。
+- [ ] G-01：production DevTools 直接读取 `ledger:v1`，核对 `formatVersion = 1`、完整明文 `LedgerData`、无 `Position[]`。
+- [ ] G-02：production clear 后直接确认 `ledger:v1` 不存在，刷新不重建，首次新写入后才重现。
 
 任一失败：Day 1 自动改为补 Week 7 欠账，不开始备份功能。
 
@@ -65,11 +73,14 @@ backup envelope
 
 ## Day 2：8月1日，完成导出垂直切片
 
-今天只做一件事：把当前完整账本导出为明文 JSON 文件。
+今天只做一件事：把点击瞬间的当前页面完整账本导出为明文 JSON 文件。
 
 要做：
 
-- 从 repository 读取当前完整 `LedgerData`。
+- 点击时立即对页面当前 `ledgerData` 运行 `validateLedgerData(...)`。
+- 只使用验证成功结果中重建的 `value` 作为 immutable export snapshot；不从 Repository 二次读取覆盖。
+- hydration 未 ready 或 clearing 时禁止导出。
+- persistence pending / error 时允许救援导出，但 UI 必须明确提示“该备份可能新于最后成功保存版本”。
 - 包装成 Day 1 envelope。
 - 使用规范化序列化生成 JSON。
 - 用 Blob 触发下载。
@@ -86,6 +97,8 @@ backup envelope
 - 导出包含 assets、trades、priceSnapshots、feeRules 和 schemaVersion。
 - 导出不修改当前账本。
 - JSON 可再次被 Day 1 validator 读取。
+- 点击后页面继续变化不得改变已冻结的导出 snapshot。
+- Repository 比页面 state 旧时，导出仍以点击瞬间页面快照为准。
 
 ---
 
