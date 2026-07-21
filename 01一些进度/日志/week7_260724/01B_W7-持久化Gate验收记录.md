@@ -43,6 +43,21 @@ src/components/prices/PriceForm.tsx
 补漏内容为 S-01 保存状态语义、S-02 失败安全重试和 S-03 dirty 离开/
 Repository 切换保护；不改变本记录 G-01 / G-02 未通过的结论。
 
+2026-07-21 S-07 又新增：
+
+```text
+src/validators/resourcePolicy.ts
+src/validators/resourcePolicy.test.ts
+src/hooks/usePersistentLedger.ts
+src/hooks/usePersistentLedger.test.tsx
+src/components/dashboard/DashboardShell.tsx
+src/components/dashboard/DashboardShell.interaction.test.tsx
+```
+
+ResourcePolicy 使用确认后的文件、集合和关键字符串上限；不修改
+`validateLedgerData(...)`、Adapter、Repository、schema 或计算口径。超限旧账本只读
+hydrate，新 mutation 在进入 reducer 前拒绝，自动保存与 clear 同步受保护。
+
 ## 2. 自动化与确定性故障注入
 
 | 场景 | 实际结果 |
@@ -59,6 +74,7 @@ Repository 切换保护；不改变本记录 G-01 / G-02 未通过的结论。
 | 组件卸载 | 存储 Promise 可结束，不执行卸载后应用 state 更新 |
 | fake IndexedDB 重挂载 | 新增+价格恢复、删除恢复、clear、再挂载为空全部通过 |
 | clear 后 record | 自动化中 `load() === null`，无额外 save；首次新写入才重新生成 |
+| ResourcePolicy | 等于上限通过；超一单位拒绝；超限旧账本只读；超限新 mutation 不进入 reducer 或保存 |
 
 新增重点测试位于 Hook、Dashboard 组件和 fake IndexedDB 真实组装链；全量范围仍是
 仓库当前 19 个 Vitest 文件，不代表已覆盖 Week 8 导入导出、真加密或多标签页。
@@ -78,6 +94,11 @@ Repository 切换保护；不改变本记录 G-01 / G-02 未通过的结论。
 | clear 后刷新 | 仍为空，没有恢复旧交易或旧价格 |
 | clear 后首次新写入 | 新 BTC 交易保存后刷新恢复，证明后续持久化仍可继续 |
 | 控制台 | `warning / error = 0` |
+
+2026-07-21 以 `http://localhost:3001` production build 复验上述固定 BTC / ETH
+主链、删除 ETH、clear 和 clear 后刷新空账本；控制台仍为 `warning / error = 0`。
+当前浏览器控制环境只有页面 UI / 日志读取能力，页面执行上下文也不暴露 `indexedDB`，
+因此仍不能把刷新行为替代为 G-01 / G-02 的直接 record 读取。
 
 ## 4. IndexedDB envelope 与 record
 
@@ -102,7 +123,7 @@ fake IndexedDB 真实组装链也直接证明 clear 后 `load() === null` 且初
 ## 5. 验证命令
 
 ```text
-npm test         -> Storage Gate 基线 19 files / 169 tests；补漏后 19 files / 188 tests
+npm test         -> Storage Gate 基线 19 files / 169 tests；B 批次后 19 files / 188 tests；S-07 后 20 files / 195 tests
 npm run lint     -> No ESLint warnings or errors
 npm run build    -> Compiled successfully
 git diff --check -> 通过
@@ -114,7 +135,7 @@ git diff --check -> 通过
 - Week 7 只保证单标签页内顺序。其他标签页可能在 clear 后重新写入旧 state；
   本周未实现 BroadcastChannel、跨标签页锁或冲突版本。
 - 未增加生产 debug 开关、故障按钮、验收依赖或第二套 clear 错误码。
-- 未修改 Adapter、Repository、Validator、Calculator、schema、依赖或业务口径。
+- 未修改 Adapter、Repository、`validateLedgerData(...)`、Calculator、schema、依赖或业务口径；新增独立 ResourcePolicy。
 
 ## 7. Go / No-Go
 
