@@ -16,9 +16,9 @@
 > test / lint / build 已通过；production DevTools envelope 与 clear 后 record
 > 未取得直接读取证据。Storage Gate 严格判定 No-Go，Week 8 不得开始。
 
-> 补漏更新（2026-07-19）：S-01 / S-02 / S-03 已完成，19 个测试文件、188 项测试通过，
+> 补漏更新（2026-07-21）：S-01 / S-02 / S-03 与 S-07 已完成，20 个测试文件、195 项测试通过，
 > 并通过 `529983e` 进入、推送源码 `main`。D-08 / D-09 文档契约已同步；
-> S-07 ResourcePolicy 阈值与 production G-01 / G-02 仍未关闭。
+> production G-01 / G-02 仍未关闭。
 
 ---
 
@@ -101,7 +101,7 @@
 - [x] S-03 dirty 账本离开与 Repository 切换受保护
 - [x] D-08 Week 8 入口已写入 G-01 / G-02 阻断条件
 - [x] D-09 导出数据真相源已锁定为点击瞬间页面快照
-- [ ] S-07 资源阈值确认与 ResourcePolicy 实现
+- [x] S-07 资源阈值确认与 ResourcePolicy 实现
 
 ---
 
@@ -131,4 +131,4 @@
 
 结论：**Week 7 Storage Gate: No-Go**。正式 Gate 的未通过项是 production DevTools
 IndexedDB envelope 与 clear 后 record 直接证据；自动化 fake IndexedDB 不能替代。
-另外，Week 8 开始前还必须关闭 S-07 资源边界。
+当前唯一未关闭项是 production G-01 / G-02 直接 record 证据。

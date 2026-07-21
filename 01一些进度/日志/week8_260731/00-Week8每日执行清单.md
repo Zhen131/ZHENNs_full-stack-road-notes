@@ -6,8 +6,8 @@
 
 > Week 8 只做明文 JSON 全量备份。导入不是“逐条交易写进去”，而是先验证完整版本化账本，再一次性替换；任何失败都保留原账本。
 
-> 入口更新（2026-07-19）：Week 7 Storage Gate 仍为 No-Go。S-07 ResourcePolicy、
-> G-01 production envelope 与 G-02 clear record 直接证据未关闭前，本周不得开始。
+> 入口更新（2026-07-21）：Week 7 Storage Gate 仍为 No-Go。S-07 ResourcePolicy
+> 已完成；G-01 production envelope 与 G-02 clear record 直接证据未关闭前，本周不得开始。
 
 本周结论：
 
@@ -31,7 +31,7 @@ backup envelope
 - [x] dirty 账本离开与 Repository 切换边界通过。
 - [x] 新增、删除、价格和 clear 刷新验收通过。
 - [x] test / lint / build / diff-check 通过。
-- [ ] S-07 文件、数组和字符串资源阈值已确认并落地 ResourcePolicy。
+- [x] S-07 文件、数组和字符串资源阈值已确认并落地 ResourcePolicy。
 - [ ] G-01：production DevTools 直接读取 `ledger:v1`，核对 `formatVersion = 1`、完整明文 `LedgerData`、无 `Position[]`。
 - [ ] G-02：production clear 后直接确认 `ledger:v1` 不存在，刷新不重建，首次新写入后才重现。
 

@@ -6,8 +6,8 @@
 
 详细执行：[[00-Week8每日执行清单]]
 
-> 入口更新（2026-07-19）：Week 7 Storage Gate 仍为 No-Go。S-07 ResourcePolicy
-> 与 production G-01 / G-02 直接证据未关闭前，Week 8 禁止开始。
+> 入口更新（2026-07-21）：Week 7 Storage Gate 仍为 No-Go。S-07 ResourcePolicy
+> 已完成；production G-01 / G-02 直接证据未关闭前，Week 8 禁止开始。
 
 ---
 
@@ -32,7 +32,7 @@
 - [x] 写失败保留旧数据，并可安全重试
 - [x] dirty 账本离开与 Repository 切换保护通过
 - [x] test / lint / build / diff-check 通过
-- [ ] S-07 资源阈值与 ResourcePolicy 通过
+- [x] S-07 资源阈值与 ResourcePolicy 通过
 - [ ] G-01 production `ledger:v1` envelope 直接读取通过
 - [ ] G-02 production clear 后 record 不存在直接读取通过
 
