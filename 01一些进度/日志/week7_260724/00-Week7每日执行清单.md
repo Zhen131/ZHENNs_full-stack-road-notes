@@ -21,6 +21,10 @@
 > 已在候选分支完成；当前为 20 个测试文件、195 项测试。D-08 / D-09 文档入口已同步，
 > G-01 / G-02 直接证据仍未关闭。
 
+> 最终验收（2026-07-22）：真实 Chrome production origin 已直接读取写入后的 `ledger:v1`，并在
+> 页面 clear 后直接确认 record 不存在。Storage Gate 为 **Go**；详细证据见
+> [[09A_W7-Storage-Gate最终验收报告_260722]]。前述 No-Go 仅保留为当日历史状态。
+
 本周结论：
 
 ```text
@@ -204,8 +208,8 @@
 - 页面、service、reducer 没有 IndexedDB 调用。
 - 红灯时 Week 8 不开始导入导出。
 
-实际结果：新增、价格、删除、clear、刷新、首次新写入再恢复均通过；
-DevTools envelope 与 clear 后 record 直接读取未完成，因此本日 No-Go。
+实际结果：新增、价格、删除、clear、刷新、首次新写入再恢复均通过；2026-07-22 已直接
+读取 DevTools envelope，并确认 clear 后 record 不存在，因此 Week 7 Gate 为 Go。
 
 ---
 
@@ -253,13 +257,11 @@ DevTools envelope 与 clear 后 record 直接读取未完成，因此本日 No-G
 - [x] S-01 / S-02 / S-03 可靠性补漏通过
 - [x] D-08 / D-09 入口与导出真相契约已同步
 - [x] S-07 资源阈值确认与 ResourcePolicy 实现
-- [ ] production DevTools envelope / clear record 直接读取通过
+- [x] production DevTools envelope / clear record 直接读取通过
 
-2026-07-21 复核：持久化主链、B 批次补漏、S-07 与 D-08 / D-09 文档契约已通过；
-production G-01 / G-02 仍未通过。Week 8 禁止开始，详细证据见
-[[01B_W7-持久化Gate验收记录]]与 [[02B_W7-Week 1–7 查缺补漏解决方案]]。
-
-任一未通过：Week 8 禁止开始导入导出。
+2026-07-22 复核：持久化主链、B 批次补漏、S-07 与 D-08 / D-09 文档契约均已通过；
+production G-01 / G-02 已关闭。Week 8 已具备开始条件，但尚未开工；详细证据见
+[[09A_W7-Storage-Gate最终验收报告_260722]]。
 
 ## 本周不可做
 
