@@ -16,9 +16,9 @@
 > test / lint / build 已通过；production DevTools envelope 与 clear 后 record
 > 未取得直接读取证据。Storage Gate 严格判定 No-Go，Week 8 不得开始。
 
-> 补漏更新（2026-07-21）：S-01 / S-02 / S-03 与 S-07 已完成，20 个测试文件、195 项测试通过，
-> 并通过 `529983e` 进入、推送源码 `main`。D-08 / D-09 文档契约已同步；
-> production G-01 / G-02 仍未关闭。
+> 最终验收（2026-07-22）：S-01 / S-02 / S-03 与 S-07 已完成，20 个测试文件、195 项测试通过。
+> 真实 Chrome production origin 已直接读取写入后的 `ledger:v1`，并在 clear 后直接确认 key 不存在；
+> Storage Gate 改判为 Go。详细证据：[[09A_W7-Storage-Gate最终验收报告_260722]]。
 
 ---
 
@@ -31,7 +31,7 @@
 | 7月26日 | Day 3：实现 ledgerRepository | 已提前完成 |
 | 7月27日 | Day 4：实现 Noop 加密与组装点 | 已提前完成 |
 | 7月28日 | Day 5：页面启动时安全 hydrate | 已提前完成 |
-| 7月29日 | Day 6：guarded write 与持久化验收 | 主链通过；envelope 证据未通过 |
+| 7月29日 | Day 6：guarded write 与持久化验收 | 已通过 |
 | 7月30日 | Day 7：休息 | 未开始 |
 
 ---
@@ -87,7 +87,7 @@
 - [x] test / lint / build 通过
 - [x] load / save / clear 确定性故障注入通过
 - [x] clear 后不自动保存初始账本；首次新写入可恢复
-- [ ] production DevTools envelope 与 clear 后 record 直接读取通过
+- [x] production DevTools envelope 与 clear 后 record 直接读取通过
 
 ## Day 7：休息
 
@@ -114,7 +114,7 @@
 - [x] 上层无 IndexedDB API
 - [x] test / lint / build 通过
 - [x] 单标签页与 Noop 明文限制已记录
-- [ ] production envelope / clear record 人工证据通过
+- [x] production envelope / clear record 人工证据通过
 
 ## Week 7 不做
 
@@ -126,9 +126,8 @@
 
 ## Week 8 Go / No-Go
 
-- [ ] 全部通过：Week 8 可以开始导入导出
-- [x] 任一失败：Week 8 Day 1 继续补持久化欠账
+- [x] 全部通过：Week 8 可以开始导入导出
+- [ ] 任一失败：Week 8 Day 1 继续补持久化欠账
 
-结论：**Week 7 Storage Gate: No-Go**。正式 Gate 的未通过项是 production DevTools
-IndexedDB envelope 与 clear 后 record 直接证据；自动化 fake IndexedDB 不能替代。
-当前唯一未关闭项是 production G-01 / G-02 直接 record 证据。
+结论：**Week 7 Storage Gate: Go**。production DevTools 已直接确认写入后的 envelope
+与 clear 后不存在的 record；自动化 fake IndexedDB 仍只作为补充证据。
