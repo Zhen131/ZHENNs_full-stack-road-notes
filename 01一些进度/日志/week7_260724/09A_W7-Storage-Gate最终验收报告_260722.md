@@ -35,7 +35,7 @@ Week 8 已经开工。
 
 - Noop EncryptionService 仍是明文 JSON，不代表已经实现真加密。
 - 单标签页保证已验收；多标签页冲突不属于 Week 7 范围。
-- S-07 当前在候选分支 `zhennn/week7-s07-resource-policy`，尚未合入源码 `main`；本报告不把候选分支写成已合并。
+- 收口更新：S-07 已快进合入源码本地 `main`；按用户要求暂不 push，等待后续指令。
 
 ## 下一入口
 
