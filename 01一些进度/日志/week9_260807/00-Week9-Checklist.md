@@ -6,6 +6,8 @@
 
 详细执行：[[00-Week9每日执行清单]]
 
+> 入口状态（2026-07-23）：Week 8 P1-01 尚未关闭，production 证据链与 Chrome 回导待复核现象未完成。Week 9 禁止开始；本清单仅保留为后续入口。
+
 ---
 
 ## 总览
@@ -24,10 +26,10 @@
 
 ## 前置 Gate
 
-- [ ] 完整导入导出通过
-- [ ] 原子替换与 rollback 通过
-- [ ] 明文备份逃生口可用
-- [ ] test / lint / build 通过
+- [x] 完整导入导出、原子替换与 rollback 自动化通过
+- [x] 明文备份逃生口已实现
+- [x] test / lint / build 已通过
+- [ ] Week 8 P1-01 production evidence Gate 关闭，且 Chrome 回导待复核现象已复现定位或排除
 
 ## Day 1：威胁模型
 
