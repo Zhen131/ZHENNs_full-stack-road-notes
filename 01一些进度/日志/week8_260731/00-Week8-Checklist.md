@@ -8,7 +8,7 @@
 
 > 入口更新（2026-07-22）：Week 7 Storage Gate 已 Go。S-07 ResourcePolicy 已完成；
 > production G-01 / G-02 直接证据已关闭。Week 8 当前无 P0，仅剩
-> `02A` 记录的两个 P1；源码仍在本地分支，Week 9 暂不开始。
+> `02A` 记录的两个 P1 中，精确 8 MiB 自动化 Gate 已关闭；production record/recovery/rejection 证据仍未关闭。源码仍在本地分支，Week 9 暂不开始。
 
 ---
 
@@ -83,8 +83,8 @@
 - [x] 写失败 rollback
 - [x] test / lint / build 通过
 - [ ] production 真实导出文件、record、recovery 与拒绝场景证据
-- [ ] 合法备份实际内容精确 8 MiB / `+1 byte` 自动化 Gate
-- [x] 23 个测试文件、238 项测试通过
+- [x] 合法备份实际内容精确 8 MiB / `+1 byte` 自动化 Gate
+- [x] 23 个测试文件、239 项测试通过
 - [x] production 页面级完整 fixture 恢复、刷新与五类 UI 拒绝路径通过
 
 ## Day 7：休息
@@ -102,7 +102,7 @@
 - [x] rollback
 - [x] 刷新仍在
 - [x] test / lint / build 通过
-- [ ] `02A` 两个剩余 P1 关闭
+- [ ] `02A` 剩余 production P1 关闭
 
 ## Week 8 不做
 
