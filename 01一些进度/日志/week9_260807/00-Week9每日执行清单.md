@@ -6,7 +6,7 @@
 
 > Week 9 保护的是 IndexedDB 静态数据。它不声称解决 XSS、恶意浏览器扩展或运行时内存泄露。先安全迁移旧明文，再启用真加密。
 
-> 入口状态（2026-07-23）：Week 8 P1-01 未关闭。禁止开始 Day 1；先完成 Week 8 production evidence Gate 与 Chrome 回导待复核现象的复现定位或排除。
+> 入口状态（2026-07-23）：Week 8 production evidence Gate 已关闭，空页面观察已由用户操作事实与受控刷新复验排除。Week 9 可以从包含 Week 8 成果的源码基线开始。
 
 本周结论：
 
