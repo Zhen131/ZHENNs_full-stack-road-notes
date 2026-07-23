@@ -6,9 +6,7 @@
 
 > Week 8 只做明文 JSON 全量备份。导入不是“逐条交易写进去”，而是先验证完整版本化账本，再一次性替换；任何失败都保留原账本。
 
-> 入口更新（2026-07-22）：Week 7 Storage Gate 已 Go。S-07 ResourcePolicy 已完成；
-> G-01 production envelope 与 G-02 clear record 直接证据均已关闭。本周可在用户确认后开始，
-> 当前尚未实施代码。
+> 入口更新（2026-07-23）：Week 8 源码实现与自动化 Gate 已完成至 P1-02；P1-01 production 证据仍未关闭。受控实际文件的导出 -> clear -> 回导 -> 二次导出主链已有通过记录；Chrome 最终回导另出现“成功提示但页面为空”的待复核现象。Week 8 为 No-Go，Week 9 不启动。
 
 本周结论：
 
@@ -238,12 +236,12 @@ backup envelope
 
 ## Week 9 进入条件
 
-- [ ] backup envelope 与版本规则通过
-- [ ] 完整 parser / validator 通过
-- [ ] 原子替换通过
-- [ ] round-trip 通过
-- [ ] rollback 通过
-- [ ] test / lint / build 通过
+- [x] backup envelope 与版本规则通过
+- [x] 完整 parser / validator 通过
+- [x] 原子替换通过
+- [x] round-trip 与 rollback 自动化通过
+- [x] test / lint / build 通过
+- [ ] P1-01 production direct record / recovery / rejection 证据闭环，且 Chrome 回导待复核现象已复现定位或排除
 
 任一未通过：Week 9 禁止切换真加密。
 
@@ -268,5 +266,5 @@ backup envelope
 - 死守完整校验、原子替换和失败回滚。
 - UI 只保留最小文件选择、确认和错误展示。
 - 不做合并导入。
-- Week 9 整体顺延。
+- Week 9 保持阻塞，不启动真加密。
 - Day 7 保持休息。
