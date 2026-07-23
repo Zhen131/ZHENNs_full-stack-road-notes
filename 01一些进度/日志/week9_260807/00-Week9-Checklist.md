@@ -6,7 +6,7 @@
 
 详细执行：[[00-Week9每日执行清单]]
 
-> 入口状态（2026-07-23）：Week 8 完整账本备份 Gate 已关闭，Week 9 前置 Gate 开放。Week 8 功能分支已推送；Draft PR 待创建并由用户 Review，源码合并与 Week 9 新分支创建须另行执行。
+> 入口状态（2026-07-23）：Week 8 完整账本备份 Gate 已关闭，PR #7 已 Review 并合并，功能分支已清理。Week 9 前置 Gate 开放；下次从源码 `main@45e10dc` 创建 Week 9 分支。
 
 ---
 

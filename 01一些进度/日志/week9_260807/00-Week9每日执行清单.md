@@ -6,7 +6,7 @@
 
 > Week 9 保护的是 IndexedDB 静态数据。它不声称解决 XSS、恶意浏览器扩展或运行时内存泄露。先安全迁移旧明文，再启用真加密。
 
-> 入口状态（2026-07-23）：Week 8 production evidence Gate 已关闭，空页面观察已由用户操作事实与受控刷新复验排除。Week 8 功能分支已推送，待 Draft PR Review；Week 9 可以从包含 Week 8 成果的源码基线开始。
+> 入口状态（2026-07-23）：Week 8 production evidence Gate 已关闭，空页面观察已由用户操作事实与受控刷新复验排除。PR #7 已合并，功能分支已清理；Week 9 从源码 `main@45e10dc` 开始。
 
 本周结论：
 
