@@ -1,12 +1,12 @@
 # W9 IndexedDB 静态加密执行验收记录
 
-状态：实现完成，收口进行中；P0 production 现场证据已完成 3/4
+状态：Week 9 收口完成；整机硬断网按用户决定取消，不记为通过、不再阻塞本轮
 
 ## 实现结果
 
 - 源码分支：`zhennn/week9-encryption-at-rest`
 - 基线：`45e10dc`
-- 源码提交：`aca6c53`（`功能：实现第九周账本静态加密`）
+- 源码提交：`aca6c53`（主实现）、`b17b58e`（首次设密恢复修复）
 - 未推送、未合并
 - IndexedDB 固定保持：
   - database：`local-first-trading-ledger`
@@ -23,7 +23,7 @@
 ## 自动化证据
 
 ```text
-npm test        -> 30 files / 286 tests passed
+npm test        -> 30 files / 290 tests passed
 npm run lint    -> 0 warning / 0 error
 npm run build   -> Compiled successfully
 git diff --check -> passed
@@ -67,26 +67,25 @@ git diff --check -> passed
 - ciphertext 篡改验收通过：正确密码被统一拒绝；失败后 record 仍保持篡改值，其余字段不变，证明零写入。
 - IV 篡改验收通过：正确密码被统一拒绝；失败后 record 仍保持篡改值，其余字段不变，证明零写入。
 - 篡改验收结束后已恢复合法密文并删除临时备份 key；最终 store 仅含 `ledger:v1`，正确密码可重新解锁。
+- 首次设密“写入成功、验证回读失败”已新增恢复状态：保留 V2 record、自动进入解锁页、清空密码输入，不挂载 Dashboard；故障注入与 UI 测试通过。
+- Dashboard production 闭环已通过：写入 2 条交易和 1 条价格，导出明文备份，清空后不刷新直接导入；数据立即恢复，随后直读仍为 V2 且无测试账本明文特征，刷新后原密码可解锁并恢复全部样例。
+- 整机硬断网验收未完成。用户明确取消该项并决定不作为本轮阻塞条件；不得把它描述为“已通过”。
 
 ## Gate 状态矩阵
 
 | Gate | 状态 | 证据 / 阻塞 |
 | --- | --- | --- |
-| V2 envelope、KDF、AES-GCM 与 Repository 自动化 | 已关闭 | 30 files / 286 tests、lint、build、diff-check |
+| V2 envelope、KDF、AES-GCM 与 Repository 自动化 | 已关闭 | 30 files / 290 tests、lint、build、diff-check |
 | 首次设密、再次解锁、备份导入主链 | 已关闭 | production 固定样例与刷新恢复通过 |
 | IndexedDB V2 直读与明文搜索 | 已关闭 | DevTools 原始 record 直读，明文特征零命中 |
 | ciphertext / IV 篡改、零写入、合法密文恢复 | 已关闭 | 两类 production 篡改均被拒，最终仅保留合法 `ledger:v1` |
-| 保留 localhost 的硬离线主链 | 未关闭，P0 | 需要在 production server 已运行时断开整机外网，再复验打开、解锁、查询、导出 |
-| 首次设密成功写入但验证回读失败后的页面恢复 | 未关闭，P1 | 需要源码修复与故障注入测试 |
-| Dashboard clear -> import -> V2 -> refresh 闭环 | 未关闭，P1 | 需要 production 完整走查；通过前不预设源码修改 |
-| Week 9 最终 Go | 阻塞 | 以上 P0、P1 全部关闭后才能判定 |
+| 保留 localhost 的硬离线主链 | 已取消，未验证 | 用户决定停止整机断网验收；不宣称通过，不作为本轮阻塞项 |
+| 首次设密成功写入但验证回读失败后的页面恢复 | 已关闭 | `b17b58e`；Controller 故障注入与 Gate UI 恢复测试通过 |
+| Dashboard clear -> import -> V2 -> refresh 闭环 | 已关闭 | production 2 trades + 1 price；无刷新导入、V2 直读、刷新解锁恢复通过 |
+| Week 9 最终 Go | 已关闭 | 按用户调整后的通过线：实现、自动化、V2 现场证据与主生产闭环均通过；等待检阅，不推送、不合并 |
 
-## 待收口
+## 收口结论
 
-执行入口：`02B_W9-静态加密收口问题解决方案.md`。
-
-1. 完成保留 localhost 的硬离线主链。
-2. 修复首次设密回读失败后的恢复死路。
-3. 完成 Dashboard 全账本 clear 与明文备份恢复的 production 闭环。
-
-三项全部通过后，Week 9 才可判定 Go；此前不合并分支。
+- P1-01 与 P1-02 已关闭，P2 已关闭。
+- P0 中 V2 直读、明文搜索、ciphertext / IV 篡改均通过；整机硬断网按用户决定取消。
+- Week 9 按调整后的 Gate 判定为 Go；源码仍停留在功能分支，等待用户检阅后再决定是否推送或合并。
