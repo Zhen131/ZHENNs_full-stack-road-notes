@@ -7,7 +7,8 @@
 - 源码分支：`zhennn/week9-encryption-at-rest`
 - 基线：`45e10dc`
 - 源码提交：`aca6c53`（主实现）、`b17b58e`（首次设密恢复修复）
-- 未推送、未合并
+- 合并提交：`4fadfb6`（`合并：完成第九周静态加密开发`）
+- 已合并并推送至源码 `origin/main`；功能分支暂保留
 - IndexedDB 固定保持：
   - database：`local-first-trading-ledger`
   - version：`1`
@@ -82,10 +83,10 @@ git diff --check -> passed
 | 保留 localhost 的硬离线主链 | 已取消，未验证 | 用户决定停止整机断网验收；不宣称通过，不作为本轮阻塞项 |
 | 首次设密成功写入但验证回读失败后的页面恢复 | 已关闭 | `b17b58e`；Controller 故障注入与 Gate UI 恢复测试通过 |
 | Dashboard clear -> import -> V2 -> refresh 闭环 | 已关闭 | production 2 trades + 1 price；无刷新导入、V2 直读、刷新解锁恢复通过 |
-| Week 9 最终 Go | 已关闭 | 按用户调整后的通过线：实现、自动化、V2 现场证据与主生产闭环均通过；等待检阅，不推送、不合并 |
+| Week 9 最终 Go | 已关闭 | 按用户调整后的通过线通过；`4fadfb6` 已进入并推送源码 `main` |
 
 ## 收口结论
 
 - P1-01 与 P1-02 已关闭，P2 已关闭。
 - P0 中 V2 直读、明文搜索、ciphertext / IV 篡改均通过；整机硬断网按用户决定取消。
-- Week 9 按调整后的 Gate 判定为 Go；源码仍停留在功能分支，等待用户检阅后再决定是否推送或合并。
+- Week 9 按调整后的 Gate 判定为 Go；源码已通过 `4fadfb6` 合并并推送至 `origin/main`。
