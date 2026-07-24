@@ -1,9 +1,10 @@
 # 01A_W9：IndexedDB 静态加密执行清单
 
 时间：2026-08-07 至 2026-08-13
-状态：已执行并形成源码提交 `aca6c53`，待最终验收
+状态：实现已形成源码提交 `aca6c53`，收口进行中
 源码基线：`LocalFirstTradingLedger/main@45e10dc`
 目标：使用 Web Crypto API、PBKDF2-HMAC-SHA-256 与 AES-256-GCM，使 IndexedDB 中的完整 `LedgerData` 只以认证密文保存。
+追踪规则：本文件的复选框保留为原始执行合同，不作为当前完成状态；实际证据与未关闭项统一以 `01B_W9-IndexedDB静态加密执行验收记录.md` 的 Gate 状态矩阵为准。
 
 ---
 
