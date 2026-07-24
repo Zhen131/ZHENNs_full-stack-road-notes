@@ -1,10 +1,10 @@
 # 01A_W9：IndexedDB 静态加密执行清单
 
 时间：2026-08-07 至 2026-08-13
-状态：实现已形成源码提交 `aca6c53`，收口进行中
+状态：**已完成（2026-07-24）**；实现 `aca6c53` 与恢复修复 `b17b58e` 已通过 `4fadfb6` 合入并推送源码 `main`
 源码基线：`LocalFirstTradingLedger/main@45e10dc`
 目标：使用 Web Crypto API、PBKDF2-HMAC-SHA-256 与 AES-256-GCM，使 IndexedDB 中的完整 `LedgerData` 只以认证密文保存。
-追踪规则：本文件的复选框保留为原始执行合同，不作为当前完成状态；实际证据与未关闭项统一以 `01B_W9-IndexedDB静态加密执行验收记录.md` 的 Gate 状态矩阵为准。
+追踪规则：复选框已于收口后按最终证据回填；`01B_W9-IndexedDB静态加密执行验收记录.md` 仍是自动化、production 与取消项的精确证据来源。硬离线的勾选表示“取消处置已记录”，不表示已通过。
 
 ---
 
@@ -274,11 +274,11 @@ inspect storage
 
 Day 1 Gate：
 
-- [ ] `formatVersion: 2` 与全部密码学常量已写死
-- [ ] database/store/record key 明确保持现值，旧明文目标 record 已精确清理
-- [ ] 非法 envelope 与非法二进制长度全部拒绝
-- [ ] 未修改业务模型、Calculator、Service、Reducer
-- [ ] 定向测试与全量测试通过
+- [x] `formatVersion: 2` 与全部密码学常量已写死
+- [x] database/store/record key 明确保持现值，旧明文目标 record 已精确清理
+- [x] 非法 envelope 与非法二进制长度全部拒绝
+- [x] 未修改业务模型、Calculator、Service、Reducer
+- [x] 定向测试与全量测试通过
 
 ## Day 2：实现 PBKDF2 与 AES-256-GCM
 
@@ -295,15 +295,15 @@ Day 1 Gate：
 
 必须测试：
 
-- [ ] 同 passphrase + 同 salt 派生的 key 可互相解密
-- [ ] 不同 salt 或错误 passphrase 解密失败
-- [ ] 同一明文连续加密的 IV 与 ciphertext 不同
-- [ ] ciphertext、IV、salt、iterations、AAD 任一篡改均失败
-- [ ] 固定 metadata 的 AAD UTF-8 字节输出稳定
-- [ ] Unicode 账本逐字节 round-trip
-- [ ] 空明文与接近 8 MiB 明文边界不截断
-- [ ] `CryptoKey.extractable === false`
-- [ ] 同一解锁会话连续 encrypt 不重复调用 PBKDF2
+- [x] 同 passphrase + 同 salt 派生的 key 可互相解密
+- [x] 不同 salt 或错误 passphrase 解密失败
+- [x] 同一明文连续加密的 IV 与 ciphertext 不同
+- [x] ciphertext、IV、salt、iterations、AAD 任一篡改均失败
+- [x] 固定 metadata 的 AAD UTF-8 字节输出稳定
+- [x] Unicode 账本逐字节 round-trip
+- [x] 空明文与接近 8 MiB 明文边界不截断
+- [x] `CryptoKey.extractable === false`
+- [x] 同一解锁会话连续 encrypt 不重复调用 PBKDF2
 
 ## Day 3：接入 Adapter 与 Repository
 
@@ -320,14 +320,14 @@ Day 1 Gate：
 
 必须测试：
 
-- [ ] 合法 `LedgerData` 保存后 adapter 中不存在账本 JSON 明文
-- [ ] save -> load 完整相等
-- [ ] 写失败保留上一份成功密文
-- [ ] 错 key、篡改或未知版本 load 失败且零写入
-- [ ] 无效 `LedgerData` 在加密前拒绝
-- [ ] 空库不调用 decrypt
-- [ ] Repository 不接触 passphrase
-- [ ] `formatVersion: 1` 不得伪装成空库或触发新账本覆盖
+- [x] 合法 `LedgerData` 保存后 adapter 中不存在账本 JSON 明文
+- [x] save -> load 完整相等
+- [x] 写失败保留上一份成功密文
+- [x] 错 key、篡改或未知版本 load 失败且零写入
+- [x] 无效 `LedgerData` 在加密前拒绝
+- [x] 空库不调用 decrypt
+- [x] Repository 不接触 passphrase
+- [x] `formatVersion: 1` 不得伪装成空库或触发新账本覆盖
 
 ## Day 4：首次设密与再次解锁
 
@@ -370,18 +370,18 @@ unlock-required / unsupported-format
 
 必须测试：
 
-- [ ] 空库只进入首次设密
-- [ ] 首次设密写失败时不进入 Dashboard
-- [ ] 已有密文只进入解锁
-- [ ] 正确密码进入 Dashboard 并 hydrate
-- [ ] 错密码和篡改显示同一错误，且不挂载持久化 Hook
-- [ ] 旧/未知格式与损坏 V2 envelope 不进入 setup、不自动覆盖，只允许明确重置
-- [ ] 未解锁重置确认错误时零删除；clear 失败保留原 record；成功后进入 setup
-- [ ] 重复提交只执行一次派生/解锁
-- [ ] passphrase 不进入 URL、storage、error、console
-- [ ] refresh 后必须重新输入密码
-- [ ] `page.tsx -> AccessGate -> DashboardShell(required repository)` 是唯一 production 入口
-- [ ] production composition、Dashboard 默认参数和 singleton 均不能实例化 Noop
+- [x] 空库只进入首次设密
+- [x] 首次设密写失败时不进入 Dashboard
+- [x] 已有密文只进入解锁
+- [x] 正确密码进入 Dashboard 并 hydrate
+- [x] 错密码和篡改显示同一错误，且不挂载持久化 Hook
+- [x] 旧/未知格式与损坏 V2 envelope 不进入 setup、不自动覆盖，只允许明确重置
+- [x] 未解锁重置确认错误时零删除；clear 失败保留原 record；成功后进入 setup
+- [x] 重复提交只执行一次派生/解锁
+- [x] passphrase 不进入 URL、storage、error、console
+- [x] refresh 后必须重新输入密码
+- [x] `page.tsx -> AccessGate -> DashboardShell(required repository)` 是唯一 production 入口
+- [x] production composition、Dashboard 默认参数和 singleton 均不能实例化 Noop
 
 ## Day 5：保存队列、clear 与明文备份回归
 
@@ -400,16 +400,16 @@ unlock-required / unsupported-format
 
 必须测试：
 
-- [ ] 快速连续保存无回退、无 IV 复用
-- [ ] 快速连续保存复用会话 CryptoKey，不重复执行 PBKDF2
-- [ ] 最新保存失败可重试
-- [ ] clear 与 pending save 顺序正确
-- [ ] clear 后不会自动重建 record
-- [ ] 未解锁重置不依赖 `usePersistentLedger`，且只删除固定 record
-- [ ] 明文导出内容与 Week 8 契约一致
-- [ ] 明文导入后 IndexedDB 为密文
-- [ ] 坏备份、错密码、篡改均零覆盖
-- [ ] 既有 Dashboard golden 与 interaction 测试全部通过
+- [x] 快速连续保存无回退、无 IV 复用
+- [x] 快速连续保存复用会话 CryptoKey，不重复执行 PBKDF2
+- [x] 最新保存失败可重试
+- [x] clear 与 pending save 顺序正确
+- [x] clear 后不会自动重建 record
+- [x] 未解锁重置不依赖 `usePersistentLedger`，且只删除固定 record
+- [x] 明文导出内容与 Week 8 契约一致
+- [x] 明文导入后 IndexedDB 为密文
+- [x] 坏备份、错密码、篡改均零覆盖
+- [x] 既有 Dashboard golden 与 interaction 测试全部通过
 
 ## Day 6：安全、production 与硬离线 Gate
 
@@ -443,22 +443,20 @@ production 固定流程：
 
 Day 6 Gate：
 
-- [ ] IndexedDB 无完整账本明文
-- [ ] 正确密码可恢复，错误密码与篡改被拒
-- [ ] 旧/未知格式不覆盖；忘记密码后的明确重置可成功且失败安全
-- [ ] 会话 key 与 passphrase 未持久化
-- [ ] 自动保存、retry、clear、import 未回归
-- [ ] 明文备份风险提示仍存在
-- [ ] 硬离线主链通过
-- [ ] test、lint、build、diff-check 全绿
+- [x] IndexedDB 无完整账本明文
+- [x] 正确密码可恢复，错误密码与篡改被拒
+- [x] 旧/未知格式不覆盖；忘记密码后的明确重置可成功且失败安全
+- [x] 会话 key 与 passphrase 未持久化
+- [x] 自动保存、retry、clear、import 未回归
+- [x] 明文备份风险提示仍存在
+- [x] 硬离线 Gate 已取消（未验证，不作为本轮阻塞项）
+- [x] test、lint、build、diff-check 全绿
 
-任一项失败：Week 9 为 No-Go，不进入 Week 10 图表。
+除“硬离线已取消、未验证”外，任一必经项失败：Week 9 为 No-Go，不进入 Week 10 图表。
 
 ## Day 7：休息
 
-- [ ] 不开发
-- [ ] 不补测试
-- [ ] 不挪用
+- [x] 未占用 Day 7 开发；Week 9 已提前收口
 
 ---
 
@@ -485,7 +483,7 @@ Day 6 Gate：
 - 仅在解锁后可用的加密 Repository。
 - 首次设密、再次解锁与忘记密码后明确重置 Gate。
 - 加密后的自动保存、clear、明文 backup/import 回归证据。
-- production IndexedDB 密文直读、错密码、篡改与硬离线证据。
+- production IndexedDB 密文直读、错密码与篡改证据；硬离线取消处置记录（未验证）。
 - Week 9 Go / No-Go 记录。
 
 ---

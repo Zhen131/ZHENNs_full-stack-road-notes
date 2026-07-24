@@ -6,21 +6,21 @@
 
 详细执行：[[00-Week9每日执行清单]]
 
-> 入口状态（2026-07-23）：Week 8 完整账本备份 Gate 已关闭，PR #7 已 Review 并合并，功能分支已清理。Week 9 前置 Gate 开放；下次从源码 `main@45e10dc` 创建 Week 9 分支。
+状态：**Go（2026-07-24 提前收口）**。源码 `main@4fadfb6` 已推送；最终自动化为 30 个测试文件、290 项测试，lint、production build、`git diff --check` 通过。硬离线已取消、未验证，不作为本轮阻塞项；完整证据见 [[01B_W9-IndexedDB静态加密执行验收记录]]。
 
 ---
 
 ## 总览
 
-| 日期 | 唯一主任务 | 状态 |
+| 原计划日 | 唯一主任务 | 最终状态 |
 | --- | --- | --- |
-| 8月7日 | Day 1：锁定威胁模型与密文 envelope | 未开始 |
-| 8月8日 | Day 2：实现 PBKDF2 | 未开始 |
-| 8月9日 | Day 3：实现 AES-256-GCM | 未开始 |
-| 8月10日 | Day 4：明文迁移与密文集成 | 未开始 |
-| 8月11日 | Day 5：解锁与锁定流程 | 未开始 |
-| 8月12日 | Day 6：安全与硬离线验收 | 未开始 |
-| 8月13日 | Day 7：休息 | 未开始 |
+| Day 1 | 威胁模型与 V2 envelope | 已完成 |
+| Day 2 | PBKDF2 | 已完成 |
+| Day 3 | AES-256-GCM | 已完成 |
+| Day 4 | 密文 Repository 与导入后重加密 | 已完成；旧明文不自动迁移 |
+| Day 5 | 首次设密与再次解锁 | 已完成；不实现手动锁定按钮 |
+| Day 6 | 安全与 production Gate | 已完成；硬离线取消、未验证 |
+| Day 7 | 休息 | 未占用开发；Week 9 已提前收口 |
 
 ---
 
@@ -31,76 +31,75 @@
 - [x] test / lint / build 已通过
 - [x] Week 8 P1-01 production evidence Gate 关闭，空页面观察已排除
 
-## Day 1：威胁模型
+## Day 1：威胁模型与 V2 envelope
 
-- [ ] encryption at rest 边界
-- [ ] cryptoVersion / KDF 参数 / salt / IV / ciphertext
-- [ ] key 只驻会话内存
-- [ ] 明文迁移与 rollback 契约
+- [x] encryption at rest 边界
+- [x] cryptoVersion / KDF 参数 / salt / IV / ciphertext
+- [x] key 只驻会话内存
+- [x] 旧明文 / 未知格式拒绝、明确重置与零覆盖契约（不做自动迁移）
 
 ## Day 2：PBKDF2
 
-- [ ] Web Crypto deriveKey
-- [ ] 随机 salt
-- [ ] 参数记录
-- [ ] KDF 测试
+- [x] Web Crypto deriveKey
+- [x] 随机 salt
+- [x] 参数记录
+- [x] KDF 测试
 
 ## Day 3：AES-GCM
 
-- [ ] 每次随机 IV
-- [ ] round-trip
-- [ ] 错密钥失败
-- [ ] 篡改失败
+- [x] 每次随机 IV
+- [x] round-trip
+- [x] 错密钥失败
+- [x] 篡改失败
 
-## Day 4：迁移集成
+## Day 4：密文存储与导入后重加密
 
-- [ ] 识别明文 / 密文 envelope
-- [ ] 原子迁移
-- [ ] 失败保留旧数据
-- [ ] 导入后重新加密
+- [x] 识别旧明文 / 密文 envelope
+- [x] 不自动迁移旧明文；旧格式只允许明确重置
+- [x] 写入失败保留旧密文，错误零写入
+- [x] 导入后重新加密
 
 ## Day 5：解锁
 
-- [ ] 首次设密
-- [ ] 已有密文解锁
-- [ ] locked / unlocked / error 状态
-- [ ] 替换 Noop 组装
+- [x] 首次设密
+- [x] 已有密文解锁
+- [x] locked / unlocked / error 状态
+- [x] production 组装替换 Noop
 
 ## Day 6：安全验收
 
-- [ ] IndexedDB 无账本明文
-- [ ] 正确密码成功
-- [ ] 错密码拒绝
-- [ ] 篡改拒绝
-- [ ] 导入后重加密
-- [ ] 硬离线通过
-- [ ] test / lint / build 通过
+- [x] IndexedDB 无账本明文
+- [x] 正确密码成功
+- [x] 错密码拒绝
+- [x] ciphertext / IV 篡改拒绝
+- [x] 导入后重新加密
+- [x] 硬离线 Gate 已取消（未验证，不作为本轮阻塞项）
+- [x] test / lint / build / diff-check 通过
 
 ## Day 7：休息
 
-- [ ] 不开发
-- [ ] 不挪用
+- [x] 未占用 Day 7 开发；Week 9 已提前收口
 
 ---
 
 ## Week 9 通过线
 
-- [ ] PBKDF2 / AES-GCM 测试通过
-- [ ] 明文迁移与 rollback 通过
-- [ ] 解锁/锁定通过
-- [ ] IndexedDB 无账本明文
-- [ ] 硬离线通过
-- [ ] test / lint / build 通过
+- [x] PBKDF2 / AES-GCM 测试通过
+- [x] 旧明文 / 未知格式拒绝、不自动覆盖；写入失败安全保留旧记录
+- [x] 首次设密、解锁与刷新后重新解锁通过
+- [x] IndexedDB 无账本明文
+- [x] 硬离线 Gate 已取消、未验证，按用户决定不阻塞本轮
+- [x] test / lint / build / diff-check 通过
 
 ## Week 9 不做
 
-- [ ] 不自创密码学
-- [ ] 不做密码找回
-- [ ] 不做云密钥
-- [ ] 不持久化 key
-- [ ] 不做 UI 美化
+- [x] 不自创密码学
+- [x] 不做密码找回
+- [x] 不做云密钥
+- [x] 不持久化 key
+- [x] 不做 UI 美化
 
 ## Week 10 Go / No-Go
 
-- [ ] 全部通过：Week 10 可以开始图表
-- [ ] 任一失败：优先修加密 P0
+- [x] Go：按用户调整后的 Week 9 Gate 已关闭，可以开始图表
+- [x] No-Go 未触发；无遗留加密 P0
