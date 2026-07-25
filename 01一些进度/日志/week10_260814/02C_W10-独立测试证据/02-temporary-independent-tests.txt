@@ -1,0 +1,72 @@
+Week 10 02B 独立测试：T2-T4 临时副本摘要
+临时目录：/private/tmp/week10-02c.iPXge8
+来源：git archive fd5391e7e4de735a30e9e41c022297fa59ebc44e
+依赖：cp -cR 正式源码 node_modules；未执行安装
+固定时间：2026-07-25T12:00:00Z；todayKey=2026-07-25
+
+[锁定文件与最终 SHA-256]
+independentHarness.tsx
+03ad86e6c4aa1b33b8e6f32fd20b3f929e686d555a817337cd564962b4c5947a
+
+t2-binance-failures.independent.test.tsx
+2fc6f4e37800ddc60d46adcc0939cfc9c822f143d59a7d58fd2f009afa5799ff
+
+t3-future-correction.independent.test.tsx
+970ea1e0d30e9cd67ea9bdfed3b78f0c415ea39dcf849523c0b64f02271cadfa
+
+t4-race-protection.independent.test.tsx
+a8919ea45f945accadf4698c3e296fb07eab1772f5790a1209e473b5e4168081
+
+[正式归档只读证明]
+排除 node_modules 与 4 个允许新增文件后，归档既有文件数：117。
+前后 SHA-256 manifest cmp 退出码：0。
+结论：正式归档既有文件未变化。
+完成取证后 realpath 复核目标并删除 /private/tmp/week10-02c.iPXge8；cleanup 退出码：0。
+
+[运行命令]
+./node_modules/.bin/vitest run src/independent-tests/*.independent.test.tsx
+
+首次运行：
+退出码 1；3 files；12 tests；10 passed、2 failed。
+两处失败均为独立测试基础设施取证问题：
+1. T2.5 页面文字由 strong 节点分隔，单一正则 matcher 未命中；DOM 已显示“已更新 2 项，失败 1 项”、ADA 旧价与逐项失败。
+2. T3 查询操作按钮时 hydration 尚未结束；DOM 尚未渲染操作列。
+按 02B 例外修正临时断言后，只原样复跑一次。
+
+唯一复跑：
+退出码 1；3 files；12 tests；11 passed、1 failed。
+T2：6/6 tests passed。
+T4：3/3 tests passed。
+T3：2/3 tests passed；T3.1 失败。
+
+[T2]
+T2.1 PASS：默认 8000ms；7999ms 仍 loading，推进至 8001ms 后三项 BINANCE_TIMEOUT；3 次 exchangeInfo、1 次 ticker、无重试、旧价/交易/映射保留、remount 保留。
+T2.2 PASS：TypeError("offline") -> 三项 BINANCE_NETWORK_ERROR；本地新增交易 local-trade-after-network-failure 与 manual 价格 local-manual-after-network-failure 均保存，remount 保留。
+T2.3a PASS：HTTP 429 -> BINANCE_RATE_LIMITED/httpStatus=429；无重试、无清价。
+T2.3b PASS：HTTP 418 -> BINANCE_RATE_LIMITED/httpStatus=418；无重试、无清价。
+T2.4 PASS：HTTP 500 -> BINANCE_HTTP_ERROR/httpStatus=500；无 0 写入。
+T2.5 PASS：ticker 仅 BTC=62000、ETH=2200；ADA 为 BINANCE_SYMBOL_MISSING；页面 2 成功/1 失败；market mutation=1；新增 save=1；ADA 0.45 旧价保留；remount 保留。
+
+[T3]
+PASS 证据：
+- 未来交易/价格从持仓、价格选择和三图排除：BTC quantity=1、price=61000；allocation=3 项/65650；history=30 点；heatmap=365 日/3 笔；3 个图表组件。
+- 普通新增、正常历史删除和 Binance 刷新不可用。
+- “删除全部无效未来事实”成功；save=1；事实 ID 从 4 trades/4 prices 变为 3 trades/3 prices。
+- 同 Repository remount 后，受控 Binance 刷新 3 项成功并保存；普通 concurrent-trade 成功保存；再次 remount 完整恢复。
+- 合法整账替换成功；正常 UI 新建 2099 未来交易被拒绝且不 save；纠正模式 clear 成功。
+
+FAIL 证据：
+- 正式 Dashboard 的未来交易删除按钮存在但 disabled=true；期望可单删。
+- 正式 Dashboard 没有未来价格单删入口。
+- 点击被禁用按钮后 repository.save=0，事实 ID 清单不变。
+严重度：P2（交互合同缺口；仍可删除全部、合法整账替换或 clear）。虽然不是 P1，但属于已执行必测合同 FAIL，按 02B 仍强制总判定“不通过”。
+
+BLOCKED 证据：
+- T3.1 的救援导出后续断言被独立夹具中的未来交易 totalValue/price 不一致打断；唯一允许复跑已用尽。
+- 因测试在该处结束，本轮未形成 T3 strict future import 的独立结果。
+- 以上不写作产品失败或通过；发现类型为证据受阻。
+
+[T4]
+T4.1 PASS：旧 ticker Promise 忽略 abort；删除 BTC 映射并保存后再 resolve；旧响应不新增 mutation/save，remount 映射仍为空、旧价保留。
+T4.2 PASS：旧 Promise 期间合法整账替换，ledgerEpoch=2；再 resolve 后 mutation=0、无附加 save；remount 等于替换账本。
+T4.3 PASS：旧 Promise 期间新增 concurrent-trade 并先保存；再 resolve 后恰好 1 次行情 mutation，以含 4 笔交易的最新账本为输入；新增 3 条 API 价，额外 save=1；remount 交易和 6 条价格均保留。

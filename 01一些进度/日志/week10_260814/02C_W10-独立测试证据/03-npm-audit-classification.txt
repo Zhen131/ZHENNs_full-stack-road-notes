@@ -1,0 +1,54 @@
+Week 10 02B 独立测试：T6 npm audit 摘要
+工作目录：
+/Users/zhuzhen0131/Documents/NOTe/全栈之路/01一些进度/产出/LocalFirstTradingLedger
+
+[命令 1]
+npm audit --json
+首次 sandbox 尝试：退出码 1；ENOTFOUND registry.npmjs.org；无可解析 audit JSON，分类为权限/网络基础设施。
+授权后原命令：退出码 1；audit JSON 可解析。
+metadata：high=7，critical=0，total=7；prod=26，dev=503，total dependencies=537。
+涉及包：@next/eslint-plugin-next、brace-expansion、eslint-config-next、glob、js-yaml、next、postcss。
+
+[命令 2]
+npm audit --omit=dev --json
+授权后运行：退出码 1；audit JSON 可解析。
+metadata：high=2，critical=0，total=2。
+production 包：next、postcss。
+
+[依赖链]
+next@14.2.35 -> postcss@8.4.31
+直接 dev postcss@8.5.15
+eslint-config-next@14.2.35 -> @next/eslint-plugin-next -> glob@10.3.10 -> minimatch -> brace-expansion@2.1.1
+typescript-eslint 路径 -> brace-expansion@5.0.6
+eslint 路径 -> js-yaml@4.2.0、brace-expansion@1.1.15
+
+[项目可达性证据]
+- npm run start 使用 Next 内置 Node server。
+- App Router 仅 root/page/favicon。
+- .next/server/server-reference-manifest.json：node={}，edge={}；Server Actions=0。
+- middleware manifest：无 middleware。
+- routes manifest：rewrites=[]，dataRoutes=[]；无动态 host rewrite/redirect。
+- 源码无 use server、自定义 server、i18n、middleware、next/image 或自定义 WebSocket 处理。
+
+[分类]
+P1：next@14.2.35 / GHSA-c4j6-fc7j-m34r。
+原因：受影响范围包含当前版本；npm run start 的内置 Node server 对匿名 WebSocket upgrade 请求可达；仓库无反向代理过滤或其他缓解证据。官方修复线包括 15.5.16/16.2.5；本轮未升级。
+
+P2：next -> postcss@8.4.31 / GHSA-6g55-p6wh-862q、GHSA-r28c-9q8g-f849。
+原因：版本受影响，但本项目只在构建期处理仓库内 CSS；匿名页面、备份 JSON、Binance 响应均不能向 PostCSS 注入 CSS 文件路径。属于 production dependency 中已隔离的剩余风险；建议升级至不受影响版本，不在本轮执行。
+
+P2/P3：Next 其余 high advisory 家族。
+RSC/Server Function DoS、Server Action SSRF：server reference manifest 为空，无 Server Action 入口。
+dynamic-host rewrite/redirect SSRF：rewrites/redirects 为空。
+Pages Router+i18n+middleware 绕过：项目为 App Router，且无 i18n/middleware。
+仍建议统一升级 Next 至官方支持且覆盖全部修复的版本；本轮不改 lockfile。
+
+P3 dev-only：
+- glob CLI command injection：项目不运行 glob CLI -c，且仅 dev 链。
+- brace-expansion DoS/OOM：仅测试/lint 工具链使用仓库控制的 pattern。
+- js-yaml quadratic merge：仅 ESLint 配置解析，输入由仓库控制。
+
+[禁止动作确认]
+未运行 npm audit fix。
+未升级依赖。
+未修改 package.json 或 package-lock.json。

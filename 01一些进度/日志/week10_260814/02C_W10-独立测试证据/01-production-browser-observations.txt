@@ -1,0 +1,44 @@
+Week 10 02B 独立测试：production Chromium 观测摘要
+origin：http://127.0.0.1:3187
+浏览器：Codex 内置真实 Chromium 页面
+测试数据：仅固定虚构 BTC/ETH/ADA 事实；密码不记录
+
+[新上下文/存储前置]
+- 使用本轮未占用端口形成新 origin；新标签页。
+- Cache Storage：[]；Service Worker：[]。
+- 浏览器桥接执行环境未暴露 raw IndexedDB API；因此“建账前数据库不存在”和 T5 raw V2 envelope 字段检查不能直接取证，均记录 BLOCKED，不以页面恢复替代。
+
+[T1 主链]
+- 默认映射：BTCUSDT、ETHUSDT、ADAUSDT 可见。
+- 导入固定虚构事实：BTC 买 1 @ 60000；ETH 买 2 @ 2000；ADA 买 1000 @ 0.5；ADA 后卖 100 @ 0.55；BTC manual 70000；日期均为 2026-07-25。
+- 首次真实 Binance 刷新发起：2026-07-25T14:28:45.922Z。
+- 首次成功观测：成功 3、失败 0；BTC 64158.50000000、ETH 1866.45000000、ADA 0.16340000；as-of 2026-07-25T14:28:51.543Z。
+- 自动模式：三项使用 Binance；总市值 68038.46。
+- 手动模式：BTC 使用 70000 manual，ETH/ADA 回退 Binance；总市值 73879.96；持仓表、饼图、曲线一致。
+- 范围：1d=2 点；7d=7/7；30d=30/30；365d=365/365；全部=1/1。1d 显示日内边界提示。
+- 真实 ECharts canvas 热力格点击 2026-07-25：交易列表只显示当日；再次点击取消。
+- clear 后日期筛选重置；使用同一轮导出的合法备份无刷新导入后仍未恢复筛选状态。
+- 页面明文导出警告可见；clear 使用精确二次确认；无刷新导入成功。
+- reload 后回到锁定页；重新解锁恢复 4 笔交易、映射、manual/API provenance 和价格事实。
+- 重解锁后真实 Binance 再刷新成功 3、失败 0；BTC 64173.32、ETH 1867.75、ADA 0.1637；as-of 2026-07-25T14:35:53.935Z。
+- production console warning/error：刷新前 []；重载恢复后 []。
+
+[导出 JSON 独立观测]
+文件：local-first-trading-ledger-backup-v1-20260725-143144Z.json
+SHA-256：85734b6042f6086f0522206020e5ee3059fcc3be048784eb9eced9c7d475ba0d
+顶层 key：appVersion、backupFormatVersion、exportedAt、ledgerData、ledgerSchemaVersion
+ledgerData key：assets、feeRules、priceSnapshots、schemaVersion、trades
+数量：assets=3，trades=4，priceSnapshots=4，feeRules=0
+价格来源：api=3，manual=1
+Position/图表点/热力等级/估值模式/选中日期派生字段命中：[]
+
+[响应式]
+1280：document/body scrollWidth=1280，innerWidth=1280；三图宽 1124；无页面级横向溢出。
+390×844：document/body scrollWidth=390，innerWidth=390；三图宽 274；宽表父容器 overflow-x=auto，父容器 clientWidth=308，表宽分别 960/680；无页面级横向溢出。
+
+[截图]
+01 1280 主链/图表/交易与恢复状态；2026-07-25T14:34:52.865Z。
+02 390 响应式页面与局部宽表；2026-07-25T14:35:20.213Z。
+03 reload 后锁定页；390×844；2026-07-25T14:35:39.761Z。
+04 重新解锁后的保存恢复与 Binance provenance；390；2026-07-25T14:36:21.362Z。
+05 明文导出警告；390；2026-07-25T14:36:38.400Z。
