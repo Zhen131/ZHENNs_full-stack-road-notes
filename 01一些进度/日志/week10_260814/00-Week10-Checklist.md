@@ -1,6 +1,6 @@
 # Week 10 Checklist
 
-状态：Gate 0-7 全部通过；源码功能分支未合并、未推送，等待用户审查
+状态：开发侧 Gate 0-7 全部通过；02B 独立补充测试不通过，源码功能分支已推送但未合并，等待独立修复
 主题：页面减法 + Binance 最新行情 + 统一估值 + 三张 ECharts 图
 详细执行：[[00-Week10每日执行清单]]
 正式计划：[[01C_W10-三图与Binance行情执行计划]]
@@ -17,6 +17,17 @@
 | Gate 5 | 饼图、阶梯曲线、365 天热力图与筛选 | 已通过 |
 | Gate 6 | 加密持久化、备份、清空和恢复安全回归 | 已通过 |
 | Gate 7 | 全量质量 Gate、production 主链和文档收口 | 已通过 |
+
+## 独立补充测试
+
+- [x] 02B T0-T6 已执行，正式结果见 [[02C_W10-三图与Binance行情独立测试结果]]。
+- [x] 通俗失败说明见 [[02D_W10-三图与Binance行情不通过项通俗说明]]。
+- [x] T2 网络失败、限流、超时与部分成功合同通过。
+- [x] T4 mapping、整账替换和并发普通交易的旧响应保护通过。
+- [ ] 关闭 `next@14.2.35` 的 production WebSocket SSRF 高危风险。
+- [ ] 为旧未来交易和价格提供正式 UI 单条删除入口。
+- [ ] 补齐 T3 救援导出/strict import 与 T5 raw IndexedDB V2 envelope 独立证据。
+- [ ] 修复后重新独立测试；新结果通过前不得进入合并审查。
 
 ## Gate 0 证据
 
@@ -52,7 +63,7 @@
 - [x] 未引入私有 API、API key、账户、订单或下单。
 - [x] 未引入 K 线、指标、dataZoom、动画、主题或复杂美化。
 - [x] 未引入 Position / 图表点 / 热力等级持久化。
-- [x] 未执行 push、merge 或 rebase。
+- [x] Gate 0-7 实现期间未执行未授权 push、merge 或 rebase；功能分支随后已按授权推送。
 
 ## 最终 Git 通过线
 
@@ -60,3 +71,5 @@
 - [x] Gate 0 和 Gate 7 分别有独立外层文档提交。
 - [x] 两个仓库最终 clean。
 - [x] 源码停留在未合并的 `zhennn/week10-charts-binance`。
+- [x] 源码功能分支已推送并跟踪 `origin/zhennn/week10-charts-binance`。
+- [ ] 独立测试阻断关闭后再决定是否合并。
