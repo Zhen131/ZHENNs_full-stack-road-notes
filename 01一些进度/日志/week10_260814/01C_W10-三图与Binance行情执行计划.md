@@ -40,14 +40,18 @@
 - Week 10 日志、Checklist、当前开发状态属于外层文档仓库。
 - 两个仓库的 `status`、diff、提交和分支不得混用。
 - 执行阶段保留用户已有修改；不使用破坏性 Git 命令。
-- 未经用户再次明确授权，不提交、不合并、不推送源码或文档；先完成代码、验证和审查候选。
+- Week 10 源码必须在专用功能分支 `zhennn/week10-charts-binance` 上开发；若执行开始时已经位于用户创建的等价 Week 10 功能分支，可核对后继续使用，不得覆盖或重建已有分支。
+- 本计划已授权执行 AI 创建本地 Git commit。每个关键 Gate 通过并取得定向测试证据后，必须先检查 staged diff，再创建范围单一、备注为中文的本地 commit；不得把整周实现压成一个超大提交。
+- 源码仓库至少按 Gate 1、Gate 2、Gate 3、Gate 4、Gate 5、Gate 6 的完成边界分别提交；Gate 内若包含可独立验证的模型、网络、派生、UI 或修复里程碑，可以继续拆成更多小提交。
+- 外层文档仓库的 Gate 0 范围纠偏与 Gate 7 最终回填分别提交，不得与源码提交混用。
+- 本轮只授权创建本地分支和本地 commit；禁止推送任何远端、禁止把功能分支合并或 rebase 到 `main`，除非用户之后明确要求。
 
 ### 3. 工作方式
 
 - 开始时读取最小上下文：本计划、`01A`、`01B`、当前开发状态、源码 `README.md`、相关实现与测试。
 - 每个 Gate 先补纯逻辑和测试，再接 UI；业务规则不得写进 ECharts option。
 - 所有日期、ID、网络和当前时刻依赖必须可注入，测试不得依赖真实当天或真实 Binance 可用性。
-- 每完成一个 Gate，运行该 Gate 的定向测试并检查 diff；最后统一运行全量 Gate。
+- 每完成一个 Gate，运行该 Gate 的定向测试、检查 diff 和 staged scope，并按上述 Git 边界创建本地中文 commit；最后统一运行全量 Gate。
 - 实质进度、阻塞、测试证据和产品偏差写入新的 Week 10 执行验收记录；不要把计划文档改写成完成记录。
 
 ## 二、不可违反的产品合同
@@ -206,8 +210,8 @@ function partitionLedgerFactsForToday(
 建议新增：
 
 - `src/calculators/positionReplay.ts`
-- `src/services/priceSelectionService.ts`
 - `src/services/chartDataService.ts`
+- `src/services/priceSelectionService.ts`（必须在 Gate 2 完成，供 Gate 2 行情 UI 与 Gate 3 派生服务共同复用）
 
 改造：
 
@@ -254,7 +258,8 @@ function selectPriceAsOf(
 ### 要做
 
 1. 分别确认外层文档仓库和嵌套源码仓库的 `status`、分支、最近提交；记录用户已有修改。
-2. 在源码仓库运行：
+2. 源码仓库若不在已核对的等价 Week 10 功能分支，则从当前干净 `main` 创建并切换到 `zhennn/week10-charts-binance`；不得在源码 `main` 直接开发。
+3. 在源码仓库运行：
 
 ```bash
 npm test
@@ -263,15 +268,16 @@ npm run build
 git diff --check
 ```
 
-3. 记录当前测试文件数、测试数和失败项，不沿用旧状态数字冒充本轮基线。
-4. 新建 Week 10 执行验收记录，例如：
+4. 记录当前测试文件数、测试数和失败项，不沿用旧状态数字冒充本轮基线。
+5. 新建 Week 10 执行验收记录，例如：
 
 ```text
 01一些进度/日志/week10_260814/02A_W10-三图与Binance行情执行验收记录.md
 ```
 
-5. 将旧 Week 10 两份 `00` 文档的标题、范围和任务文字纠正为与 `01A/01B/01C` 一致的三图、Binance、五档算法和 Gate 制清单；Gate 0 只做范围纠偏，所有执行任务仍保持“未开始”，不得提前勾选。
-6. 明确记载 Week 9 整机硬离线为“已取消、未验证、不再阻塞”，不得勾成通过。
+6. 将旧 Week 10 两份 `00` 文档的标题、范围和任务文字纠正为与 `01A/01B/01C` 一致的三图、Binance、五档算法和 Gate 制清单；Gate 0 只做范围纠偏，所有执行任务仍保持“未开始”，不得提前勾选。
+7. 明确记载 Week 9 整机硬离线为“已取消、未验证、不再阻塞”，不得勾成通过。
+8. Gate 0 文档纠偏验证后，在外层文档仓库创建独立中文 commit；不得包含源码仓库内容。
 
 ### Gate 0 通过线
 
@@ -279,6 +285,7 @@ git diff --check
 - 旧清单不再与本计划冲突。
 - 未改源码业务逻辑。
 - 两个仓库的已有修改均被保留。
+- 源码已位于专用 Week 10 功能分支；Gate 0 文档改动已在外层仓库独立提交。
 
 ## 五、Gate 1：日期、未来事实、币种和模型兼容
 
@@ -332,6 +339,7 @@ git diff --check
 - `src/marketData/binanceMarketDataTypes.ts`
 - `src/services/binanceMappingService.ts`
 - `src/services/binancePriceRefreshService.ts`
+- `src/services/priceSelectionService.ts`
 - `src/components/market-data/MarketDataControls.tsx`
 - 对应测试
 
@@ -380,6 +388,13 @@ git diff --check
 - 只读、loading、importing、clearing、dirty repository switch 阶段不得自动写入。
 - 未来事实纠正模式不得自动或手动刷新。
 
+### 价格选择前置合同
+
+- Gate 2 必须完成第三章定义的 `priceSelectionService.selectPriceAsOf(...)`，不得把统一价格选择推迟到 Gate 3。
+- selector 必须完整实现“自动行情 / 手动价格”、最新记录日期比较、同日 Binance 胜出、手动模式无手动事实时回退自动、未来/不支持币种/旧缺 provenance API 价排除，以及实际来源和 as-of 返回。
+- Gate 2 的行情状态、持仓当前价与模式开关只调用这一 selector；不得在组件、刷新 service 或临时 helper 中复制另一套优先规则。
+- Gate 3 只负责复用已经通过 Gate 2 的 selector 构建当前持仓、饼图和历史曲线，不得重新定义价格选择算法。
+
 ### UI 合同
 
 图表总览区顶部提供：
@@ -404,19 +419,21 @@ git diff --check
 - 删除映射后不请求该资产，旧 API 快照仍可作为历史事实。
 - 请求中发生普通交易/价格修改，成功结果合并进响应时最新账本且不覆盖修改。
 - 请求中发生映射变更、整账替换或卸载，过期响应被丢弃；重复点击不会产生并发刷新。
+- selector 单元测试覆盖自动/手动模式、日期新旧、同日 Binance 胜出、手动缺失回退、未来/非法候选排除和稳定 tie-break。
 
 ### Gate 2 通过线
 
 - Binance 完全不可用时，本地交易、手动价格、离线查看、加密保存、备份和清空仍可用。
 - 任一失败都不清空旧价、不写 `0`、不阻塞本地账本。
 - 映射和成功快照真实持久化，批量刷新没有多次整账写入。
+- 统一 price selector 已完成并通过测试；Gate 2 的模式开关不依赖尚未执行的 Gate 3 逻辑。
 
 ## 七、Gate 3：共享派生服务
 
-### 1. 当前持仓与来源选择
+### 1. 当前持仓接线
 
 1. 用 `todayKey` 隔离未到期未来事实。
-2. 对 USD/USDT 资产复用全局 price selector。
+2. 对 USD/USDT 资产复用 Gate 2 已通过的全局 price selector，不新增或复制价格优先规则。
 3. 持仓表继续显示数量、平均成本、剩余成本、已实现盈亏。
 4. USD/USDT 行显示实际价格来源、as-of、市值和未实现盈亏。
 5. 旧其他币种行可以保留原币种事实展示，但明确“不进入 USD 等值图表”。
@@ -709,13 +726,15 @@ git diff --check
 - 外部 Binance 未成功时写清 mock 合同证据与 production 降级证据。
 - 写清源码提交、测试数、lint/build、production 主链、已知限制和下一步。
 - 保存论文配图草稿时不得泄露私人账本或密码；使用非敏感测试数据，并附图表口径说明。
+- Gate 7 回填验证完成后，在外层文档仓库创建独立中文 commit；不得夹带源码文件。
 
 ### Gate 7 通过线
 
 - 全量测试、lint、production build、diff-check 通过。
 - 三图合同、行情降级、安全与恢复主链有证据。
 - 源码 README、当前状态、Week 10 Checklist 和验收记录与实际实现一致。
-- 两个仓库分别检查 clean；未获授权时仍不提交、不推送。
+- 源码功能分支和外层文档仓库的本轮预期修改均已按关键节点本地提交，两个仓库分别检查 clean。
+- 源码功能分支保持未合并状态；两个仓库均不得推送远端，等待用户审查和进一步指令。
 
 ## 十二、禁止范围
 
@@ -753,6 +772,7 @@ git diff --check
 | 日期筛选 | 点击过滤、再点取消、清除入口、联动更新、replace 后重置、仅会话态 |
 | 精度与性能 | Decimal 业务值、有限 number 渲染、一次排序和单向重放 |
 | 安全恢复 | schema v1 兼容、完整事实备份、清空、无刷新导入、请求代次/映射隔离、最新账本合并 |
+| Git 执行 | 源码专用功能分支；Gate 1-6 关键节点中文提交；Gate 0/7 文档独立提交；两仓 clean；未推送、未合并 |
 | 最终质量 | 全量 test、lint、build、diff-check、production 主链和文档回填 |
 
 只有矩阵全部取得真实证据，或明确标为用户接受的取消/外部降级项，Week 10 才能进入最终审查。
