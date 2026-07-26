@@ -72,5 +72,5 @@
 - [x] 两个仓库最终 clean。
 - [x] 源码已通过本地合并提交 `1b58948` 进入 `main`。
 - [x] 合并后 42 个测试文件、383 项测试、typecheck、lint 和 production build 通过。
-- [ ] 推送源码与文档 `main`；当前等待安全审批层要求的再次显式授权。
-- [ ] 推送成功后删除本地和远端 `zhennn/week10-charts-binance`。
+- [x] 源码与文档 `main` 均已推送，并分别确认与 `origin/main` 一致。
+- [x] 本地和远端 `zhennn/week10-charts-binance` 均已删除。
