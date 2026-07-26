@@ -1,0 +1,23 @@
+Local-First Trading Ledger Week 10 独立验收
+证据 04：存储与备份
+
+已执行：
+- P-03 专用 capability database 创建、写入、读取和删除。
+- 详细结构见 03-production-browser-observations.txt。
+
+未执行：
+- T1-05 production 明文备份与恢复主链。
+- T1-06 忘记密码 reset。
+- T3 救援导出、strict import、整账替换与 clear。
+- T5-02 production V2 raw IndexedDB。
+- T5-03 production 普通备份。
+- T5-04 dirty、只读、8 MiB、非法 JSON、schema、未来事实、取消与 write failure。
+
+原因：
+- P-04/P-05 前置能力 Gate 未通过，03C 要求在 T1 前停止。
+
+边界：
+- 没有创建账本密码。
+- 没有读取用户 origin、真实 IndexedDB 或真实下载。
+- 没有把 P-03 专用 probe database 冒充 production V2 证据。
+- 没有把页面 Blob 元数据冒充实际下载文件。

@@ -1,0 +1,33 @@
+Local-First Trading Ledger Week 10 独立验收
+证据 05：依赖安全
+
+授权：
+- 用户已明确授权 npm ci、npm audit、依赖元数据发送与权威公告查询。
+
+P-06：
+- npm ping 成功。
+- GitHub/Vercel 官方 GHSA 与 NVD 可访问。
+- 仅做连通性预检，没有在 P-06 执行 audit。
+
+T6 状态：
+- 未运行 npm audit --json。
+- 未运行 npm audit --omit=dev --json。
+- 未运行 fallback。
+- 未完成剩余 high/critical 可达性分类。
+
+原因：
+- P-04/P-05 前置能力 Gate 未通过。
+- 03C 固定顺序要求 T6 在 T1–T5 与 T1-06 之后；前置 Gate 要求在 T1 前停止。
+- 因此不能越序执行 T6，也不能复用开发 AI 旧 audit 结果。
+
+本轮仅确认的权威公告连通性（不是 T6 结论）：
+- GHSA-c4j6-fc7j-m34r：
+  affected >=13.4.13 <15.5.16、>=16.0.0 <16.2.5；
+  patched 15.5.16、16.2.5；
+  CVE-2026-44578。
+- NVD 页面可访问并交叉记录 15.5.16、16.2.5 修复。
+- T0 npm ls 确认目标 Next 解析版本为 15.5.22。
+
+严格结论：
+- 上述信息不足以把 T6-01、T6-02 或 T6-03 记为 PASS。
+- T6 全部因前置 Gate 停止而为 BLOCKED。

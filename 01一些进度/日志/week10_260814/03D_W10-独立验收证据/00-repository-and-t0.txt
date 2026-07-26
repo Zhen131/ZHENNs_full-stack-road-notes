@@ -1,0 +1,207 @@
+Local-First Trading Ledger Week 10 独立验收
+证据 00：仓库、P-01/P-06 与 T0
+
+RUN_TODAY
+2026-07-26（Asia/Shanghai）
+
+联网授权
+- 用户在本轮会话中明确回复“允许”。
+- 授权范围：npm ci、npm audit、向 npm registry 发送依赖元数据，以及查询 GitHub/Vercel、npm、NVD 权威安全公告。
+- P-06 只做连通性检查；未在 P-06 执行 audit。
+
+P-01 临时目录能力
+1. 命令：mktemp -d /tmp/lftr-ledger-p01.XXXXXX
+   输出：/tmp/lftr-ledger-p01.oDTGiF
+   退出码：0
+2. 命令：realpath /tmp/lftr-ledger-p01.oDTGiF
+   输出：/private/tmp/lftr-ledger-p01.oDTGiF
+   退出码：0
+3. 命令：rmdir /private/tmp/lftr-ledger-p01.oDTGiF
+   退出码：0
+4. 命令：test ! -e /private/tmp/lftr-ledger-p01.oDTGiF
+   退出码：0
+结论：能够创建、解析并安全删除单一本轮目录。
+
+P-06 连通性
+工作目录：
+/Users/zhuzhen0131/Library/Mobile Documents/iCloud~md~obsidian/Documents/全栈之路/01一些进度/产出/LocalFirstTradingLedger
+
+命令：npm ping
+退出码：0
+输出：
+npm notice PING https://registry.npmjs.org/
+npm notice PONG 6298ms
+
+权威公告连通性：
+- https://github.com/vercel/next.js/security/advisories/GHSA-c4j6-fc7j-m34r
+  可读取；页面记载 affected >=13.4.13 <15.5.16、>=16.0.0 <16.2.5，
+  patched 15.5.16、16.2.5，CVE-2026-44578。
+- https://nvd.nist.gov/vuln/detail/CVE-2026-44578
+  可读取；NVD 交叉记录 15.5.16 与 16.2.5 修复。
+
+外层文档仓库开始状态
+工作目录：
+/Users/zhuzhen0131/Library/Mobile Documents/iCloud~md~obsidian/Documents/全栈之路
+
+命令：git status --short --branch
+退出码：0
+输出：
+## main...origin/main [ahead 7]
+
+命令：git rev-parse HEAD
+退出码：0
+输出：
+371eb71138990c038187cc697d735af1be189562
+
+命令：git log -8 --oneline --decorate
+退出码：0
+输出：
+371eb71 (HEAD -> main) 文档：整理九月选课指南表格格式
+84d4247 测试：收口第十周独立验收执行风险
+8c60a3b 测试：建立第十周收尾修复独立验收标准
+289368b 文档：记录第十周收尾修复开发结果
+630605b 文档：收口第十周执行方案审查风险
+5bf4782 文档：制定第十周收尾修复执行方案
+3fcc71c 文档：固定第十周收尾商讨结论
+0d2e92c (origin/main, origin/HEAD) 文档：同步第十周独立验收状态
+
+命令：git diff --cached --name-only
+退出码：0
+输出：（空）
+
+说明：
+- 开始 status 没有报告 90-2026年9月选课指南.md 的未提交状态。
+- 本轮未读取、diff、覆盖、暂存或提交该文件。
+- 99-私人网络环境说明.md 未读取、引用或提交。
+
+内层源码仓库开始状态
+工作目录：
+/Users/zhuzhen0131/Library/Mobile Documents/iCloud~md~obsidian/Documents/全栈之路/01一些进度/产出/LocalFirstTradingLedger
+
+命令：git status --short --branch
+退出码：0
+输出：
+## zhennn/week10-charts-binance...origin/zhennn/week10-charts-binance [ahead 6]
+
+命令：git rev-parse HEAD
+退出码：0
+输出：
+5a21529c10d4a27048e4d26d07c7a1641e4c7b87
+
+命令：git log -8 --oneline --decorate
+退出码：0
+输出：
+5a21529 (HEAD -> zhennn/week10-charts-binance) 文档：同步第十周收尾修复说明
+225434f 文案：补充明文备份安全提醒
+c88f06a 功能：增加密码按住查看
+ad8c5ff 功能：统一删除确认并支持未来事实单删
+bf77864 安全：升级前端框架并限制本机监听
+39a0ab6 修复：统一账本运行时钟
+65cbecf (origin/zhennn/week10-charts-binance) 文档：同步源码独立验收状态
+fd5391e 文档：更新第十周三图与行情说明
+
+命令：git diff --check
+退出码：0
+输出：（空）
+
+命令：git diff --cached --name-only
+退出码：0
+输出：（空）
+
+T0-01a
+开始：2026-07-26T18:10:40+0800
+结束：2026-07-26T18:13:41+0800
+命令：npm ci
+退出码：0
+输出：
+added 449 packages, and audited 450 packages in 3m
+165 packages are looking for funding
+4 high severity vulnerabilities
+说明：npm ci 的安装过程会自动给出 audit 摘要；本项未运行 T6 的两条独立 audit 命令。
+
+T0-01b
+开始：2026-07-26T18:13:46+0800
+结束：2026-07-26T18:13:46+0800
+命令：npm ls next react react-dom eslint eslint-config-next
+退出码：0
+关键输出：
+- next@15.5.22
+- react@19.2.8
+- react-dom@19.2.8
+- eslint@9.39.5
+- eslint-config-next@15.5.22
+- 主版本均 deduped；输出无 invalid、extraneous。
+
+T0-01c
+开始：2026-07-26T18:13:50+0800
+结束：2026-07-26T18:14:07+0800
+命令：npm test
+退出码：0
+输出：
+> vitest run
+RUN v4.1.9
+Not implemented: navigation to another Document
+Test Files 42 passed (42)
+Tests 383 passed (383)
+Start at 18:13:55
+Duration 9.38s
+说明：jsdom 导航提示与 03C 已知允许记录一致；0 failed、0 skipped、0 todo。
+
+T0-01d
+开始：2026-07-26T18:14:13+0800
+结束：2026-07-26T18:14:15+0800
+命令：npm run lint
+退出码：0
+输出：
+> eslint . --max-warnings=0
+
+T0-01e
+开始：2026-07-26T18:14:18+0800
+结束：2026-07-26T18:14:34+0800
+命令：npm run build
+退出码：0
+关键输出：
+Next.js 15.5.22
+Compiled successfully in 1826ms
+Linting and checking validity of types
+Generating static pages (5/5)
+Route / 266 kB, First Load JS 368 kB
+
+T0-01f
+开始：2026-07-26T18:14:39+0800
+结束：2026-07-26T18:14:40+0800
+命令：npm run typecheck
+退出码：0
+输出：
+> tsc --noEmit
+
+T0-01g
+开始：2026-07-26T18:14:44+0800
+结束：2026-07-26T18:14:45+0800
+命令：git diff --check
+退出码：0
+输出：（空）
+
+T0-01h
+开始：2026-07-26T18:14:45+0800
+结束：2026-07-26T18:14:45+0800
+命令：git status --short --branch
+退出码：0
+输出：
+## zhennn/week10-charts-binance...origin/zhennn/week10-charts-binance [ahead 6]
+
+T0 后复核
+命令：git rev-parse HEAD
+退出码：0
+输出：
+5a21529c10d4a27048e4d26d07c7a1641e4c7b87
+
+命令：git status --short --branch
+退出码：0
+输出：
+## zhennn/week10-charts-binance...origin/zhennn/week10-charts-binance [ahead 6]
+
+结论：
+- T0 所有固定命令通过。
+- npm ci 后 tracked files 无变化。
+- 源码 HEAD 和分支不变，工作树 clean。

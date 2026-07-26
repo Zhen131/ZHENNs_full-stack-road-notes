@@ -1,0 +1,10 @@
+c3fe41f4221a13f94db05a9262ebf385074b5b1b36b5801c3156dddfc5212ae6  01一些进度/日志/week10_260814/03D_W10-收尾修复独立验收结果.md
+e9584e8c80f96a681ad1715eab00f3e761b633d2b113e1afc4382bd82932b767  01一些进度/日志/week10_260814/03D_W10-独立验收证据/00-repository-and-t0.txt
+6d8181cf4139cb4632357c44b87b79c60f6343df0e5f8d819705657c7bf2d41a  01一些进度/日志/week10_260814/03D_W10-独立验收证据/01-clock-and-delete-controlled.txt
+de561f1fe039ed60c18e339eb870570cdbef9051b99df049cb27cd2ef0cad1b2  01一些进度/日志/week10_260814/03D_W10-独立验收证据/02-binance-failure-and-race.txt
+4fd9d4befc5a4b073d9bb540d6ea7a08fe10f3cf3ec6ea137880384f399b527d  01一些进度/日志/week10_260814/03D_W10-独立验收证据/03-production-browser-observations.txt
+cf72235098f05abf06f65383f690b5a4c9161ea3d7d015230316a51ecc1b821b  01一些进度/日志/week10_260814/03D_W10-独立验收证据/04-storage-and-backup-observations.txt
+3aef170efcaaee243d9576cc335032871ac5aeb430d27cad535dfa5b7ce9e1cc  01一些进度/日志/week10_260814/03D_W10-独立验收证据/05-security-audit-classification.txt
+f5072d14481dde5275d4dd3941e89d62d2bfa92abd8323ee96f004a6dc8ddd30  01一些进度/日志/week10_260814/03D_W10-独立验收证据/06-independent-test-sources/README.md
+7187b55ad3e33c64f4006cfabf51a30f8ba4baad4bb1ca731622976cd8d397fb  01一些进度/日志/week10_260814/03D_W10-独立验收证据/07-browser-downloads/README.md
+1164324cae53f9631bca278d668696a85cd4ce883f766a45aec02782b5434386  01一些进度/日志/week10_260814/03D_W10-独立验收证据/08-capability-probe-server.mjs

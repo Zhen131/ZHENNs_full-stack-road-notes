@@ -1,0 +1,128 @@
+Local-First Trading Ledger Week 10 独立验收
+证据 03：P-02 至 P-05 与 disposable production origin
+
+production 构建 origin
+- 上游：http://127.0.0.1:34190
+- 命令：npm run start -- --port 34190
+- 第一次执行：退出码 1
+- 第一次错误：listen EPERM: operation not permitted 127.0.0.1:34190
+- 判定：明确的沙箱监听基础设施错误。
+- 原样重跑一次：成功。
+- 上游 PID：46225
+- lsof：node 46225，TCP 127.0.0.1:34190 (LISTEN)
+
+能力探针 origin
+- URL：http://127.0.0.1:34191/__codex_probe
+- 脚本：08-capability-probe-server.mjs
+- 脚本 SHA-256：
+  1164324cae53f9631bca278d668696a85cd4ce883f766a45aec02782b5434386
+- 代理行为：/ 转发 T0 production 构建；/__codex_probe 提供专用探针页面。
+- 页面声明：不使用账本密码或账本数据。
+
+P-02 全新 origin
+浏览器：
+- Codex In-app Browser
+- Chromium 控制方式：浏览器插件提供的 Playwright/DOM 能力。
+
+首次 Inspect origin：
+{
+  "action": "inspect",
+  "fetchStatus": 200,
+  "fetchUrl": "http://127.0.0.1:34191/",
+  "cacheNames": [],
+  "serviceWorkerScopes": [],
+  "indexedDbNames": [],
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "reducedMotion": false
+}
+
+后续 Resource Timing 观察到：
+{
+  "name": "http://127.0.0.1:34191/",
+  "initiatorType": "fetch"
+}
+
+结论：
+- 能访问全新 disposable origin。
+- 能观测 fetch/Network 结果、Cache Storage、Service Worker 和 IndexedDB 列表。
+- 初始 cache、service worker、IndexedDB 均为空。
+
+P-03 raw IndexedDB
+创建、写入、读取结果：
+{
+  "action": "create-read",
+  "database": "codex-capability-probe",
+  "store": "probe",
+  "key": "probe-key",
+  "storedValue": {
+    "value": "fresh-disposable-origin"
+  },
+  "indexedDbNames": [
+    "codex-capability-probe"
+  ]
+}
+
+删除结果：
+{
+  "action": "delete",
+  "deleted": true,
+  "indexedDbNames": []
+}
+
+结论：P-03 PASS。
+
+P-04 浏览器实际下载
+探针按钮生成：
+- filename：codex-capability-probe.json
+- bytes：58
+- JSON：{"probe":"codex-capability","privateData":false}
+
+实际结果：
+- 页面 click 已执行并显示上述 Blob 元数据。
+- 浏览器控制层 waitForEvent("download") 在 10000ms 后超时。
+- pageAssets 能力只支持页面图片、字体、样式、视频等资产，不能读取下载文件。
+- 在浏览器运行时临时根目录按精确文件名查找，未找到可审查下载文件；若干系统 TemporaryItems 目录不可访问。
+- 尝试连接 Chrome 作为替代 Chromium 控制面，两次均返回 Browser is not available: extension。
+- Chrome 检查显示选定 Default 与 Profile 1 均未安装/启用 ChatGPT Chrome Extension。
+
+结论：
+- 页面宣称的 Blob 元数据不能替代“浏览器实际下载文件”的文件名、字节和 JSON 回读。
+- P-04 BLOCKED。
+
+P-05 视口与 reduced motion
+390×844 观察：
+{
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "reducedMotion": false
+}
+
+1280×720 观察：
+{
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "reducedMotion": false
+}
+
+浏览器 viewport capability 支持 set/reset 宽高，但不支持设置
+prefers-reduced-motion。当前 media query 始终为 false。
+
+结论：
+- 390×844 与 1280px 能力可用。
+- prefers-reduced-motion: reduce 能力缺失。
+- P-05 BLOCKED。
+
+清理
+- 删除 codex-capability-probe 后数据库列表为空。
+- 浏览器 viewport 已 reset。
+- 一次性浏览器标签已 finalize/关闭。
+- 停止 probe proxy 与 production server 的本轮 session。
+- lsof 127.0.0.1:34190：退出码 1、无 LISTEN。
+- lsof 127.0.0.1:34191：退出码 1、无 LISTEN。
