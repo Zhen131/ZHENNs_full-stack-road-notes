@@ -21,3 +21,10 @@ Local-First Trading Ledger Week 10 独立验收
 - 没有读取用户 origin、真实 IndexedDB 或真实下载。
 - 没有把 P-03 专用 probe database 冒充 production V2 证据。
 - 没有把页面 Blob 元数据冒充实际下载文件。
+
+续跑说明（2026-07-26）：
+- 上述“未执行”只描述首轮。续跑已用固定提交临时副本、全新 Chrome Profile 和虚拟账本执行 T1-05、T1-06、T3、T5。
+- 实际 V1 文件保存在 07-browser-downloads；主取证文件为 local-first-trading-ledger-backup-v1-20260726-112421Z.json，3656 bytes，SHA-256 为 44a0e88776f4c2ad96b6454df2f6687593db430e32cdd2f369a5ee44295e80c4。
+- production raw IndexedDB V2、mutation 密文变化、reload/lock/unlock 见 17-production-backup-storage-focused.json 与 19-production-reload-unlock-focused.json。
+- 受控 T3/T5-04 结果见 22-controlled-tests-second.txt；测试源码见 06-independent-test-sources/second-round-controlled。
+- T1-06 跨 origin reset 隔离见 23-production-reset-isolation.json。

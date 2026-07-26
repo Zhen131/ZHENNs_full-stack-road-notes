@@ -1,0 +1,58 @@
+{
+  "identity": {
+    "mainOrigin": "http://127.0.0.1:34201",
+    "disposableOrigin": "http://127.0.0.1:34211",
+    "passwordLogged": false
+  },
+  "mainBefore": {
+    "present": true,
+    "ciphertextHash": "97b4dc73a88223def6c052f9b9330349f8bfd9447345fce1898c2681f78838b8",
+    "ivHash": "823c9df08f2c23249a8ee73de3a99359d32928b649818eba5cc67220840f6878"
+  },
+  "disposable": {
+    "preNavigation": {
+      "usage": 0,
+      "quota": 296599420108,
+      "overrideActive": false,
+      "usageBreakdown": [
+        {
+          "storageType": "file_systems",
+          "usage": 0
+        },
+        {
+          "storageType": "indexeddb",
+          "usage": 0
+        },
+        {
+          "storageType": "cache_storage",
+          "usage": 0
+        },
+        {
+          "storageType": "service_workers",
+          "usage": 0
+        }
+      ]
+    },
+    "recordBeforeReset": {
+      "present": true,
+      "ciphertextHash": "78edfd8906486f1b8e6405a573d718d376632420d62bf9ad114a1abcf05f3b00",
+      "ivHash": "1ac338a29cfcf1d529e84e9d214409b6a9246af2214d6d13e2d904c427dd0222"
+    },
+    "lockedAfterReload": true,
+    "incompleteError": "请输入完整确认文本“清空本地加密账本”",
+    "recordAfterIncomplete": {
+      "present": true,
+      "ciphertextHash": "78edfd8906486f1b8e6405a573d718d376632420d62bf9ad114a1abcf05f3b00",
+      "ivHash": "1ac338a29cfcf1d529e84e9d214409b6a9246af2214d6d13e2d904c427dd0222"
+    },
+    "recordAfterComplete": {
+      "present": false
+    }
+  },
+  "mainAfter": {
+    "present": true,
+    "ciphertextHash": "97b4dc73a88223def6c052f9b9330349f8bfd9447345fce1898c2681f78838b8",
+    "ivHash": "823c9df08f2c23249a8ee73de3a99359d32928b649818eba5cc67220840f6878"
+  },
+  "completed": true
+}

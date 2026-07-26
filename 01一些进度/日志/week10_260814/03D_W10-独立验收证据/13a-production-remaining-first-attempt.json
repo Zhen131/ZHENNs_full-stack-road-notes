@@ -1,0 +1,112 @@
+{
+  "identity": {
+    "origin": "http://127.0.0.1:34201",
+    "runToday": "2026-07-26",
+    "dates": {
+      "runToday": "2026-07-26",
+      "d2": "2026-07-24",
+      "d10": "2026-07-16",
+      "d45": "2026-06-11",
+      "d370": "2025-07-21"
+    },
+    "dateCalculation": "RUN_TODAY 按本地日历分别减 2、10、45、370 天",
+    "passwordLogged": false,
+    "verdictScope": "聚焦执行 T1-03、T1-05 与 T5；不得用本场景覆盖已按重跑规则记为 BLOCKED 的 T1-02 和 T1-04 pointerleave"
+  },
+  "preflight": {
+    "cacheNames": [],
+    "serviceWorkers": 0,
+    "indexedDatabases": [
+      "local-first-trading-ledger"
+    ],
+    "preNavigationUsage": {
+      "usage": 0,
+      "quota": 296599420108,
+      "overrideActive": false,
+      "usageBreakdown": [
+        {
+          "storageType": "file_systems",
+          "usage": 0
+        },
+        {
+          "storageType": "indexeddb",
+          "usage": 0
+        },
+        {
+          "storageType": "cache_storage",
+          "usage": 0
+        },
+        {
+          "storageType": "service_workers",
+          "usage": 0
+        }
+      ]
+    },
+    "ledgerRecordPresent": false
+  },
+  "passwordSetup": {
+    "setup": {
+      "beforeType": "password",
+      "pointerDownType": "text",
+      "pointerUpType": "password",
+      "pointerLeaveType": "text",
+      "pointerLeaveStatus": "BLOCKED: prior two-attempt harness used non-bubbling pointerleave; this continuation does not classify the product behavior",
+      "pointerCancelType": "password",
+      "enterDownType": "text",
+      "enterUpType": "password",
+      "spaceDownType": "text",
+      "spaceUpType": "password",
+      "clickType": "password",
+      "windowBlurType": "password",
+      "buttonBlurType": "password",
+      "nodeIdentityPreserved": true,
+      "valueLengthPreserved": true,
+      "autocompletePreserved": true,
+      "passwordValueRecorded": false
+    },
+    "confirmation": {
+      "beforeType": "password",
+      "pointerDownType": "text",
+      "pointerUpType": "password",
+      "pointerLeaveType": "text",
+      "pointerLeaveStatus": "BLOCKED: prior two-attempt harness used non-bubbling pointerleave; this continuation does not classify the product behavior",
+      "pointerCancelType": "password",
+      "enterDownType": "text",
+      "enterUpType": "password",
+      "spaceDownType": "text",
+      "spaceUpType": "password",
+      "clickType": "password",
+      "windowBlurType": "password",
+      "buttonBlurType": "password",
+      "nodeIdentityPreserved": true,
+      "valueLengthPreserved": true,
+      "autocompletePreserved": true,
+      "passwordValueRecorded": false
+    },
+    "submitHidImmediately": true
+  },
+  "fixture": {},
+  "ranges": {},
+  "chartRendering": {},
+  "heatmap": {},
+  "binance": {},
+  "deletion": {},
+  "backup": {},
+  "responsive": {},
+  "encryptedStorage": {},
+  "unlock": {},
+  "console": {
+    "warnings": [],
+    "errors": [],
+    "pageErrors": []
+  },
+  "network": [],
+  "screenshots": [],
+  "cleanup": {},
+  "completed": false,
+  "failure": {
+    "name": "TimeoutError",
+    "message": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: '价格输入', exact: true }).locator('xpath=ancestor::section[1]').locator('input').nth(1)\u001b[22m\n\u001b[2m    - locator resolved to <input readonly value=\"USD\" class=\"rounded-md border border-slate-200 bg-slate-50 px-3 py-2 font-normal text-slate-600\"/>\u001b[22m\n\u001b[2m    - fill(\"2026-07-26\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not editable\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not editable\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not editable\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+    "stack": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: '价格输入', exact: true }).locator('xpath=ancestor::section[1]').locator('input').nth(1)\u001b[22m\n\u001b[2m    - locator resolved to <input readonly value=\"USD\" class=\"rounded-md border border-slate-200 bg-slate-50 px-3 py-2 font-normal text-slate-600\"/>\u001b[22m\n\u001b[2m    - fill(\"2026-07-26\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not editable\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not editable\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not editable\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at addManualPrice (/private/tmp/lftr-week10-resume.uyOWxH/playwright/production-remaining-focused.mjs:138:40)\n    at async file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-remaining-focused.mjs:461:3"
+  }
+}

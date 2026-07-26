@@ -126,3 +126,10 @@ prefers-reduced-motion。当前 media query 始终为 false。
 - 停止 probe proxy 与 production server 的本轮 session。
 - lsof 127.0.0.1:34190：退出码 1、无 LISTEN。
 - lsof 127.0.0.1:34191：退出码 1、无 LISTEN。
+
+续跑说明（2026-07-26）：
+- 上述内容是首轮内置浏览器能力结果，保留为历史。
+- 续跑改用本机 Google Chrome 150.0.7871.186 的全新临时 Profile，并通过临时 playwright-core 1.62.0 控制。
+- P-04 已取得并回读 58-byte 实际下载，SHA-256 为 a524845b1f39f39ddd54a592d4d10e98f18f772f0283c5fd415e42a25731a73e，删除后确认不存在。
+- P-05 已在 390×844、1280×720 与 prefers-reduced-motion: reduce 下完成；media query 为 true，computed transitionProperty 与 transform 均为 none。
+- 续跑 production 原始 JSON、命令与截图见 11a 至 24、10-screenshots；最终清理见 31-cleanup-and-integrity.txt。

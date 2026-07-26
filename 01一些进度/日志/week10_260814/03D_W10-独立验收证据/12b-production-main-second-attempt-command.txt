@@ -1,0 +1,10 @@
+^Dnode:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: 设置密码: pointerleave did not hide
+    at ensure (file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-main-chain.mjs:68:11)
+    at checkPasswordEye (file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-main-chain.mjs:242:3)
+    at async file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-main-chain.mjs:383:32
+
+Node.js v25.9.0

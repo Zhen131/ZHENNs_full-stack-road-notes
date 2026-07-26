@@ -31,3 +31,9 @@ T6 状态：
 严格结论：
 - 上述信息不足以把 T6-01、T6-02 或 T6-03 记为 PASS。
 - T6 全部因前置 Gate 停止而为 BLOCKED。
+
+续跑说明（2026-07-26）：
+- 上述内容保留首轮固定顺序停止历史。
+- 续跑到达 T6 后，用户回复“允许”；执行代理再次用明确的“向 npm registry 发送依赖元数据”说明申请运行两条正式 audit。
+- 外部执行审批层仍以未取得足够具体的可信授权为由拒绝启动，并明确禁止绕过或间接 fallback。因此没有生成 audit stdout/stderr，未修改 lockfile，T6-01 保持 BLOCKED。
+- 本地实际版本、配置与依赖链见 29-t6-local-security.txt；2026-07-26 权威公告与 T6-02/T6-03 严格边界见 30-security-authoritative-review.md。

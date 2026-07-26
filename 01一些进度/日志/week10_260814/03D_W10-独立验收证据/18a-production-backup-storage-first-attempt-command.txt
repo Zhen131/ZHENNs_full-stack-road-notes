@@ -1,0 +1,9 @@
+^Dnode:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: first backup is not V1
+    at ensure (file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-backup-storage-focused.mjs:39:25)
+    at file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-backup-storage-focused.mjs:345:3
+
+Node.js v25.9.0

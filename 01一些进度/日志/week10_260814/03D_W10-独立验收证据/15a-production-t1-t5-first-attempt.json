@@ -1,0 +1,192 @@
+{
+  "identity": {
+    "origin": "http://127.0.0.1:34201",
+    "runToday": "2026-07-26",
+    "dates": {
+      "runToday": "2026-07-26",
+      "d2": "2026-07-24",
+      "d10": "2026-07-16",
+      "d45": "2026-06-11",
+      "d370": "2025-07-21"
+    },
+    "dateCalculation": "RUN_TODAY 按本地日历分别减 2、10、45、370 天",
+    "passwordLogged": false,
+    "verdictScope": "只判定 T1-03、T1-05 与 T5；夹具和图表仅用于建立场景，不得覆盖已按重跑规则记为 BLOCKED 的 T1-02 和 T1-04 pointerleave"
+  },
+  "preflight": {
+    "cacheNames": [],
+    "serviceWorkers": 0,
+    "indexedDatabases": [
+      "local-first-trading-ledger"
+    ],
+    "preNavigationUsage": {
+      "usage": 0,
+      "quota": 296599420108,
+      "overrideActive": false,
+      "usageBreakdown": [
+        {
+          "storageType": "file_systems",
+          "usage": 0
+        },
+        {
+          "storageType": "indexeddb",
+          "usage": 0
+        },
+        {
+          "storageType": "cache_storage",
+          "usage": 0
+        },
+        {
+          "storageType": "service_workers",
+          "usage": 0
+        }
+      ]
+    },
+    "ledgerRecordPresent": false
+  },
+  "passwordSetup": {
+    "setup": {
+      "beforeType": "password",
+      "pointerDownType": "text",
+      "pointerUpType": "password",
+      "pointerLeaveType": "text",
+      "pointerLeaveStatus": "BLOCKED: prior two-attempt harness used non-bubbling pointerleave; this continuation does not classify the product behavior",
+      "pointerCancelType": "password",
+      "enterDownType": "text",
+      "enterUpType": "password",
+      "spaceDownType": "text",
+      "spaceUpType": "password",
+      "clickType": "password",
+      "windowBlurType": "password",
+      "buttonBlurType": "password",
+      "nodeIdentityPreserved": true,
+      "valueLengthPreserved": true,
+      "autocompletePreserved": true,
+      "passwordValueRecorded": false
+    },
+    "confirmation": {
+      "beforeType": "password",
+      "pointerDownType": "text",
+      "pointerUpType": "password",
+      "pointerLeaveType": "text",
+      "pointerLeaveStatus": "BLOCKED: prior two-attempt harness used non-bubbling pointerleave; this continuation does not classify the product behavior",
+      "pointerCancelType": "password",
+      "enterDownType": "text",
+      "enterUpType": "password",
+      "spaceDownType": "text",
+      "spaceUpType": "password",
+      "clickType": "password",
+      "windowBlurType": "password",
+      "buttonBlurType": "password",
+      "nodeIdentityPreserved": true,
+      "valueLengthPreserved": true,
+      "autocompletePreserved": true,
+      "passwordValueRecorded": false
+    },
+    "submitHidImmediately": true
+  },
+  "fixture": {
+    "positionRows": [
+      [
+        "BTC",
+        "1",
+        "54000 USD",
+        "54000 USD",
+        "0 USD",
+        "70000 USD",
+        "70000 USD",
+        "16000 USD"
+      ],
+      [
+        "ETH",
+        "2",
+        "1900 USD",
+        "3800 USD",
+        "0 USD",
+        "未输入价格",
+        "--",
+        "--"
+      ],
+      [
+        "ADA",
+        "900",
+        "0.5 USD",
+        "450 USD",
+        "5 USD",
+        "未输入价格",
+        "--",
+        "--"
+      ]
+    ],
+    "tradeRowCount": 6,
+    "expected": {
+      "BTC": {
+        "quantity": "1",
+        "costBasis": "54000"
+      },
+      "ETH": {
+        "quantity": "2",
+        "costBasis": "3800"
+      },
+      "ADA": {
+        "quantity": "900",
+        "costBasis": "450",
+        "realizedPnl": "5"
+      }
+    }
+  },
+  "ranges": {
+    "1日": {
+      "summary": "2 个显示点；0 个点具备完整市场价格，2 个市值点因缺价断开。",
+      "pressed": "true",
+      "boundaryNotice": "无可靠日内变化，边界点仅用于显示。"
+    },
+    "7日": {
+      "summary": "7 个显示点；0 个点具备完整市场价格，7 个市值点因缺价断开。",
+      "pressed": "true"
+    },
+    "30日": {
+      "summary": "30 个显示点；0 个点具备完整市场价格，30 个市值点因缺价断开。",
+      "pressed": "true"
+    },
+    "365日": {
+      "summary": "365 个显示点；0 个点具备完整市场价格，365 个市值点因缺价断开。",
+      "pressed": "true"
+    },
+    "全部": {
+      "summary": "371 个显示点；0 个点具备完整市场价格，371 个市值点因缺价断开。",
+      "pressed": "true"
+    }
+  },
+  "chartRendering": {
+    "pie": 1,
+    "history": 1,
+    "heatmap": 1,
+    "canvasCount": 5,
+    "pieSummary": "已估值 1 项，总市值 70000 USD 等值。",
+    "missingPriceSummary": "未估值资产：ADA、ETH。"
+  },
+  "heatmap": {},
+  "binance": {},
+  "deletion": {},
+  "backup": {},
+  "responsive": {},
+  "encryptedStorage": {},
+  "unlock": {},
+  "console": {
+    "warnings": [],
+    "errors": [],
+    "pageErrors": []
+  },
+  "network": [],
+  "screenshots": [
+    "03-production-main-wide.png"
+  ],
+  "cleanup": {},
+  "completed": false,
+  "failure": {
+    "name": "Error",
+    "message": "locator.boundingBox: Error: strict mode violation: getByRole('img', { name: '最近 365 天交易活跃热力图' }).locator('canvas') resolved to 3 elements:\n    1) <canvas width=\"1124\" height=\"224\" data-zr-dom-id=\"zr_0.0\"></canvas> aka locator('canvas').nth(2)\n    2) <canvas width=\"1124\" height=\"224\" data-zr-dom-id=\"zr_0.1\"></canvas> aka locator('canvas').nth(3)\n    3) <canvas width=\"1124\" height=\"224\" data-zr-dom-id=\"zr_0.2\"></canvas> aka locator('canvas').nth(4)\n\nCall log:\n\u001b[2m  - waiting for getByRole('img', { name: '最近 365 天交易活跃热力图' }).locator('canvas')\u001b[22m\n",
+    "stack": "locator.boundingBox: Error: strict mode violation: getByRole('img', { name: '最近 365 天交易活跃热力图' }).locator('canvas') resolved to 3 elements:\n    1) <canvas width=\"1124\" height=\"224\" data-zr-dom-id=\"zr_0.0\"></canvas> aka locator('canvas').nth(2)\n    2) <canvas width=\"1124\" height=\"224\" data-zr-dom-id=\"zr_0.1\"></canvas> aka locator('canvas').nth(3)\n    3) <canvas width=\"1124\" height=\"224\" data-zr-dom-id=\"zr_0.2\"></canvas> aka locator('canvas').nth(4)\n\nCall log:\n\u001b[2m  - waiting for getByRole('img', { name: '最近 365 天交易活跃热力图' }).locator('canvas')\u001b[22m\n\n    at /private/tmp/lftr-week10-resume.uyOWxH/playwright/production-t1-t5-focused.mjs:528:42"
+  }
+}

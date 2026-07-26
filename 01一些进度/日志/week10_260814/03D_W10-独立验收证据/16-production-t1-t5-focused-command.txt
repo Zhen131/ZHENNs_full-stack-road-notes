@@ -1,0 +1,9 @@
+^Dnode:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: safe delete did not occur
+    at ensure (file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-t1-t5-focused.mjs:70:11)
+    at file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-t1-t5-focused.mjs:661:3
+
+Node.js v25.9.0

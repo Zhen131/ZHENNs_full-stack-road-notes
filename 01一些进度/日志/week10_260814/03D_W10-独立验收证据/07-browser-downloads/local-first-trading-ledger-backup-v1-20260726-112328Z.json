@@ -1,0 +1,98 @@
+{
+  "backupFormatVersion": 1,
+  "appVersion": "0.1.0",
+  "exportedAt": "2026-07-26T11:23:28.394Z",
+  "ledgerSchemaVersion": 1,
+  "ledgerData": {
+    "schemaVersion": 1,
+    "assets": [
+      {
+        "id": "asset-btc",
+        "symbol": "BTC",
+        "name": "Bitcoin",
+        "quoteCurrency": "USD",
+        "binanceMapping": {
+          "provider": "binance",
+          "symbol": "BTCUSDT",
+          "baseAsset": "BTC",
+          "quoteAsset": "USDT"
+        },
+        "createdAt": "2026-07-13T00:00:00Z",
+        "updatedAt": "2026-07-13T00:00:00Z"
+      },
+      {
+        "id": "asset-eth",
+        "symbol": "ETH",
+        "name": "Ethereum",
+        "quoteCurrency": "USD",
+        "binanceMapping": {
+          "provider": "binance",
+          "symbol": "ETHUSDT",
+          "baseAsset": "ETH",
+          "quoteAsset": "USDT"
+        },
+        "createdAt": "2026-07-13T00:00:00Z",
+        "updatedAt": "2026-07-13T00:00:00Z"
+      },
+      {
+        "id": "asset-ada",
+        "symbol": "ADA",
+        "name": "Cardano",
+        "quoteCurrency": "USD",
+        "binanceMapping": {
+          "provider": "binance",
+          "symbol": "ADAUSDT",
+          "baseAsset": "ADA",
+          "quoteAsset": "USDT"
+        },
+        "createdAt": "2026-07-13T00:00:00Z",
+        "updatedAt": "2026-07-13T00:00:00Z"
+      }
+    ],
+    "trades": [
+      {
+        "occurredAt": "2026-07-24",
+        "timePrecision": "day",
+        "type": "buy",
+        "assetSymbol": "BTC",
+        "quantity": "1",
+        "price": "50000",
+        "totalValue": "50000",
+        "currency": "USD",
+        "fee": "0",
+        "feeCurrency": "USD",
+        "id": "b54fb2fc-9c92-48fe-86a0-65875abf0a1e",
+        "createdAt": "2026-07-26T11:23:22.643Z",
+        "updatedAt": "2026-07-26T11:23:22.643Z"
+      },
+      {
+        "occurredAt": "2026-07-16",
+        "timePrecision": "day",
+        "type": "buy",
+        "assetSymbol": "ETH",
+        "quantity": "2",
+        "price": "1800",
+        "totalValue": "3600",
+        "currency": "USD",
+        "fee": "0",
+        "feeCurrency": "USD",
+        "id": "14f195f3-1cfe-448a-aa7e-cb7fb992ebf1",
+        "createdAt": "2026-07-26T11:23:22.726Z",
+        "updatedAt": "2026-07-26T11:23:22.726Z"
+      }
+    ],
+    "priceSnapshots": [
+      {
+        "assetSymbol": "BTC",
+        "price": "70000",
+        "currency": "USD",
+        "recordedAt": "2026-07-26",
+        "source": "manual",
+        "id": "bfd495bd-7e07-4c91-8d1c-84cf799d5730",
+        "createdAt": "2026-07-26T11:23:22.792Z",
+        "updatedAt": "2026-07-26T11:23:22.792Z"
+      }
+    ],
+    "feeRules": []
+  }
+}

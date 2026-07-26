@@ -1,0 +1,47 @@
+^Dnode:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.fill: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('heading', { name: '价格输入', exact: true }).locator('xpath=ancestor::section[1]').locator('input').nth(1)[22m
+[2m    - locator resolved to <input readonly value="USD" class="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 font-normal text-slate-600"/>[22m
+[2m    - fill("2026-07-26")[22m
+[2m  - attempting fill action[22m
+[2m    2 × waiting for element to be visible, enabled and editable[22m
+[2m      - element is not editable[22m
+[2m    - retrying fill action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and editable[22m
+[2m      - element is not editable[22m
+[2m    - retrying fill action[22m
+[2m      - waiting 100ms[22m
+[2m    59 × waiting for element to be visible, enabled and editable[22m
+[2m       - element is not editable[22m
+[2m     - retrying fill action[22m
+[2m       - waiting 500ms[22m
+
+    at addManualPrice (/private/tmp/lftr-week10-resume.uyOWxH/playwright/production-remaining-focused.mjs:138:40)
+    at async file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-remaining-focused.mjs:461:3 {
+  log: [
+    "  - waiting for getByRole('heading', { name: '价格输入', exact: true }).locator('xpath=ancestor::section[1]').locator('input').nth(1)",
+    '    - locator resolved to <input readonly value="USD" class="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 font-normal text-slate-600"/>',
+    '    - fill("2026-07-26")',
+    '  - attempting fill action',
+    '    2 × waiting for element to be visible, enabled and editable',
+    '      - element is not editable',
+    '    - retrying fill action',
+    '    - waiting 20ms',
+    '    2 × waiting for element to be visible, enabled and editable',
+    '      - element is not editable',
+    '    - retrying fill action',
+    '      - waiting 100ms',
+    '    59 × waiting for element to be visible, enabled and editable',
+    '       - element is not editable',
+    '     - retrying fill action',
+    '       - waiting 500ms'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v25.9.0

@@ -1,0 +1,19 @@
+^Dnode:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.boundingBox: Error: strict mode violation: getByRole('img', { name: '最近 365 天交易活跃热力图' }).locator('canvas') resolved to 3 elements:
+    1) <canvas width="1124" height="224" data-zr-dom-id="zr_0.0"></canvas> aka locator('canvas').nth(2)
+    2) <canvas width="1124" height="224" data-zr-dom-id="zr_0.1"></canvas> aka locator('canvas').nth(3)
+    3) <canvas width="1124" height="224" data-zr-dom-id="zr_0.2"></canvas> aka locator('canvas').nth(4)
+
+Call log:
+[2m  - waiting for getByRole('img', { name: '最近 365 天交易活跃热力图' }).locator('canvas')[22m
+
+    at /private/tmp/lftr-week10-resume.uyOWxH/playwright/production-t1-t5-focused.mjs:528:42 {
+  log: [
+    "  - waiting for getByRole('img', { name: '最近 365 天交易活跃热力图' }).locator('canvas')"
+  ]
+}
+
+Node.js v25.9.0

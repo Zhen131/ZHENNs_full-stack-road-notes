@@ -1,0 +1,10 @@
+^D[?25l
+ RUN  v4.1.9 /private/tmp/lftr-week10-resume.uyOWxH/source
+
+No test files found, exiting with code 1
+
+filter: src/independent-tests/*.independent.test.tsx
+include: src/**/*.test.{ts,tsx}
+exclude:  **/node_modules/**, **/.git/**
+
+[?25h

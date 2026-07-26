@@ -1,0 +1,130 @@
+{
+  "backupFormatVersion": 1,
+  "appVersion": "0.1.0",
+  "exportedAt": "2026-07-26T11:24:21.008Z",
+  "ledgerSchemaVersion": 1,
+  "ledgerData": {
+    "schemaVersion": 1,
+    "assets": [
+      {
+        "id": "asset-btc",
+        "symbol": "BTC",
+        "name": "Bitcoin",
+        "quoteCurrency": "USD",
+        "binanceMapping": {
+          "provider": "binance",
+          "symbol": "BTCUSDT",
+          "baseAsset": "BTC",
+          "quoteAsset": "USDT"
+        },
+        "createdAt": "2026-07-13T00:00:00Z",
+        "updatedAt": "2026-07-13T00:00:00Z"
+      },
+      {
+        "id": "asset-eth",
+        "symbol": "ETH",
+        "name": "Ethereum",
+        "quoteCurrency": "USD",
+        "binanceMapping": {
+          "provider": "binance",
+          "symbol": "ETHUSDT",
+          "baseAsset": "ETH",
+          "quoteAsset": "USDT"
+        },
+        "createdAt": "2026-07-13T00:00:00Z",
+        "updatedAt": "2026-07-13T00:00:00Z"
+      },
+      {
+        "id": "asset-ada",
+        "symbol": "ADA",
+        "name": "Cardano",
+        "quoteCurrency": "USD",
+        "binanceMapping": {
+          "provider": "binance",
+          "symbol": "ADAUSDT",
+          "baseAsset": "ADA",
+          "quoteAsset": "USDT"
+        },
+        "createdAt": "2026-07-13T00:00:00Z",
+        "updatedAt": "2026-07-13T00:00:00Z"
+      }
+    ],
+    "trades": [
+      {
+        "occurredAt": "2026-07-24",
+        "timePrecision": "day",
+        "type": "buy",
+        "assetSymbol": "BTC",
+        "quantity": "1",
+        "price": "50000",
+        "totalValue": "50000",
+        "currency": "USD",
+        "fee": "0",
+        "feeCurrency": "USD",
+        "id": "b46b6ae7-50ac-4bb4-aeb7-814cd5963e95",
+        "createdAt": "2026-07-26T11:24:13.574Z",
+        "updatedAt": "2026-07-26T11:24:13.574Z"
+      },
+      {
+        "occurredAt": "2026-07-16",
+        "timePrecision": "day",
+        "type": "buy",
+        "assetSymbol": "ETH",
+        "quantity": "2",
+        "price": "1800",
+        "totalValue": "3600",
+        "currency": "USD",
+        "fee": "0",
+        "feeCurrency": "USD",
+        "id": "1ea887f3-2ac0-4554-acbf-b75acf72a141",
+        "createdAt": "2026-07-26T11:24:13.658Z",
+        "updatedAt": "2026-07-26T11:24:13.658Z"
+      }
+    ],
+    "priceSnapshots": [
+      {
+        "assetSymbol": "BTC",
+        "price": "70000",
+        "currency": "USD",
+        "recordedAt": "2026-07-26",
+        "source": "manual",
+        "id": "d2cd8980-f10b-40fa-b2ae-77b8775d7e31",
+        "createdAt": "2026-07-26T11:24:13.724Z",
+        "updatedAt": "2026-07-26T11:24:13.724Z"
+      },
+      {
+        "assetSymbol": "BTC",
+        "price": "64517.60000000",
+        "currency": "USD",
+        "recordedAt": "2026-07-26",
+        "source": "api",
+        "binanceProvenance": {
+          "provider": "binance",
+          "symbol": "BTCUSDT",
+          "sourceQuoteCurrency": "USDT",
+          "fetchedAt": "2026-07-26T11:24:20.930Z"
+        },
+        "id": "37e72778-5e06-4cad-83b3-5da4fbb0c856",
+        "createdAt": "2026-07-26T11:24:20.930Z",
+        "updatedAt": "2026-07-26T11:24:20.930Z"
+      },
+      {
+        "assetSymbol": "ETH",
+        "price": "1887.38000000",
+        "currency": "USD",
+        "recordedAt": "2026-07-26",
+        "source": "api",
+        "binanceProvenance": {
+          "provider": "binance",
+          "symbol": "ETHUSDT",
+          "sourceQuoteCurrency": "USDT",
+          "fetchedAt": "2026-07-26T11:24:20.930Z"
+        },
+        "id": "8e3a111b-c441-4b9b-b21c-793e9676a10d",
+        "createdAt": "2026-07-26T11:24:20.930Z",
+        "updatedAt": "2026-07-26T11:24:20.930Z"
+      }
+    ],
+    "feeRules": []
+  }
+}

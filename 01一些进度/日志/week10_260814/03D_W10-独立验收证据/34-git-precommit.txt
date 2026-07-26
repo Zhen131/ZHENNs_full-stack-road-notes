@@ -1,0 +1,62 @@
+UTC=2026-07-26T11:46:53Z
+SOURCE_BRANCH_AND_STATUS
+## zhennn/week10-charts-binance...origin/zhennn/week10-charts-binance [ahead 6]
+SOURCE_HEAD
+5a21529c10d4a27048e4d26d07c7a1641e4c7b87
+OUTER_STAGED_BEFORE
+OUTER_STATUS_BEFORE_STAGE
+## main...origin/main [ahead 8]
+ M 01一些进度/日志/week10_260814/03D_W10-收尾修复独立验收结果.md
+ M 01一些进度/日志/week10_260814/03D_W10-独立验收证据/03-production-browser-observations.txt
+ M 01一些进度/日志/week10_260814/03D_W10-独立验收证据/04-storage-and-backup-observations.txt
+ M 01一些进度/日志/week10_260814/03D_W10-独立验收证据/05-security-audit-classification.txt
+ M 01一些进度/日志/week10_260814/03D_W10-独立验收证据/06-independent-test-sources/README.md
+ M 01一些进度/日志/week10_260814/03D_W10-独立验收证据/07-browser-downloads/README.md
+ M 01一些进度/日志/week10_260814/03D_W10-独立验收证据/09-artifact-manifest.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/06-independent-test-sources/chrome-capability-probe.mjs
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/06-independent-test-sources/npm-audit-runner.mjs
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/06-independent-test-sources/production-backup-storage-focused.mjs
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/06-independent-test-sources/production-main-chain.mjs
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/06-independent-test-sources/production-main-continuation.mjs
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/06-independent-test-sources/production-reload-unlock-focused.mjs
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/06-independent-test-sources/production-remaining-focused.mjs
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/06-independent-test-sources/production-reset-isolation.mjs
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/06-independent-test-sources/production-t1-t5-focused.mjs
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/06-independent-test-sources/second-round-controlled/
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/07-browser-downloads/local-first-trading-ledger-backup-v1-20260726-112328Z.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/07-browser-downloads/local-first-trading-ledger-backup-v1-20260726-112421Z.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/07-browser-downloads/reload-local-first-trading-ledger-backup-v1-20260726-112541Z.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/10-screenshots/
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/11a-production-main-first-attempt.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/11b-production-main-second-attempt.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/11c-production-continuation-first-attempt.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/11d-production-continuation-second-attempt.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/12a-production-main-first-attempt-command.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/12b-production-main-second-attempt-command.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/12c-production-continuation-first-attempt-command.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/12d-production-continuation-second-attempt-command.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/13a-production-remaining-first-attempt.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/13b-production-remaining-second-attempt.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/14a-production-remaining-first-attempt-command.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/14b-production-remaining-second-attempt-command.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/15-production-t1-t5-focused.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/15a-production-t1-t5-first-attempt.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/16-production-t1-t5-focused-command.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/16a-production-t1-t5-first-attempt-command.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/17-production-backup-storage-focused.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/17a-production-backup-storage-first-attempt.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/18-production-backup-storage-command.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/18a-production-backup-storage-first-attempt-command.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/19-production-reload-unlock-focused.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/20-production-reload-unlock-command.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/21-controlled-tests-first.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/22-controlled-tests-second.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/23-production-reset-isolation.json
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/24-production-reset-isolation-command.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/28-obs-tests.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/29-t6-local-security.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/30-security-authoritative-review.md
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/31-cleanup-and-integrity.txt
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/32-fixed-source-before.sha256
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/33-fixed-source-after.sha256
+?? 01一些进度/日志/week10_260814/03D_W10-独立验收证据/34-git-precommit.txt

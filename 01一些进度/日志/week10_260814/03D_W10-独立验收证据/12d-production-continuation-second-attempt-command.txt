@@ -1,0 +1,17 @@
+^Dnode:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.selectOption: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('heading', { name: '新增交易', exact: true }).locator('xpath=ancestor::section[1]').getByLabel('类型', { exact: true })[22m
+
+    at addTrade (/private/tmp/lftr-week10-resume.uyOWxH/playwright/production-main-continuation.mjs:113:50)
+    at /private/tmp/lftr-week10-resume.uyOWxH/playwright/production-main-continuation.mjs:413:9 {
+  log: [
+    "  - waiting for getByRole('heading', { name: '新增交易', exact: true }).locator('xpath=ancestor::section[1]').getByLabel('类型', { exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v25.9.0

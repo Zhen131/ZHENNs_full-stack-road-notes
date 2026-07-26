@@ -1,0 +1,1326 @@
+^D[?25l
+ RUN  v4.1.9 /private/tmp/lftr-week10-resume.uyOWxH/source
+
+ ❯ src/independent-tests/week10-clock.independent.test.tsx (4 tests | 1 failed) 164ms
+     × captures a trade and manual price with one clock.now call each 108ms
+ ❯ src/independent-tests/week10-password-backup.independent.test.tsx (6 tests | 3 failed) 1218ms
+     × T5-04a dirty export captures the current in-memory ledger and labels it as rescue data 90ms
+     × T5-04b read-only export remains a plaintext rescue and never claims importability 16ms
+     × T5-04e isolates invalid JSON, wrong schema, future fact, and user cancel without import 1027ms
+ ❯ src/independent-tests/week10-binance-race.independent.test.tsx (9 tests | 1 failed) 1446ms
+     × T2-06 writes one BTC/ETH batch mutation and retains the missing ADA old price 1006ms
+ ❯ src/independent-tests/week10-delete.independent.test.tsx (8 tests | 2 failed) 1735ms
+     × T3-06 strict import rejects a future ledger atomically 1035ms
+     × T3-07 rescue export retains future facts while derived views exclude them 39ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/independent-tests/week10-binance-race.independent.test.tsx > T2 controlled Binance failures through formal client, hook and component > T2-06 writes one BTC/ETH batch mutation and retains the missing ADA old price
+TestingLibraryElementError: Unable to find an element with the text: 已更新 2 项，失败 1 项。. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div>[39m
+      [36m<output[39m
+        [33maria-label[39m=[32m"harness-trades"[39m
+      [36m>[39m
+        [0m3[0m
+      [36m</output>[39m
+      [36m<output[39m
+        [33maria-label[39m=[32m"harness-prices"[39m
+      [36m>[39m
+        [0m4[0m
+      [36m</output>[39m
+      [36m<button[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m独立新增 BTC[0m
+      [36m</button>[39m
+      [36m<button[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m独立新增 ETH 价格[0m
+      [36m</button>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"grid gap-5"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex flex-wrap items-center gap-3"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"text-sm font-medium"[39m
+          [36m>[39m
+            [0m估值价格模式[0m
+          [36m</span>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mclass[39m=[32m"rounded-md bg-slate-950 px-3 py-2 text-sm font-medium text-white"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m自动行情[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m手动价格[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m刷新 Binance 价格[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33maria-live[39m=[32m"polite"[39m
+          [33mclass[39m=[32m"text-sm text-slate-700"[39m
+        [36m>[39m
+          [0m已更新 1 项，失败 1 项。[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"grid gap-2 text-sm text-slate-700"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mUSD 与 Binance USDT 报价按 [0m
+            [36m<strong>[39m
+              [0m1 USDT ≈ 1 USD[0m
+            [36m</strong>[39m
+            [0m 汇总为 USD 等值；这不是严格美元现货换算。[0m
+          [36m</p>[39m
+          [36m<p>[39m
+            [0m刷新只会把所配置的公开交易对 symbol 发送给 Binance；不会发送交易、数量、成本、密码或完整账本。[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"grid gap-3"[39m
+        [36m>[39m
+          [36m<h3[39m
+            [33mclass[39m=[32m"font-semibold"[39m
+          [36m>[39m
+            [0m当前非零持仓实际价格[0m
+          [36m</h3>[39m
+          [36m<ul[39m
+            [33mclass[39m=[32m"grid gap-1 text-sm text-slate-700"[39m
+          [36m>[39m
+            [36m<li>[39m
+              [36m<strong>[39m
+                [0mBTC[0m
+              [36m</strong>[39m
+              [0m：[0m
+              [0m62000 USD · Binance · as-of 2026-07-25T12:00:00.000Z[0m
+            [36m</li>[39m
+            [36m<li>[39m
+              [36m<strong>[39m
+                [0mETH[0m
+              [36m</strong>[39m
+              [0m：[0m
+              [0m2100 USD · 手动 · as-of 2026-07-24[0m
+            [36m</li>[39m
+            [36m<li>[39m
+              [36m<strong>[39m
+                [0mADA[0m
+              [36m</strong>[39m
+              [0m：[0m
+              [0m0.45 USD · Binance · as-of 2026-07-24T12:00:00Z[0m
+              [0m · 本次刷新失败：Ticker response omitted the requested symbol[0m
+            [36m</li>[39m
+          [36m</ul>[39m
+        [36m</div>[39m
+        [36m<details>[39m
+          [36m<summary[39m
+            [33mclass[39m=[32m"cursor-pointer font-semibold"[39m
+          [36m>[39m
+            [0m配置 Binance Spot 交易对[0m
+          [36m</summary>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"mt-3 grid gap-3"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"grid gap-2 rounded-md border border-slate-200 p-3 md:grid-cols-[8rem_1fr_auto_auto]"[39m
+            [36m>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"font-medium"[39m
+                [33mfor[39m=[32m"mapping-asset-btc"[39m
+              [36m>[39m
+                [0mBTC[0m
+              [36m</label>[39m
+              [36m<input[39m
+                [33mclass[39m=[32m"rounded-md border border-slate-300 px-3 py-2 uppercase"[39m
+                [33mid[39m=[32m"mapping-asset-btc"[39m
+                [33mplaceholder[39m=[32m"BTCUSDT"[39m
+                [33mvalue[39m=[32m"BTCUSDT"[39m
+              [36m/>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"rounded-md border border-slate-300 px-3 py-2 font-medium disabled:cursor-not-allowed disabled:opacity-50"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m验证并保存[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33maria-busy[39m=[32m"false"[39m
+                [33maria-label[39m=[32m"删除 BTC Binance 映射"[39m
+                [33maria-pressed[39m=[32m"false"[39m
+                [33mclass[39m=[32m"origin-left rounded-md border px-3 py-2 text-sm font-medium transition-[transform,background-color,color,border-color] duration-[180ms] motion-reduce:transform-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50 border-red-300 bg-white text-red-800 hover:border-red-500 hover:text-red-950"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m删除映射[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"grid gap-2 rounded-md border border-slate-200 p-3 md:grid-cols-[8rem_1fr_auto_auto]"[39m
+            [36m>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"font-medium"[39m
+                [33mfor[39m=[32m"mapping-asset-eth"[39m
+              [36m>[39m
+                [0mETH[0m
+              [36m</label>[39m
+              [36m<input[39m
+                [33mclass[39m=[32m"rounded-md border border-slate-300 px-3 py-2 uppercase"[39m
+                [33mid[39m=[32m"mapping-asset-eth"[39m
+                [33mplaceholder[39m=[32m"ETHUSDT"[39m
+                [33mvalue[39m=[32m"ETHUSDT"[39m
+              [36m/>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"rounded-md border border-slate-300 px-3 py-2 font-medium disabled:cursor-not-allowed disabled:opacity-50"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m验证并保存[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33maria-busy[39m=[32m"false"[39m
+                [33maria-label[39m=[32m"删除 ETH Binance 映射"[39m
+                [33maria-pressed[39m=[32m"false"[39m
+                [33mclass[39m=[32m"origin-left rounded-md border px-3 py-2 text-sm font-medium transition-[transform,background-color,color,border-color] duration-[180ms] motion-reduce:transform-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50 border-red-300 bg-white text-red-800 hover:border-red-500 hover:text-red-950"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m删除映射[0m
+              [36m</button>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"grid gap-2 rounded-md border border-slate-200 p-3 md:grid-cols-[8rem_1fr_auto_auto]"[39m
+            [36m>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"font-medium"[39m
+                [33mfor[39m=[32m"mapping-asset-ada"[39m
+              [36m>[39m
+                [0mADA[0m
+              [36m</label>[39m
+              [36m<input[39m
+                [33mclass[39m=[32m"rounded-md border border-slate-300 px-3 py-2 uppercase"[39m
+                [33mid[39m=[32m"mapping-asset-ada"[39m
+                [33mplaceholder[39m=[32m"ADAUSDT"[39m
+                [33mvalue[39m=[32m"ADAUSDT"[39m
+              [36m/>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"rounded-md border border-slate-300 px-3 py-2 font-medium disabled:cursor-not-allowed disabled:opacity-50"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m验证并保存[0m
+              [36m</button>[39m
+              [36m<button[39m
+                [33maria-busy[39m=[32m"false"[39m
+                [33maria-label[39m=[32m"删除 ADA Binance 映射"[39m
+                [33maria-pressed[39m=[32m"false"[39m
+                [33mclass[39m=[32m"origin-left rounded-md border px-3 py-2 text-sm font-medium transition-[transform,background-color,color,border-color] duration-[180ms] motion-reduce:transform-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50 border-red-300 bg-white text-red-800 hover:border-red-500 hover:text-red-950"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m删除映射[0m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</details>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div>[39m
+        [36m<output[39m
+          [33maria-label[39m=[32m"harness-trades"[39m
+        [36m>[39m
+          [0m3[0m
+        [36m</output>[39m
+        [36m<output[39m
+          [33maria-label[39m=[32m"harness-prices"[39m
+        [36m>[39m
+          [0m4[0m
+        [36m</output>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m独立新增 BTC[0m
+        [36m</button>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m独立新增 ETH 价格[0m
+        [36m</button>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"grid gap-5"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex flex-wrap items-center gap-3"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"text-sm font-medium"[39m
+            [36m>[39m
+              [0m估值价格模式[0m
+            [36m</span>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"true"[39m
+              [33mclass[39m=[32m"rounded-md bg-slate-950 px-3 py-2 text-sm font-medium text-white"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m自动行情[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mclass[39m=[32m"rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m手动价格[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [0m刷新 Binance 价格[0m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<p[39m
+            [33maria-live[39m=[32m"polite"[39m
+            [33mclass[39m=[32m"text-sm text-slate-700"[39m
+          [36m>[39m
+            [0m已更新 1 项，失败 1 项。[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"grid gap-2 text-sm text-slate-700"[39m
+          [36m>[39m
+            [36m<p>[39m
+              [0mUSD 与 Binance USDT 报价按 [0m
+              [36m<strong>[39m
+                [0m1 USDT ≈ 1 USD[0m
+              [36m</strong>[39m
+              [0m 汇总为 USD 等值；这不是严格美元现货换算。[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m刷新只会把所配置的公开交易对 symbol 发送给 Binance；不会发送交易、数量、成本、密码或完整账本。[0m
+            [36m</p>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"grid gap-3"[39m
+          [36m>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"font-semibold"[39m
+            [36m>[39m
+              [0m当前非零持仓实际价格[0m
+            [36m</h3>[39m
+            [36m<ul[39m
+              [33mclass[39m=[32m"grid gap-1 text-sm text-slate-700"[39m
+            [36m>[39m
+              [36m<li>[39m
+                [36m<strong>[39m
+                  [0mBTC[0m
+                [36m</strong>[39m
+                [0m：[0m
+                [0m62000 USD · Binance · as-of 2026-07-25T12:00:00.000Z[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<strong>[39m
+                  [0mETH[0m
+                [36m</strong>[39m
+                [0m：[0m
+                [0m2100 USD · 手动 · as-of 2026-07-24[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<strong>[39m
+                  [0mADA[0m
+                [36m</strong>[39m
+                [0m：[0m
+                [0m0.45 USD · Binance · as-of 2026-07-24T12:00:00Z[0m
+                [0m · 本次刷新失败：Ticker response omitted the requested symbol[0m
+              [36m</li>[39m
+            [36m</ul>[39m
+          [36m</div>[39m
+          [36m<details>[39m
+            [36m<summary[39m
+              [33mclass[39m=[32m"cursor-pointer font-semibold"[39m
+            [36m>[39m
+              [0m配置 Binance Spot 交易对[0m
+            [36m</summary>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"mt-3 grid gap-3"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"grid gap-2 rounded-md border border-slate-200 p-3 md:grid-cols-[8rem_1fr_auto_auto]"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"font-medium"[39m
+                  [33mfor[39m=[32m"mapping-asset-btc"[39m
+                [36m>[39m
+                  [0mBTC[0m
+                [36m</label>[39m
+                [36m<input[39m
+                  [33mclass[39m=[32m"rounded-md border border-slate-300 px-3 py-2 uppercase"[39m
+                  [33mid[39m=[32m"mapping-asset-btc"[39m
+                  [33mplaceholder[39m=[32m"BTCUSDT"[39m
+                  [33mvalue[39m=[32m"BTCUSDT"[39m
+                [36m/>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"rounded-md border border-slate-300 px-3 py-2 font-medium disabled:cursor-not-allowed disabled:opacity-50"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m验证并保存[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33maria-busy[39m=[32m"false"[39m
+                  [33maria-label[39m=[32m"删除 BTC Binance 映射"[39m
+                  [33maria-pressed[39m=[32m"false"[39m
+                  [33mclass[39m=[32m"origin-left rounded-md border px-3 py-2 text-sm font-medium transition-[transform,background-color,color,border-color] duration-[180ms] motion-reduce:transform-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50 border-red-300 bg-white text-red-800 hover:border-red-500 hover:text-red-950"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m删除映射[0m
+                [36m</button>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"grid gap-2 rounded-md border border-slate-200 p-3 md:grid-cols-[8rem_1fr_auto_auto]"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"font-medium"[39m
+                  [33mfor[39m=[32m"mapping-asset-eth"[39m
+                [36m>[39m
+                  [0mETH[0m
+                [36m</label>[39m
+                [36m<input[39m
+                  [33mclass[39m=[32m"rounded-md border border-slate-300 px-3 py-2 uppercase"[39m
+                  [33mid[39m=[32m"mapping-asset-eth"[39m
+                  [33mplaceholder[39m=[32m"ETHUSDT"[39m
+                  [33mvalue[39m=[32m"ETHUSDT"[39m
+                [36m/>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"rounded-md border border-slate-300 px-3 py-2 font-medium disabled:cursor-not-allowed disabled:opacity-50"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m验证并保存[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33maria-busy[39m=[32m"false"[39m
+                  [33maria-label[39m=[32m"删除 ETH Binance 映射"[39m
+                  [33maria-pressed[39m=[32m"false"[39m
+                  [33mclass[39m=[32m"origin-left rounded-md border px-3 py-2 text-sm font-medium transition-[transform,background-color,color,border-color] duration-[180ms] motion-reduce:transform-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50 border-red-300 bg-white text-red-800 hover:border-red-500 hover:text-red-950"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m删除映射[0m
+                [36m</button>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"grid gap-2 rounded-md border border-slate-200 p-3 md:grid-cols-[8rem_1fr_auto_auto]"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"font-medium"[39m
+                  [33mfor[39m=[32m"mapping-asset-ada"[39m
+                [36m>[39m
+                  [0mADA[0m
+                [36m</label>[39m
+                [36m<input[39m
+                  [33mclass[39m=[32m"rounded-md border border-slate-300 px-3 py-2 uppercase"[39m
+                  [33mid[39m=[32m"mapping-asset-ada"[39m
+                  [33mplaceholder[39m=[32m"ADAUSDT"[39m
+                  [33mvalue[39m=[32m"ADAUSDT"[39m
+                [36m/>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"rounded-md border border-slate-300 px-3 py-2 font-medium disabled:cursor-not-allowed disabled:opacity-50"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m验证并保存[0m
+                [36m</button>[39m
+                [36m<button[39m
+                  [33maria-busy[39m=[32m"false"[39m
+                  [33maria-label[39m=[32m"删除 ADA Binance 映射"[39m
+                  [33maria-pressed[39m=[32m"false"[39m
+                  [33mclass[39m=[32m"origin-left rounded-md border px-3 py-2 text-sm font-medium transition-[transform,background-color,color,border-color] duration-[180ms] motion-reduce:transform-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50 border-red-300 bg-white text-red-800 hover:border-red-500 hover:text-red-950"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m删除映射[0m
+                [36m</button>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+          [36m</details>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ src/independent-tests/week10-binance-race.independent.test.tsx:212:11
+    210|       />,
+    211|     );
+    212|     await waitFor(() => {
+       |           ^
+    213|       expect(screen.getByText("已更新 2 项，失败 1 项。")).toBeTruthy();
+    214|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  src/independent-tests/week10-clock.independent.test.tsx > T4-05 one Clock snapshot per business action > captures a trade and manual price with one clock.now call each
+AssertionError: expected "vi.fn()" to be called with arguments: [ ObjectContaining{…}, …(1) ]
+
+Received:
+
+  1st vi.fn() call:
+
+  [
+-   ObjectContaining {
++   {
++     "assetSymbol": "BTC",
++     "createdAt": "2026-07-25T23:59:59.900Z",
++     "currency": "USD",
++     "fee": "0",
++     "feeCurrency": "USD",
++     "id": "162576aa-01b0-4d8c-a199-6562cf394b4d",
+      "occurredAt": "2026-07-25",
++     "price": "50000",
++     "quantity": "1",
++     "timePrecision": "day",
++     "totalValue": "50000",
++     "type": "buy",
++     "updatedAt": "2026-07-25T23:59:59.900Z",
+    },
+-   ObjectContaining {
++   {
+      "now": 2026-07-25T23:59:59.900Z,
+-     "todayKey": "2026-07-25",
++     "todayKey": "2026-07-26",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ src/independent-tests/week10-clock.independent.test.tsx:75:26
+     73|     fireEvent.click(screen.getByRole("button", { name: "保存交易" }));
+     74|     expect(tradeClock.now).toHaveBeenCalledOnce();
+     75|     expect(tradeCreated).toHaveBeenCalledWith(
+       |                          ^
+     76|       expect.objectContaining({ occurredAt: "2026-07-25" }),
+     77|       expect.objectContaining({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  src/independent-tests/week10-delete.independent.test.tsx > T3 future-fact correction through DashboardShell and recording repository > T3-06 strict import rejects a future ledger atomically
+TestingLibraryElementError: Found multiple elements with the text: /LEDGER_IMPORT_FUTURE_FACT/
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<code>[39m
+  [0mLEDGER_IMPORT_FUTURE_FACT[0m
+[36m</code>[39m
+
+Ignored nodes: comments, script, style
+[36m<code>[39m
+  [0mLEDGER_IMPORT_FUTURE_FACT[0m
+[36m</code>[39m
+
+Ignored nodes: comments, script, style
+[36m<code>[39m
+  [0mLEDGER_IMPORT_FUTURE_FACT[0m
+[36m</code>[39m
+
+Ignored nodes: comments, script, style
+[36m<code>[39m
+  [0mLEDGER_IMPORT_FUTURE_FACT[0m
+[36m</code>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<main[39m
+      [33mclass[39m=[32m"min-h-screen bg-slate-50 text-slate-950"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"mx-auto min-h-screen w-full max-w-7xl px-5 py-6 sm:px-8 lg:px-10"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"mb-6 border-b border-slate-200 pb-6"[39m
+        [36m>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-sm font-medium text-slate-500"[39m
+          [36m>[39m
+            [0m本地优先交易账本[0m
+          [36m</p>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"mt-2 text-3xl font-semibold tracking-tight text-slate-950"[39m
+          [36m>[39m
+            [0mLocal-First Trading Ledger[0m
+          [36m</h1>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"mt-2 max-w-2xl text-sm leading-6 text-slate-600"[39m
+          [36m>[39m
+            [0m本地记录交易和真实价格事实，持仓、盈亏与图表由同一份账本实时推导。[0m
+          [36m</p>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33maria-live[39m=[32m"assertive"[39m
+          [33mclass[39m=[32m"mb-5 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950"[39m
+        [36m>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"font-semibold"[39m
+          [36m>[39m
+            [0m旧账本兼容警告[0m
+          [36m</p>[39m
+          [36m<ul[39m
+            [33mclass[39m=[32m"mt-2 grid gap-1"[39m
+          [36m>[39m
+            [36m<li>[39m
+              [36m<code>[39m
+                [0mtrades[1].occurredAt[0m
+              [36m</code>[39m
+              [0m · [0m
+              [0m未来交易已隔离，必须删除、替换账本或清空后才能恢复普通写入[0m
+            [36m</li>[39m
+            [36m<li>[39m
+              [36m<code>[39m
+                [0mtrades[2].occurredAt[0m
+              [36m</code>[39m
+              [0m · [0m
+              [0m未来交易已隔离，必须删除、替换账本或清空后才能恢复普通写入[0m
+            [36m</li>[39m
+            [36m<li>[39m
+              [36m<code>[39m
+                [0mpriceSnapshots[1].recordedAt[0m
+              [36m</code>[39m
+              [0m · [0m
+              [0m未来价格已隔离，必须删除、替换账本或清空后才能恢复普通写入[0m
+            [36m</li>[39m
+            [36m<li>[39m
+              [36m<code>[39m
+                [0mpriceSnapshots[2].recordedAt[0m
+              [36m</code>[39m
+              [0m · [0m
+              [0m未来价格已隔离，必须删除、替换账本或清空后才能恢复普通写入[0m
+            [36m</li>[39m
+          [36m</ul>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"mb-5 grid gap-3 rounded-md border border-red-300 bg-red-50 px-4 py-4 text-sm text-red-950"[39m
+        [36m>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"font-semibold"[39m
+          [36m>[39m
+            [0m未来事实纠正模式[0m
+          [36m</p>[39m
+          [36m<p>[39m
+            [0m未来交易和价格不会进入持仓、行情选择或图表。普通新增、正常历史删除和 Binance 刷新已暂停；仍可逐条删除未来事实、救援导出、导入合法整账、清空或删除全部无效未来事实。[0m
+          [36m</p>[39m
+          [36m<ul[39m
+            [33mclass[39m=[32m"grid gap-1"[39m
+          [36m>[39m
+            [36m<li[39m
+              [33mclass[39m=[32m"flex flex-wrap items-center justify-between gap-3 rounded-md border border-red-200 bg-white p-3"[39m
+            [36m>[39m
+              [36m<span>[39m
+                [0m未来交易：[0m
+                [0m买入[0m
+                [0m ·[0m
+                [0m [0m
+                [0mETH[0m
+                [0m · 数量 [0m
+                [0m1[0m
+                [0m · 价格[0m
+                [0m [0m
+                [0m1000[0m
+                [0m [0m
+                [0mUSD[0m
+                [0m · [0m
+                [0m2099-01-01[0m
+                [0m · ID[0m
+                [0m [0m
+                [0mfuture-eth-a[0m
+              [36m</span>[39m
+              [36m<button[39m
+                [33maria-busy[39m=[32m"false"[39m
+                [33maria-label[39m=[32m"删除未来交易 ETH 2099-01-01 future-eth-a"[39m
+                [33maria-pressed[39m=[32m"false"[39m
+                [33mclass[39m=[32m"origin-left rounded-md border px-3 py-2 text-sm font-medium transition-[transform,background-color,color,border-color] duration-[180ms] motion-reduce:transform-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50 border-red-300 bg-white text-red-800 hover:border-red-500 hover:text-red-950"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m删除未来交易[0m
+              [36m</button>[39m
+            [36m</li>[39m
+            [36m<li[39m
+              [33mclass[39m=[32m"flex flex-wrap items-center justify-between gap-3 rounded-md border border-red-200 bg-white p-3"[39m
+            [36m>[39m
+              [36m<span>[39m
+                [0m未来交易：[0m
+                [0m买入[0m
+                [0m ·[0m
+                [0m [0m
+                [0mETH[0m
+                [0m · 数量 [0m
+                [0m2[0m
+                [0m · 价格[0m
+                [0m [0m
+                [0m1200[0m
+                [0m [0m
+                [0mUSD[0m
+                [0m · [0m
+                [0m2099-01-01[0m
+                [0m · ID[0m
+                [0m [0m
+                [0mfuture-eth-b[0m
+              [36m</span>[39m
+              [36m<button[39m
+                [33maria-busy[39m=[32m"false"[39m
+                [33maria-label[39m=[32m"删除未来交易 ETH 2099-01-01 future-eth-b"[39m
+                [33maria-pressed[39m=[32m"false"[39m
+                [33mclass[39m=[32m"origin-left rounded-md border px-3 py-2 text-sm font-medium transition-[transform,background-color,color,border-color] duration-[180ms] motion-reduce:transform-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50 border-red-300 bg-white text-red-800 hover:border-red-500 hover:text-red-950"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m删除未来交易[0m
+              [36m</button>[39m
+            [36m</li>[39m
+            [36m<li[39m
+              [33mclass[39m=[32m"flex flex-wrap items-center justify-between gap-3 rounded-md border border-red-200 bg-white p-3"[39m
+            [36m>[39m
+              [36m<span>[39m
+                [0m未来价格：[0m
+                [0mBTC[0m
+                [0m · [0m
+                [0m999999[0m
+                [0m [0m
+                [0mUSD[0m
+                [0m · 来源[0m
+                [0m [0m
+                [0m手动[0m
+                [0m ·[0m
+                [0m [0m
+                [0m2099-01-01[0m
+                [0m · ID [0m
+                [0mfuture…tc-a[0m
+              [36m</span>[39m
+              [36m<button[39m
+                [33maria-busy[39m=[32m"false"[39m
+                [33maria-label[39m=[32m"删除未来价格 BTC 2099-01-01 future-price-btc-a"[39m
+                [33maria-pressed[39m=[32m"f...
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<main[39m
+        [33mclass[39m=[32m"min-h-screen bg-slate-50 text-slate-950"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"mx-auto min-h-screen w-full max-w-7xl px-5 py-6 sm:px-8 lg:px-10"[39m
+        [36m>[39m
+          [36m<header[39m
+            [33mclass[39m=[32m"mb-6 border-b border-slate-200 pb-6"[39m
+          [36m>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-sm font-medium text-slate-500"[39m
+            [36m>[39m
+              [0m本地优先交易账本[0m
+            [36m</p>[39m
+            [36m<h1[39m
+              [33mclass[39m=[32m"mt-2 text-3xl font-semibold tracking-tight text-slate-950"[39m
+            [36m>[39m
+              [0mLocal-First Trading Ledger[0m
+            [36m</h1>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"mt-2 max-w-2xl text-sm leading-6 text-slate-600"[39m
+            [36m>[39m
+              [0m本地记录交易和真实价格事实，持仓、盈亏与图表由同一份账本实时推导。[0m
+            [36m</p>[39m
+          [36m</header>[39m
+          [36m<div[39m
+            [33maria-live[39m=[32m"assertive"[39m
+            [33mclass[39m=[32m"mb-5 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950"[39m
+          [36m>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"font-semibold"[39m
+            [36m>[39m
+              [0m旧账本兼容警告[0m
+            [36m</p>[39m
+            [36m<ul[39m
+              [33mclass[39m=[32m"mt-2 grid gap-1"[39m
+            [36m>[39m
+              [36m<li>[39m
+                [36m<code>[39m
+                  [0mtrades[1].occurredAt[0m
+                [36m</code>[39m
+                [0m · [0m
+                [0m未来交易已隔离，必须删除、替换账本或清空后才能恢复普通写入[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<code>[39m
+                  [0mtrades[2].occurredAt[0m
+                [36m</code>[39m
+                [0m · [0m
+                [0m未来交易已隔离，必须删除、替换账本或清空后才能恢复普通写入[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<code>[39m
+                  [0mpriceSnapshots[1].recordedAt[0m
+                [36m</code>[39m
+                [0m · [0m
+                [0m未来价格已隔离，必须删除、替换账本或清空后才能恢复普通写入[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<code>[39m
+                  [0mpriceSnapshots[2].recordedAt[0m
+                [36m</code>[39m
+                [0m · [0m
+                [0m未来价格已隔离，必须删除、替换账本或清空后才能恢复普通写入[0m
+              [36m</li>[39m
+            [36m</ul>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"mb-5 grid gap-3 rounded-md border border-red-300 bg-red-50 px-4 py-4 text-sm text-red-950"[39m
+          [36m>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"font-semibold"[39m
+            [36m>[39m
+              [0m未来事实纠正模式[0m
+            [36m</p>[39m
+            [36m<p>[39m
+              [0m未来交易和价格不会进入持仓、行情选择或图表。普通新增、正常历史删除和 Binance 刷新已暂停；仍可逐条删除未来事实、救援导出、导入合法整账、清空或删除全部无效未来事实。[0m
+            [36m</p>[39m
+            [36m<ul[39m
+              [33mclass[39m=[32m"grid gap-1"[39m
+            [36m>[39m
+              [36m<li[39m
+                [33mclass[39m=[32m"flex flex-wrap items-center justify-between gap-3 rounded-md border border-red-200 bg-white p-3"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0m未来交易：[0m
+                  [0m买入[0m
+                  [0m ·[0m
+                  [0m [0m
+                  [0mETH[0m
+                  [0m · 数量 [0m
+                  [0m1[0m
+                  [0m · 价格[0m
+                  [0m [0m
+                  [0m1000[0m
+                  [0m [0m
+                  [0mUSD[0m
+                  [0m · [0m
+                  [0m2099-01-01[0m
+                  [0m · ID[0m
+                  [0m [0m
+                  [0mfuture-eth-a[0m
+                [36m</span>[39m
+                [36m<button[39m
+                  [33maria-busy[39m=[32m"false"[39m
+                  [33maria-label[39m=[32m"删除未来交易 ETH 2099-01-01 future-eth-a"[39m
+                  [33maria-pressed[39m=[32m"false"[39m
+                  [33mclass[39m=[32m"origin-left rounded-md border px-3 py-2 text-sm font-medium transition-[transform,background-color,color,border-color] duration-[180ms] motion-reduce:transform-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50 border-red-300 bg-white text-red-800 hover:border-red-500 hover:text-red-950"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m删除未来交易[0m
+                [36m</button>[39m
+              [36m</li>[39m
+              [36m<li[39m
+                [33mclass[39m=[32m"flex flex-wrap items-center justify-between gap-3 rounded-md border border-red-200 bg-white p-3"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0m未来交易：[0m
+                  [0m买入[0m
+                  [0m ·[0m
+                  [0m [0m
+                  [0mETH[0m
+                  [0m · 数量 [0m
+                  [0m2[0m
+                  [0m · 价格[0m
+                  [0m [0m
+                  [0m1200[0m
+                  [0m [0m
+                  [0mUSD[0m
+                  [0m · [0m
+                  [0m2099-01-01[0m
+                  [0m · ID[0m
+                  [0m [0m
+                  [0mfuture-eth-b[0m
+                [36m</span>[39m
+                [36m<button[39m
+                  [33maria-busy[39m=[32m"false"[39m
+                  [33maria-label[39m=[32m"删除未来交易 ETH 2099-01-01 future-eth-b"[39m
+                  [33maria-pressed[39m=[32m"false"[39m
+                  [33mclass[39m=[32m"origin-left rounded-md border px-3 py-2 text-sm font-medium transition-[transform,background-color,color,border-color] duration-[180ms] motion-reduce:transform-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50 border-red-300 bg-white text-red-800 hover:border-red-500 hover:text-red-950"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [0m删除未来交易[0m
+                [36m</button>[39m
+              [36m</li>[39m
+              [36m<li[39m
+                [33mclass[39m=[32m"flex flex-wrap items-center justify-between gap-3 rounded-md border border-red-200 bg-white p-3"[39m
+              [36m>[39m
+                [36m<span>[39m
+                  [0m未来价格：[0m
+                  [0mBTC[0m
+                  [0m · [0m
+                  [0m999999[0m
+                  [0m [0m
+                  [0mUSD[0m
+                  [0m · 来源[0m
+                  [0m [0m
+                  [0m手动[0m
+                  [0m ·[0m
+                  [0m...
+ ❯ Proxy.waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ src/independent-tests/week10-delete.independent.test.tsx:242:11
+    240|       backupFile(createFutureLedger(), "future.json"),
+    241|     );
+    242|     await waitFor(() =>
+       |           ^
+    243|       expect(screen.getByText(/LEDGER_IMPORT_FUTURE_FACT/)).toBeTruthy…
+    244|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  src/independent-tests/week10-delete.independent.test.tsx > T3 future-fact correction through DashboardShell and recording repository > T3-07 rescue export retains future facts while derived views exclude them
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/independent-tests/week10-delete.independent.test.tsx:270:23
+    268|     );
+    269|     const parsed = parseBackupJson(serialized);
+    270|     expect(parsed.ok).toBe(true);
+       |                       ^
+    271|     if (!parsed.ok) return;
+    272|     expect(parsed.value.ledgerData.trades.map((trade) => trade.id)).to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  src/independent-tests/week10-password-backup.independent.test.tsx > T5-04 controlled BackupControls boundaries > T5-04a dirty export captures the current in-memory ledger and labels it as rescue data
+TestingLibraryElementError: Found multiple elements with the text: /可能新于最后成功保存的版本/
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<p>[39m
+  [0m可导出当前页面账本作为救援备份。备份为明文，可能新于最后成功保存的版本。[0m
+[36m</p>[39m
+
+Ignored nodes: comments, script, style
+[36m<p[39m
+  [33maria-live[39m=[32m"polite"[39m
+[36m>[39m
+  [0m已发起救援备份下载。备份为明文、未加密，包含当前页面数据，可能新于最后成功保存的版本；请检查浏览器下载是否成功及实际保存位置，并将文件移至安全位置或在不再需要时删除。[0m
+[36m</p>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"grid gap-3 rounded-md border border-slate-200 bg-slate-50 p-4"[39m
+    [36m>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-950"[39m
+      [36m>[39m
+        [0m账本备份是未加密明文，任何能访问文件的人都可能读取完整资产、交易和价格。导出只会发起浏览器下载，请确认实际下载结果和保存位置，并将文件移至安全位置或在不再需要时删除。若保存到 iCloud Drive、OneDrive 等同步目录，系统可能自动上传或同步。[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-wrap gap-3"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"rounded-md border border-slate-300 bg-white px-3 py-2 font-medium text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m导出完整账本备份[0m
+        [36m</button>[39m
+        [36m<label[39m
+          [33mclass[39m=[32m"w-fit cursor-pointer rounded-md border border-slate-300 bg-white px-3 py-2 font-medium text-slate-800 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50"[39m
+        [36m>[39m
+          [0m选择备份文件[0m
+          [36m<input[39m
+            [33maccept[39m=[32m"application/json,.json"[39m
+            [33maria-label[39m=[32m"选择账本备份文件"[39m
+            [33mclass[39m=[32m"sr-only"[39m
+            [33mtype[39m=[32m"file"[39m
+          [36m/>[39m
+        [36m</label>[39m
+      [36m</div>[39m
+      [36m<p>[39m
+        [0m可导出当前页面账本作为救援备份。备份为明文，可能新于最后成功保存的版本。[0m
+      [36m</p>[39m
+      [36m<p[39m
+        [33maria-live[39m=[32m"polite"[39m
+      [36m>[39m
+        [0m已发起救援备份下载。备份为明文、未加密，包含当前页面数据，可能新于最后成功保存的版本；请检查浏览器下载是否成功及实际保存位置，并将文件移至安全位置或在不再需要时删除。[0m
+      [36m</p>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getElementError node_modules/@testing-library/dom/dist/query-helpers.js:20:35
+ ❯ getMultipleElementsFoundError node_modules/@testing-library/dom/dist/query-helpers.js:23:10
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:55:13
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/independent-tests/week10-password-backup.independent.test.tsx:111:19
+    109|     if (!parsed.ok) return;
+    110|     expect(parsed.value.ledgerData.trades[0].id).toBe("dirty-memory");
+    111|     expect(screen.getByText(/可能新于最后成功保存的版本/)).toBeTruthy();
+       |                   ^
+    112|     expect(capture.filename()).toMatch(/^local-first-trading-ledger-ba…
+    113|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  src/independent-tests/week10-password-backup.independent.test.tsx > T5-04 controlled BackupControls boundaries > T5-04b read-only export remains a plaintext rescue and never claims importability
+TestingLibraryElementError: Found multiple elements with the text: /可能因集合或字符串超限而无法由当前版本重新导入/
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<p>[39m
+  [0m当前账本只读，仅可导出受 8 MiB 限制的救援备份；备份可能因集合或字符串超限而无法由当前版本重新导入；当前只读保护禁止导入覆盖超限账本。[0m
+[36m</p>[39m
+
+Ignored nodes: comments, script, style
+[36m<p[39m
+  [33maria-live[39m=[32m"polite"[39m
+[36m>[39m
+  [0m已发起只读救援备份下载。备份为明文、未加密，可能因集合或字符串超限而无法由当前版本重新导入；请检查浏览器下载是否成功及实际保存位置，并将文件移至安全位置或在不再需要时删除。[0m
+[36m</p>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"grid gap-3 rounded-md border border-slate-200 bg-slate-50 p-4"[39m
+    [36m>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-950"[39m
+      [36m>[39m
+        [0m账本备份是未加密明文，任何能访问文件的人都可能读取完整资产、交易和价格。导出只会发起浏览器下载，请确认实际下载结果和保存位置，并将文件移至安全位置或在不再需要时删除。若保存到 iCloud Drive、OneDrive 等同步目录，系统可能自动上传或同步。[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-wrap gap-3"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"rounded-md border border-slate-300 bg-white px-3 py-2 font-medium text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m导出完整账本备份[0m
+        [36m</button>[39m
+      [36m</div>[39m
+      [36m<p>[39m
+        [0m当前账本只读，仅可导出受 8 MiB 限制的救援备份；备份可能因集合或字符串超限而无法由当前版本重新导入；当前只读保护禁止导入覆盖超限账本。[0m
+      [36m</p>[39m
+      [36m<p[39m
+        [33maria-live[39m=[32m"polite"[39m
+      [36m>[39m
+        [0m已发起只读救援备份下载。备份为明文、未加密，可能因集合或字符串超限而无法由当前版本重新导入；请检查浏览器下载是否成功及实际保存位置，并将文件移至安全位置或在不再需要时删除。[0m
+      [36m</p>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getElementError node_modules/@testing-library/dom/dist/query-helpers.js:20:35
+ ❯ getMultipleElementsFoundError node_modules/@testing-library/dom/dist/query-helpers.js:23:10
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:55:13
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/independent-tests/week10-password-backup.independent.test.tsx:123:19
+    121|     expect(capture.calls).toHaveLength(1);
+    122|     expect(screen.getByText(/当前账本只读，仅可导出/)).toBeTruthy();
+    123|     expect(screen.getByText(/可能因集合或字符串超限而无法由当前版本重新导入/)).toBeTruthy();
+       |                   ^
+    124|   });
+    125|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  src/independent-tests/week10-password-backup.independent.test.tsx > T5-04 controlled BackupControls boundaries > T5-04e isolates invalid JSON, wrong schema, future fact, and user cancel without import
+TestingLibraryElementError: Found multiple elements with the text: /BACKUP_/
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<code>[39m
+  [0mBACKUP_UNSUPPORTED_FORMAT_VERSION[0m
+[36m</code>[39m
+
+Ignored nodes: comments, script, style
+[36m<code>[39m
+  [0mBACKUP_INVALID_APP_VERSION[0m
+[36m</code>[39m
+
+Ignored nodes: comments, script, style
+[36m<code>[39m
+  [0mBACKUP_INVALID_EXPORTED_AT[0m
+[36m</code>[39m
+
+Ignored nodes: comments, script, style
+[36m<code>[39m
+  [0mBACKUP_SCHEMA_VERSION_MISMATCH[0m
+[36m</code>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"grid gap-3 rounded-md border border-slate-200 bg-slate-50 p-4"[39m
+    [36m>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-950"[39m
+      [36m>[39m
+        [0m账本备份是未加密明文，任何能访问文件的人都可能读取完整资产、交易和价格。导出只会发起浏览器下载，请确认实际下载结果和保存位置，并将文件移至安全位置或在不再需要时删除。若保存到 iCloud Drive、OneDrive 等同步目录，系统可能自动上传或同步。[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-wrap gap-3"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"rounded-md border border-slate-300 bg-white px-3 py-2 font-medium text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m导出完整账本备份[0m
+        [36m</button>[39m
+        [36m<label[39m
+          [33mclass[39m=[32m"w-fit cursor-pointer rounded-md border border-slate-300 bg-white px-3 py-2 font-medium text-slate-800 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50"[39m
+        [36m>[39m
+          [0m选择备份文件[0m
+          [36m<input[39m
+            [33maccept[39m=[32m"application/json,.json"[39m
+            [33maria-label[39m=[32m"选择账本备份文件"[39m
+            [33mclass[39m=[32m"sr-only"[39m
+            [33mtype[39m=[32m"file"[39m
+          [36m/>[39m
+        [36m</label>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33maria-live[39m=[32m"polite"[39m
+        [33mclass[39m=[32m"grid gap-2 text-sm text-red-800"[39m
+      [36m>[39m
+        [36m<p>[39m
+          [0m发现 [0m
+          [0m5[0m
+          [0m 项导入错误，显示前 [0m
+          [0m5[0m
+          [0m 项。[0m
+        [36m</p>[39m
+        [36m<ul[39m
+          [33mclass[39m=[32m"grid gap-1"[39m
+        [36m>[39m
+          [36m<li>[39m
+            [36m<code>[39m
+              [0mBACKUP_UNSUPPORTED_FORMAT_VERSION[0m
+            [36m</code>[39m
+            [0m · [0m
+            [36m<code>[39m
+              [0mbackupFormatVersion[0m
+            [36m</code>[39m
+            [0m · [0m
+            [0mUnsupported backup format version: 99[0m
+          [36m</li>[39m
+          [36m<li>[39m
+            [36m<code>[39m
+              [0mBACKUP_INVALID_APP_VERSION[0m
+            [36m</code>[39m
+            [0m · [0m
+            [36m<code>[39m
+              [0mappVersion[0m
+            [36m</code>[39m
+            [0m · [0m
+            [0mappVersion must be non-empty[0m
+          [36m</li>[39m
+          [36m<li>[39m
+            [36m<code>[39m
+              [0mBACKUP_INVALID_EXPORTED_AT[0m
+            [36m</code>[39m
+            [0m · [0m
+            [36m<code>[39m
+              [0mexportedAt[0m
+            [36m</code>[39m
+            [0m · [0m
+            [0mexportedAt must be an ISO datetime with timezone[0m
+          [36m</li>[39m
+          [36m<li>[39m
+            [36m<code>[39m
+              [0mBACKUP_SCHEMA_VERSION_MISMATCH[0m
+            [36m</code>[39m
+            [0m · [0m
+            [36m<code>[39m
+              [0mledgerSchemaVersion[0m
+            [36m</code>[39m
+            [0m · [0m
+            [0mUnsupported ledger schema version: undefined[0m
+          [36m</li>[39m
+          [36m<li>[39m
+            [36m<code>[39m
+              [0mLEDGER_DATA_INVALID_ROOT[0m
+            [36m</code>[39m
+            [0m · [0m
+            [36m<code>[39m
+              [0mledgerData[0m
+            [36m</code>[39m
+            [0m · [0m
+            [0mLedgerData must be an object[0m
+          [36m</li>[39m
+        [36m</ul>[39m
+      [36m</div>[39m
+      [36m<p[39m
+        [33maria-live[39m=[32m"polite"[39m
+      [36m>[39m
+        [0m无法导入：备份文件格式或内容无效。[0m
+      [36m</p>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"grid gap-3 rounded-md border border-slate-200 bg-slate-50 p-4"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-950"[39m
+        [36m>[39m
+          [0m账本备份是未加密明文，任何能访问文件的人都可能读取完整资产、交易和价格。导出只会发起浏览器下载，请确认实际下载结果和保存位置，并将文件移至安全位置或在不再需要时删除。若保存到 iCloud Drive、OneDrive 等同步目录，系统可能自动上传或同步。[0m
+        [36m</p>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex flex-wrap gap-3"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"rounded-md border border-slate-300 bg-white px-3 py-2 font-medium text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0m导出完整账本备份[0m
+          [36m</button>[39m
+          [36m<label[39m
+            [33mclass[39m=[32m"w-fit cursor-pointer rounded-md border border-slate-300 bg-white px-3 py-2 font-medium text-slate-800 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50"[39m
+          [36m>[39m
+            [0m选择备份文件[0m
+            [36m<input[39m
+              [33maccept[39m=[32m"application/json,.json"[39m
+              [33maria-label[39m=[32m"选择账本备份文件"[39m
+              [33mclass[39m=[32m"sr-only"[39m
+              [33mtype[39m=[32m"file"[39m
+            [36m/>[39m
+          [36m</label>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33maria-live[39m=[32m"polite"[39m
+          [33mclass[39m=[32m"grid gap-2 text-sm text-red-800"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0m发现 [0m
+            [0m5[0m
+            [0m 项导入错误，显示前 [0m
+            [0m5[0m
+            [0m 项。[0m
+          [36m</p>[39m
+          [36m<ul[39m
+            [33mclass[39m=[32m"grid gap-1"[39m
+          [36m>[39m
+            [36m<li>[39m
+              [36m<code>[39m
+                [0mBACKUP_UNSUPPORTED_FORMAT_VERSION[0m
+              [36m</code>[39m
+              [0m · [0m
+              [36m<code>[39m
+                [0mbackupFormatVersion[0m
+              [36m</code>[39m
+              [0m · [0m
+              [0mUnsupported backup format version: 99[0m
+            [36m</li>[39m
+            [36m<li>[39m
+              [36m<code>[39m
+                [0mBACKUP_INVALID_APP_VERSION[0m
+              [36m</code>[39m
+              [0m · [0m
+              [36m<code>[39m
+                [0mappVersion[0m
+              [36m</code>[39m
+              [0m · [0m
+              [0mappVersion must be non-empty[0m
+            [36m</li>[39m
+            [36m<li>[39m
+              [36m<code>[39m
+                [0mBACKUP_INVALID_EXPORTED_AT[0m
+              [36m</code>[39m
+              [0m · [0m
+              [36m<code>[39m
+                [0mexportedAt[0m
+              [36m</code>[39m
+              [0m · [0m
+              [0mexportedAt must be an ISO datetime with timezone[0m
+            [36m</li>[39m
+            [36m<li>[39m
+              [36m<code>[39m
+                [0mBACKUP_SCHEMA_VERSION_MISMATCH[0m
+              [36m</code>[39m
+              [0m · [0m
+              [36m<code>[39m
+                [0mledgerSchemaVersion[0m
+              [36m</code>[39m
+              [0m · [0m
+              [0mUnsupported ledger schema version: undefined[0m
+            [36m</li>[39m
+            [36m<li>[39m
+              [36m<code>[39m
+                [0mLEDGER_DATA_INVALID_ROOT[0m
+              [36m</code>[39m
+              [0m · [0m
+              [36m<code>[39m
+                [0mledgerData[0m
+              [36m</code>[39m
+              [0m · [0m
+              [0mLedgerData must be an object[0m
+            [36m</li>[39m
+          [36m</ul>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33maria-live[39m=[32m"polite"[39m
+        [36m>[39m
+          [0m无法导入：备份文件格式或内容无效。[0m
+        [36m</p>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ src/independent-tests/week10-password-backup.independent.test.tsx:179:13
+    177|         fixture.file,
+    178|       );
+    179|       await waitFor(() => expect(screen.getByText(testCase.expected)).…
+       |             ^
+    180|       expect(onImport).not.toHaveBeenCalled();
+    181|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  7 failed | 20 passed (27)
+   Start at  19:31:49
+   Duration  2.49s (transform 419ms, setup 0ms, import 899ms, tests 4.56s, environment 1.67s)
+
+[?25h

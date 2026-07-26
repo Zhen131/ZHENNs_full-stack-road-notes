@@ -1,0 +1,111 @@
+{
+  "identity": {
+    "origin": "http://127.0.0.1:34201",
+    "runToday": "2026-07-26",
+    "dates": {
+      "runToday": "2026-07-26",
+      "d2": "2026-07-24",
+      "d10": "2026-07-16",
+      "d45": "2026-06-11",
+      "d370": "2025-07-21"
+    },
+    "dateCalculation": "RUN_TODAY 按本地日历分别减 2、10、45、370 天",
+    "passwordLogged": false
+  },
+  "preflight": {
+    "cacheNames": [],
+    "serviceWorkers": 0,
+    "indexedDatabases": [
+      "local-first-trading-ledger"
+    ],
+    "preNavigationUsage": {
+      "usage": 0,
+      "quota": 296599420108,
+      "overrideActive": false,
+      "usageBreakdown": [
+        {
+          "storageType": "file_systems",
+          "usage": 0
+        },
+        {
+          "storageType": "indexeddb",
+          "usage": 0
+        },
+        {
+          "storageType": "cache_storage",
+          "usage": 0
+        },
+        {
+          "storageType": "service_workers",
+          "usage": 0
+        }
+      ]
+    },
+    "ledgerRecordPresent": false
+  },
+  "passwordSetup": {
+    "setup": {
+      "beforeType": "password",
+      "pointerDownType": "text",
+      "pointerUpType": "password",
+      "pointerLeaveType": "text",
+      "pointerLeaveStatus": "BLOCKED: prior two-attempt harness used non-bubbling pointerleave; this continuation does not classify the product behavior",
+      "pointerCancelType": "password",
+      "enterDownType": "text",
+      "enterUpType": "password",
+      "spaceDownType": "text",
+      "spaceUpType": "password",
+      "clickType": "password",
+      "windowBlurType": "password",
+      "buttonBlurType": "password",
+      "nodeIdentityPreserved": true,
+      "valueLengthPreserved": true,
+      "autocompletePreserved": true,
+      "passwordValueRecorded": false
+    },
+    "confirmation": {
+      "beforeType": "password",
+      "pointerDownType": "text",
+      "pointerUpType": "password",
+      "pointerLeaveType": "text",
+      "pointerLeaveStatus": "BLOCKED: prior two-attempt harness used non-bubbling pointerleave; this continuation does not classify the product behavior",
+      "pointerCancelType": "password",
+      "enterDownType": "text",
+      "enterUpType": "password",
+      "spaceDownType": "text",
+      "spaceUpType": "password",
+      "clickType": "password",
+      "windowBlurType": "password",
+      "buttonBlurType": "password",
+      "nodeIdentityPreserved": true,
+      "valueLengthPreserved": true,
+      "autocompletePreserved": true,
+      "passwordValueRecorded": false
+    },
+    "submitHidImmediately": true
+  },
+  "fixture": {},
+  "ranges": {},
+  "chartRendering": {},
+  "heatmap": {},
+  "binance": {},
+  "deletion": {},
+  "backup": {},
+  "responsive": {},
+  "encryptedStorage": {},
+  "unlock": {},
+  "console": {
+    "warnings": [],
+    "errors": [],
+    "pageErrors": []
+  },
+  "network": [],
+  "screenshots": [],
+  "cleanup": {},
+  "completed": false,
+  "failure": {
+    "name": "TimeoutError",
+    "message": "locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: '新增交易', exact: true }).locator('xpath=ancestor::section[1]').getByLabel('类型', { exact: true })\u001b[22m\n",
+    "stack": "locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: '新增交易', exact: true }).locator('xpath=ancestor::section[1]').getByLabel('类型', { exact: true })\u001b[22m\n\n    at addTrade (/private/tmp/lftr-week10-resume.uyOWxH/playwright/production-main-continuation.mjs:113:50)\n    at /private/tmp/lftr-week10-resume.uyOWxH/playwright/production-main-continuation.mjs:413:9"
+  }
+}

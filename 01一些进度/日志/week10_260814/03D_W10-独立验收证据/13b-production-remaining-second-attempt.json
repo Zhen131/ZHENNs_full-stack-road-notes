@@ -1,0 +1,168 @@
+{
+  "identity": {
+    "origin": "http://127.0.0.1:34201",
+    "runToday": "2026-07-26",
+    "dates": {
+      "runToday": "2026-07-26",
+      "d2": "2026-07-24",
+      "d10": "2026-07-16",
+      "d45": "2026-06-11",
+      "d370": "2025-07-21"
+    },
+    "dateCalculation": "RUN_TODAY 按本地日历分别减 2、10、45、370 天",
+    "passwordLogged": false,
+    "verdictScope": "聚焦执行 T1-03、T1-05 与 T5；不得用本场景覆盖已按重跑规则记为 BLOCKED 的 T1-02 和 T1-04 pointerleave"
+  },
+  "preflight": {
+    "cacheNames": [],
+    "serviceWorkers": 0,
+    "indexedDatabases": [
+      "local-first-trading-ledger"
+    ],
+    "preNavigationUsage": {
+      "usage": 0,
+      "quota": 296599420108,
+      "overrideActive": false,
+      "usageBreakdown": [
+        {
+          "storageType": "file_systems",
+          "usage": 0
+        },
+        {
+          "storageType": "indexeddb",
+          "usage": 0
+        },
+        {
+          "storageType": "cache_storage",
+          "usage": 0
+        },
+        {
+          "storageType": "service_workers",
+          "usage": 0
+        }
+      ]
+    },
+    "ledgerRecordPresent": false
+  },
+  "passwordSetup": {
+    "setup": {
+      "beforeType": "password",
+      "pointerDownType": "text",
+      "pointerUpType": "password",
+      "pointerLeaveType": "text",
+      "pointerLeaveStatus": "BLOCKED: prior two-attempt harness used non-bubbling pointerleave; this continuation does not classify the product behavior",
+      "pointerCancelType": "password",
+      "enterDownType": "text",
+      "enterUpType": "password",
+      "spaceDownType": "text",
+      "spaceUpType": "password",
+      "clickType": "password",
+      "windowBlurType": "password",
+      "buttonBlurType": "password",
+      "nodeIdentityPreserved": true,
+      "valueLengthPreserved": true,
+      "autocompletePreserved": true,
+      "passwordValueRecorded": false
+    },
+    "confirmation": {
+      "beforeType": "password",
+      "pointerDownType": "text",
+      "pointerUpType": "password",
+      "pointerLeaveType": "text",
+      "pointerLeaveStatus": "BLOCKED: prior two-attempt harness used non-bubbling pointerleave; this continuation does not classify the product behavior",
+      "pointerCancelType": "password",
+      "enterDownType": "text",
+      "enterUpType": "password",
+      "spaceDownType": "text",
+      "spaceUpType": "password",
+      "clickType": "password",
+      "windowBlurType": "password",
+      "buttonBlurType": "password",
+      "nodeIdentityPreserved": true,
+      "valueLengthPreserved": true,
+      "autocompletePreserved": true,
+      "passwordValueRecorded": false
+    },
+    "submitHidImmediately": true
+  },
+  "fixture": {
+    "positionRows": [
+      [
+        "BTC",
+        "1",
+        "54000 USD",
+        "54000 USD",
+        "0 USD",
+        "70000 USD",
+        "70000 USD",
+        "16000 USD"
+      ],
+      [
+        "ETH",
+        "2",
+        "1900 USD",
+        "3800 USD",
+        "0 USD",
+        "未输入价格",
+        "--",
+        "--"
+      ],
+      [
+        "ADA",
+        "900",
+        "0.5 USD",
+        "450 USD",
+        "5 USD",
+        "未输入价格",
+        "--",
+        "--"
+      ]
+    ],
+    "tradeRowCount": 6,
+    "expected": {
+      "BTC": {
+        "quantity": "1",
+        "costBasis": "54000"
+      },
+      "ETH": {
+        "quantity": "2",
+        "costBasis": "3800"
+      },
+      "ADA": {
+        "quantity": "900",
+        "costBasis": "450",
+        "realizedPnl": "5"
+      }
+    }
+  },
+  "ranges": {},
+  "chartRendering": {
+    "pie": 1,
+    "history": 1,
+    "heatmap": 1,
+    "canvasCount": 5,
+    "pieSummary": "已估值 1 项，总市值 70000 USD 等值。",
+    "missingPriceSummary": "未估值资产：ADA、ETH。"
+  },
+  "heatmap": {},
+  "binance": {},
+  "deletion": {},
+  "backup": {},
+  "responsive": {},
+  "encryptedStorage": {},
+  "unlock": {},
+  "console": {
+    "warnings": [],
+    "errors": [],
+    "pageErrors": []
+  },
+  "network": [],
+  "screenshots": [],
+  "cleanup": {},
+  "completed": false,
+  "failure": {
+    "name": "Error",
+    "message": "chart canvases not rendered",
+    "stack": "Error: chart canvases not rendered\n    at ensure (file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-remaining-focused.mjs:70:11)\n    at file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-remaining-focused.mjs:504:3"
+  }
+}

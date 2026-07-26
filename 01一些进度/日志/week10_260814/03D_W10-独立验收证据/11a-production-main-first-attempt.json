@@ -1,0 +1,47 @@
+{
+  "identity": {
+    "origin": "http://127.0.0.1:34201",
+    "runToday": "2026-07-26",
+    "dates": {
+      "runToday": "2026-07-26",
+      "d2": "2026-07-24",
+      "d10": "2026-07-16",
+      "d45": "2026-06-11",
+      "d370": "2025-07-21"
+    },
+    "dateCalculation": "RUN_TODAY 按本地日历分别减 2、10、45、370 天",
+    "passwordLogged": false
+  },
+  "preflight": {
+    "cacheNames": [],
+    "serviceWorkers": 0,
+    "indexedDatabases": [
+      "local-first-trading-ledger"
+    ]
+  },
+  "passwordSetup": {},
+  "fixture": {},
+  "ranges": {},
+  "chartRendering": {},
+  "heatmap": {},
+  "binance": {},
+  "deletion": {},
+  "backup": {},
+  "responsive": {},
+  "encryptedStorage": {},
+  "unlock": {},
+  "console": {
+    "warnings": [],
+    "errors": [],
+    "pageErrors": []
+  },
+  "network": [],
+  "screenshots": [],
+  "cleanup": {},
+  "completed": false,
+  "failure": {
+    "name": "Error",
+    "message": "origin IndexedDB is not empty",
+    "stack": "Error: origin IndexedDB is not empty\n    at ensure (file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-main-chain.mjs:68:11)\n    at file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-main-chain.mjs:366:3"
+  }
+}

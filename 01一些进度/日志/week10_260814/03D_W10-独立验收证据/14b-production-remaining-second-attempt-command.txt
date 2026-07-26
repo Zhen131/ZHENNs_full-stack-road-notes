@@ -1,0 +1,9 @@
+^Dnode:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: chart canvases not rendered
+    at ensure (file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-remaining-focused.mjs:70:11)
+    at file:///private/tmp/lftr-week10-resume.uyOWxH/playwright/production-remaining-focused.mjs:504:3
+
+Node.js v25.9.0

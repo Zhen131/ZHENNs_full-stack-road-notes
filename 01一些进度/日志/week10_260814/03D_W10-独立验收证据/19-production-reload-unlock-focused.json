@@ -1,0 +1,48 @@
+{
+  "identity": {
+    "origin": "http://127.0.0.1:34201",
+    "scope": "T1-05 reload/unlock closure and T5-01 desktop only",
+    "passwordLogged": false
+  },
+  "backup": {
+    "download": {
+      "suggestedFilename": "local-first-trading-ledger-backup-v1-20260726-112541Z.json",
+      "savedFilename": "reload-local-first-trading-ledger-backup-v1-20260726-112541Z.json",
+      "size": 1859,
+      "sha256": "f8607731f282dbffbd8bda39ccb63ad5ebab98076fdc98c51bc85013010e0fa7",
+      "failure": null,
+      "backupFormatVersion": 1,
+      "tradeCount": 1
+    },
+    "dataRowsAfterClear": 0,
+    "dataRowsAfterImport": 1
+  },
+  "desktop": {
+    "viewport": [
+      1280,
+      720
+    ],
+    "scrollWidth": 1280,
+    "clientWidth": 1280,
+    "controls": {
+      "backup": true,
+      "tradeDelete": true,
+      "passwordRiskText": true
+    }
+  },
+  "unlock": {
+    "lockedAfterReload": true,
+    "defaultType": "password",
+    "pointerDownType": "text",
+    "pointerUpType": "password",
+    "passwordValueRecorded": false,
+    "dataRowsAfterUnlock": 1
+  },
+  "console": {
+    "warnings": [],
+    "errors": [],
+    "pageErrors": [],
+    "unexplained": false
+  },
+  "completed": true
+}

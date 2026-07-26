@@ -1,0 +1,39 @@
+
+ RUN  v4.1.9 /private/tmp/lftr-week10-resume.uyOWxH/source
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: independent OBS-01 rejected Promise
+ ❯ src/independent-tests/week10-obs.independent.test.tsx:16:23
+     14|   it("OBS-01 records rejected Promise behavior without leaving permane…
+     15|     const user = userEvent.setup();
+     16|     const rejection = new Error("independent OBS-01 rejected Promise");
+       |                       ^
+     17|     const onConfirm = vi.fn(() => Promise.reject(rejection));
+     18|
+ ❯ node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+ ❯ node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+ ❯ node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+ ❯ runWithCancel node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10
+ ❯ node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+ ❯ runWithTimeout node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10
+ ❯ node_modules/@vitest/runner/dist/chunk-artifact.js:2955:64
+
+This error originated in "src/independent-tests/week10-obs.independent.test.tsx" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "OBS-01 records rejected Promise behavior without leaving permanent busy state". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+     Errors  1 error
+   Start at  19:39:11
+   Duration  794ms (transform 97ms, setup 0ms, import 364ms, tests 68ms, environment 306ms)
+
+RAW_EXIT_CODE=1
