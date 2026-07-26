@@ -1,6 +1,6 @@
 # Week 10 Checklist
 
-状态：开发侧 Gate 0-7 全部通过；02B 独立补充测试不通过，源码功能分支已推送但未合并，等待独立修复
+状态：Week 10 开发、收尾修复与独立验收均已结束；产品负责人接受剩余低风险并批准主线收口
 主题：页面减法 + Binance 最新行情 + 统一估值 + 三张 ECharts 图
 详细执行：[[00-Week10每日执行清单]]
 正式计划：[[01C_W10-三图与Binance行情执行计划]]
@@ -24,10 +24,10 @@
 - [x] 通俗失败说明见 [[02D_W10-三图与Binance行情不通过项通俗说明]]。
 - [x] T2 网络失败、限流、超时与部分成功合同通过。
 - [x] T4 mapping、整账替换和并发普通交易的旧响应保护通过。
-- [ ] 关闭 `next@14.2.35` 的 production WebSocket SSRF 高危风险。
-- [ ] 为旧未来交易和价格提供正式 UI 单条删除入口。
-- [ ] 补齐 T3 救援导出/strict import 与 T5 raw IndexedDB V2 envelope 独立证据。
-- [ ] 修复后重新独立测试；新结果通过前不得进入合并审查。
+- [x] Next 升级至 `15.5.22`，原 production WebSocket SSRF advisory 不再命中。
+- [x] 旧未来交易和价格已提供正式 UI 单条删除入口。
+- [x] 03D 已取得 production raw IndexedDB V2、真实下载、恢复与 reduced-motion 证据；部分受控子项保留测试基础设施 `BLOCKED`。
+- [x] 产品负责人复核 03D 后接受两个形式 P1、两个 P2 与证据缺口，决定不再追加修复或第三轮验收。
 
 ## Gate 0 证据
 
@@ -70,6 +70,7 @@
 - [x] Gate 1-6 分别至少有一个范围单一的中文源码提交。
 - [x] Gate 0 和 Gate 7 分别有独立外层文档提交。
 - [x] 两个仓库最终 clean。
-- [x] 源码停留在未合并的 `zhennn/week10-charts-binance`。
-- [x] 源码功能分支已推送并跟踪 `origin/zhennn/week10-charts-binance`。
-- [ ] 独立测试阻断关闭后再决定是否合并。
+- [x] 源码已通过本地合并提交 `1b58948` 进入 `main`。
+- [x] 合并后 42 个测试文件、383 项测试、typecheck、lint 和 production build 通过。
+- [ ] 推送源码与文档 `main`；当前等待安全审批层要求的再次显式授权。
+- [ ] 推送成功后删除本地和远端 `zhennn/week10-charts-binance`。
