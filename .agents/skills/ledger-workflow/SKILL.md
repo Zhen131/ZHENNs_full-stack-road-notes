@@ -1,21 +1,31 @@
 ---
 name: ledger-workflow
-description: Use when working on the Local-First Trading Ledger in this repository, including Chinese requests such as 账本写代码、账本 Git、账本讨论、账本继续、账本日志, or equivalent direct tasks involving ledger code, architecture, progress, documentation, or version control.
+description: Use when working on the Local-First Trading Ledger in this repository, including product-track requests such as 账本、继续账本 and thesis-track requests such as 论文、继续论文、论文 Git or CS2026, plus coding, architecture, progress, documentation, and version-control tasks.
 ---
 
 # Ledger Workflow
 
 ## Core rule
 
-Identify the task mode first, then load only the context needed for that mode. Do not scan the full workspace to “understand the project.”
+Select exactly one source track first, then identify the task mode and load only the context needed for it. Do not scan the full workspace to “understand the project.”
 
 ## Start every task
 
 1. Read the repository-root `AGENTS.md`.
 2. Read `01一些进度/日志/00-当前开发状态.md` when it exists.
-3. Classify the request using the routing table.
-4. Confirm which Git repository is in scope before any Git mutation.
-5. Search for task-specific files with `rg` or `rg --files`; expand context only when evidence requires it.
+3. Select the product or thesis track using the track-routing table.
+4. Classify the request using the mode-routing table.
+5. Before any write or Git mutation, verify that both the actual worktree path and `git branch --show-current` match the selected track. Stop without modifying files if they do not match.
+6. Search for task-specific files with `rg` or `rg --files`; expand context only when evidence requires it.
+
+## Track routing
+
+| User wording | Worktree | Required branch |
+| --- | --- | --- |
+| Any mention of `论文` or `CS2026`, including `继续论文` and `论文 Git` | `01一些进度/产出/LocalFirstTradingLedger-CS2026/` | `CS2026` |
+| `继续账本`, only `账本`, or no thesis wording | `01一些进度/产出/LocalFirstTradingLedger/` | `main` |
+
+Thesis wording always wins when a request contains both generic ledger wording and a thesis reference. If the user explicitly names a different track than the routing table, pause and ask before changing either source worktree.
 
 ## Mode routing
 
@@ -32,8 +42,11 @@ If a request mixes modes, use the user’s concrete outcome as the primary mode 
 ## Repository boundaries
 
 - Treat the workspace root as the documentation and planning repository.
-- Treat `01一些进度/产出/LocalFirstTradingLedger/` as the independent source repository.
-- Never combine their status, branch, diff, staging, commits, or pushes.
+- Treat the two `LocalFirstTradingLedger*` directories as separate worktrees of one independent source repository: the original directory is `main`; the `-CS2026` directory is `CS2026`.
+- Never combine the root repository with source status, diff, staging, commits, or pushes.
+- Never create a merge PR between `main` and `CS2026`.
+- Never automatically merge, rebase, cherry-pick, copy a fix, or edit both source tracks in one task.
+- When one track reveals something useful to the other, record only `可能值得参考` in the current-week log. Reimplement or copy it only after explicit user approval.
 
 ## Context expansion
 
@@ -52,22 +65,28 @@ Never proactively read `00开始前的一些准备文件/99-私人网络环境�
 - For discussion, remain read-only unless implementation is explicitly requested.
 - For Git, show the scoped changes and verify the target repository before staging or committing.
 - For logs, record only facts supported by files, Git, or command output.
+- Keep source execution notes in the shared week directory, but put the branch in both filename and title, for example `01A_W12-CS2026-...` or `02A_W12-main-...`.
+- Keep public Markdown and commit titles in both source tracks in English. The `main` product UI may remain Chinese; the tracked `CS2026` worktree must contain no directly written Chinese characters.
 
 ## Finish the task
 
 Update `01一些进度/日志/00-当前开发状态.md` only when completed work changes the milestone, active work, next step, risk, key entry file, or verified result. Do not update it for ordinary discussion or read-only inspection.
 
-Report:
+Report each affected track separately:
 
 1. Outcome.
-2. Files or repository affected.
-3. Verification evidence.
-4. Next step, only when useful.
+2. Exact worktree and actual branch.
+3. Status and diff scope.
+4. Tests or other verification evidence.
+5. Commit and push state.
+6. Next step, only when useful.
 
 ## Common mistakes
 
 - Reading every log or the whole Frappe Books repository.
 - Assuming the root and source repositories share Git state.
+- Treating `main` and `CS2026` as merge partners or carrying a fix across them without approval.
+- Writing to a source worktree before confirming its actual branch.
 - Treating placeholder UI data as ledger truth.
 - Updating progress from intention instead of verified work.
 - Forcing the user to use an exact command phrase when direct language is clear.
