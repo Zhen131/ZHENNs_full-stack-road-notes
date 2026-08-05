@@ -9,6 +9,18 @@ description: Use when working on the Local-First Trading Ledger in this reposito
 
 Select exactly one source track first, then identify the task mode and load only the context needed for it. Do not scan the full workspace to “understand the project.”
 
+## Three maintenance surfaces
+
+Treat the project as three maintenance surfaces, while preserving the fact that they belong to two Git repositories:
+
+| Maintenance surface | Path | Git boundary |
+| --- | --- | --- |
+| Development logs and plans | workspace root | documentation repository on `main` |
+| Long-term ledger product | `01一些进度/产出/LocalFirstTradingLedger/` | source repository `main` worktree |
+| Graduation thesis project | `01一些进度/产出/LocalFirstTradingLedger-CS2026/` | the same source repository's `CS2026` worktree |
+
+Do not describe these as three Git repositories. Select only one source worktree per task. Update the root documentation surface alongside it only when verified progress changes a plan, log, status, evidence boundary, or next step.
+
 ## Start every task
 
 1. Read the repository-root `AGENTS.md`.
@@ -16,7 +28,8 @@ Select exactly one source track first, then identify the task mode and load only
 3. Select the product or thesis track using the track-routing table.
 4. Classify the request using the mode-routing table.
 5. Before any write or Git mutation, verify that both the actual worktree path and `git branch --show-current` match the selected track. Stop without modifying files if they do not match.
-6. Search for task-specific files with `rg` or `rg --files`; expand context only when evidence requires it.
+6. If root documentation will change, separately verify that the workspace-root repository is on `main` and inspect its status and diff.
+7. Search for task-specific files with `rg` or `rg --files`; expand context only when evidence requires it.
 
 ## Track routing
 
@@ -44,6 +57,7 @@ If a request mixes modes, use the user’s concrete outcome as the primary mode 
 - Treat the workspace root as the documentation and planning repository.
 - Treat the two `LocalFirstTradingLedger*` directories as separate worktrees of one independent source repository: the original directory is `main`; the `-CS2026` directory is `CS2026`.
 - Never combine the root repository with source status, diff, staging, commits, or pushes.
+- When root documentation and one source track both change, verify and report them separately. If the user also authorizes staging, committing, or pushing, perform those operations separately. A successful source commit is not evidence that the root documentation repository was updated, or vice versa.
 - Never create a merge PR between `main` and `CS2026`.
 - Never automatically merge, rebase, cherry-pick, copy a fix, or edit both source tracks in one task.
 - When one track reveals something useful to the other, record only `可能值得参考` in the current-week log. Reimplement or copy it only after explicit user approval.
@@ -72,7 +86,7 @@ Never proactively read `00开始前的一些准备文件/99-私人网络环境�
 
 Update `01一些进度/日志/00-当前开发状态.md` only when completed work changes the milestone, active work, next step, risk, key entry file, or verified result. Do not update it for ordinary discussion or read-only inspection.
 
-Report each affected track separately:
+Report each affected maintenance surface separately, including the root documentation repository when it changed:
 
 1. Outcome.
 2. Exact worktree and actual branch.
