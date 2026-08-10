@@ -4,9 +4,11 @@
 
 开发结论：`PASS`（仅代表开发候选）
 
-独立验收：待全新执行者按 `01R1C` 生成 `01R1D`
+独立验收：`01R1D = PASS`
 
 源码分支：`zhennn/w12-pnl-fee-accounting`
+
+后续收口：冻结候选已 fast-forward 合入源码 `main`；下文“待独立复验／未 merge、未 push”保留为开发报告生成时的历史边界
 
 冻结 HEAD：`605c7a3c2860b7c4783a8234037882ceca1613c8`
 

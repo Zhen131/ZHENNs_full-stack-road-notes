@@ -1,8 +1,8 @@
 # Week 12 main PNL-001～003 手续费进入成本与净盈亏执行文档
 
 日期：2026-08-09
-状态：已执行；开发结果见 01B = `PASS`；本文保留为当时产品与测试合同
-源码轨道：`01一些进度/产出/LocalFirstTradingLedger/`；实际候选分支为 `zhennn/w12-pnl-fee-accounting`，从 `main` / `279af4e` 建立并保留未合并
+状态：已执行；开发结果见 01B = `PASS`；原 01D = `FAIL`，R1 修复后 01R1D = `PASS`
+源码轨道：`01一些进度/产出/LocalFirstTradingLedger/`；候选从 `main` / `279af4e` 建立于 `zhennn/w12-pnl-fee-accounting`，最终已 fast-forward 合入 `main`
 目标：`PNL-001`、`PNL-002`、`PNL-003`
 固定开发报告：`01B_W12-main-手续费进入成本与净盈亏执行报告.md`
 

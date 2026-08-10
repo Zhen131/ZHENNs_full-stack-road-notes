@@ -1,9 +1,9 @@
 # Week 12 main PNL-001～003 手续费进入成本与净盈亏独立审查执行文档
 
 日期：2026-08-10
-状态：待全新独立任务执行；本文是验收输入，不是验收报告
+状态：已执行；原 01D 据实判 `FAIL`；R1 修复与 01R1D 后最终独立结论为 `PASS`
 正式源码：`01一些进度/产出/LocalFirstTradingLedger/`，必须保持受 Git 管理源码只读
-固定候选：`zhennn/w12-pnl-fee-accounting` / `1d8603f8747f64a5aff5fd94cefb8f96c01290e9`，开始审查时必须重新核对
+固定候选：本次原审查对象为 `zhennn/w12-pnl-fee-accounting` / `1d8603f8747f64a5aff5fd94cefb8f96c01290e9`；本文其余内容保留为当时独立审查合同
 审查目标：`PNL-001`、`PNL-002`、`PNL-003`
 唯一输出：`01D_W12-main-手续费进入成本与净盈亏独立审查报告.md`
 

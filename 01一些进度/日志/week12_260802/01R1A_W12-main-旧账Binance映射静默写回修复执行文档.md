@@ -2,7 +2,7 @@
 
 日期：2026-08-10
 
-状态：待执行
+状态：已执行；01R1B 开发侧 `PASS`，01R1D 独立 `PASS`，修复已合入源码 `main`
 
 源码轨道：`01一些进度/产出/LocalFirstTradingLedger/`
 

@@ -5,6 +5,7 @@
 开发侧结论：`PASS`
 源码候选分支：`zhennn/w12-pnl-fee-accounting`
 目标：`PNL-001`、`PNL-002`、`PNL-003`
+后续收口：原 `01D = FAIL`；R1 修复后 `01R1D = PASS`，已 fast-forward 合入源码 `main`；下文 Git 状态保留开发报告生成时的历史现场
 
 ## 结论
 
