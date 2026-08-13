@@ -80,7 +80,7 @@ Never proactively read `00开始前的一些准备文件/99-私人网络环境�
 - For Git, show the scoped changes and verify the target repository before staging or committing.
 - For logs, record only facts supported by files, Git, or command output.
 - Keep source execution notes in the shared week directory, but put the branch in both filename and title, for example `01A_W12-CS2026-...` or `02A_W12-main-...`.
-- Keep public Markdown and commit titles in both source tracks in English. The `main` product UI may remain Chinese; the tracked `CS2026` worktree must contain no directly written Chinese characters.
+- Keep new commit titles, module documentation, `AGENTS.md`, and release notes in both source tracks in English. The `main` product root `README.md` and product UI are Chinese-first; the tracked `CS2026` worktree, including its root README, must contain no directly written Chinese characters.
 
 ## Finish the task
 

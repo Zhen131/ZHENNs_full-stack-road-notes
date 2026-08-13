@@ -44,8 +44,8 @@ AI 日常按三个工作面维护项目，但必须保留真实的 Git 边界：
 - 两个 `LocalFirstTradingLedger*` 目录是同一个独立源码仓库的两个 worktree：原目录固定使用 `main`，`LocalFirstTradingLedger-CS2026/` 固定使用 `CS2026`。
 - Git 任务先确认目标仓库，再查看该仓库的 `status`、分支、日志和 diff；不得混用两个仓库的提交。
 - 工作区根仓库面向用户本人：README、计划、日志等文档和 Git commit 使用中文。
-- 源码仓库面向导师与公开读者：README、模块说明、`AGENTS.md`、Release Notes 和 Git commit 标题使用英文。
-- `main` 是长期个人账本，产品界面允许中文；`CS2026` 是毕业论文版本，整个受 Git 管理的当前工作树必须使用英文，但历史中文提交不改写。
+- 源码仓库的 Git commit 标题、模块说明、`AGENTS.md` 和 Release Notes 使用英文；长期产品 `main` 的根 `README.md` 与产品界面使用中文，服务本人长期使用。
+- `CS2026` 是毕业论文版本，根 README 在内的整个受 Git 管理当前工作树必须使用英文，但历史中文提交不改写。
 - 出现“论文”或 `CS2026` 时只进入论文 worktree；“继续账本”、只说“账本”或未提论文时只进入 `main` worktree。写入前必须验证实际路径和分支相符。
 - 不创建 `main` 与 `CS2026` 之间的合并 PR。AI 不得自动 merge、rebase、cherry-pick、复制修复或同时修改两条分支；跨分支线索只在当周日志中记录“可能值得参考”，等待用户明确批准。
 - 保留用户已有改动。除非用户明确要求，不使用破坏性 Git 命令，不擅自提交或推送。
