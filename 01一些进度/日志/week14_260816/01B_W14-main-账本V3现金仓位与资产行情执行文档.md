@@ -3,7 +3,7 @@
 - 日期：2026-08-19
 - 源码轨道：长期账本产品 `main`
 - 调查基线：`main@0d0cb555e5d2fac1660ac51e7b577bcb9710582d`
-- 文档状态：`READY`（未来源码实施合同，不是执行报告）
+- 文档状态：`READY`（已纳入 B-02 改良版方案 C；源码实施合同，不是执行报告）
 - 未来功能分支：`zhennn/w14-v3-cash-assets-market-data`
 - 权威产品定义：`01A_W14-main-账本V3现金仓位与资产行情产品定义.md`
 
@@ -11,7 +11,7 @@
 
 本批采用一个不可拆开的 V3 合同：`LedgerData.schemaVersion = 3`，新增独立 `CashEvent[]`，现金余额只由交易、实际手续费与现金事件确定性重放；本地资产不再依赖固定白名单，`Asset.binanceMapping` 改为显式的对象或 `null`；明文 B 升级为 `BackupEnvelopeV3`。C 继续使用现有 `fileFormatVersion = 2`、PBKDF2/AES-GCM、current/previous 双代、revision、close/readback、补偿和 fail-closed 外壳，只把每代内部 `ledgerSchemaVersion` 与解密载荷升级为 3。
 
-旧 V2 B 和内部承载 V2 账本的旧 C 均只识别并明确拒绝，不迁移、不解密旧 C、不写回。实施必须按本文八个阶段顺序完成；开发侧自动化与真实 Chrome 全绿后，仍需新的独立执行者复审，才能进行第一次真实 B 导入。
+旧 V2 B 和内部承载 V2 账本的旧 C 均只识别并明确拒绝，不迁移、不解密旧 C、不写回。Binance symbol 验证若因浏览器隔离而拿不到可读响应，固定返回 `BINANCE_VALIDATION_UNAVAILABLE`，不猜测为无交易对，也不误报为单纯网络不可用。实施必须按本文八个阶段顺序完成；开发侧自动化与真实 Chrome 全绿后，仍需新的独立执行者复审，才能进行第一次真实 B 导入。
 
 ## 一、证据层与执行边界
 
@@ -217,7 +217,7 @@ DecimalString 的唯一语法正则为 `^-?(?:0|[1-9]\d*)(?:\.\d+)?$`。
 
 ### 4.3 B 与手动价格
 
-B 的 `assets` 是完整本地清单，合法导入后原样进入记账、价格和设置入口；应用不自动混入 BTC/ETH/ADA。无 mapping 的本地资产继续通过 `PriceForm -> createValidatedPriceSnapshot -> priceSelectionService -> positionService` 使用手动 USDT 价格参与持仓估值、资产分配和趋势。不得用成交价、零、成本或未来价格替代缺失手动价。
+B 的 `assets` 是完整本地清单，合法导入后原样进入记账、价格和设置入口；应用不自动混入 BTC/ETH/ADA。无 mapping 的本地资产继续通过 `PriceForm -> createValidatedPriceSnapshot -> priceSelectionService -> positionService` 使用手动 USDT 价格参与持仓估值、资产分配和趋势。用户可为今天或过去的不同日期保存不同手动价格；每个趋势日期只使用当时最新可得的 as-of 手动价格，同日修正沿用既有稳定选择规则，未来日期继续拒绝。手动录价全过程 fetch 必须为 0，B/C 往返后多日快照保持；本批不新增单币价格图。不得用成交价、零、成本、其他资产价格或未来价格替代缺失手动价。
 
 ## 五、Binance 显式联网合同
 
@@ -230,13 +230,13 @@ B 的 `assets` 是完整本地清单，合法导入后原样进入记账、价�
 3. 其他合法输入按原值作为候选；因此 `SOLUSDT` 保持不变，`ETHUSDT`／`SOLUSDC` 可由 Binance 响应明确暴露 base／quote 不匹配。
 4. 对候选调用公共 `GET /api/v3/exchangeInfo?symbol=...`；必须恰好一项、返回 symbol 与候选相同、`status = TRADING`、`baseAsset = localSymbol`、`quoteAsset = USDT`、Spot 允许。
 
-不支持中文名、完整英文名、模糊搜索或列表联想；不要调用全量 exchangeInfo 后在本地猜测。继续使用 `https://data-api.binance.vision`，不带 API key、cookie 或私有请求头。
+不支持中文名、完整英文名、模糊搜索或列表联想；不要调用全量 exchangeInfo 后在本地猜测。继续使用 `https://data-api.binance.vision`，不带 API key、cookie 或私有请求头。每次验证只发上述单项 exchangeInfo；不得新增同源代理、中间服务器、失败后二次 ticker／状态探测、OKX、多行情提供方或自动 retry。
 
 ### 5.2 单资产“验证并保存”的准确顺序
 
 1. 用户点击按钮后才创建 operation id、AbortController，并冻结 `ledgerEpoch + session generation + asset id/symbol + 当前 mapping signature`。
 2. 正规化输入；本地错误零网络。
-3. 请求 exchangeInfo 并完成 Spot/base/USDT 验证。
+3. 请求 exchangeInfo 并完成 Spot/base/USDT 验证；若页面拿不到可读 Response 且不是明确 timeout／external abort，立即返回 `BINANCE_VALIDATION_UNAVAILABLE` 并结束本 operation。
 4. 响应回来后先检查 signal、operation id、ledger/session generation、资产仍存在且 symbol 未变；任一不符直接丢弃，不更新提示或账本。
 5. 通过 `setAssetBinanceMapping` 生成候选，用现有认证 mutation/save 队列保存 mapping；必须等该 mutation 的 `persistedVersion` 被确认，才显示“映射已保存”。此时把本 operation 的 expected mapping signature 从旧值原子切换为刚落盘的新值。
 6. mapping 已持久化、operation 已绑定新 signature 且仍与响应完全相同时，发起一次该 symbol 的 ticker/price 请求。
@@ -251,14 +251,16 @@ B 的 `assets` 是完整本地清单，合法导入后原样进入记账、价�
 - 删除当前 mount 自动 refresh 的 effect、`autoAttemptedRef` 和相关 session 状态；切页、解锁、hydrate、导入成功均不得隐式联网。
 - B 导入成功后，纯函数列出 `binanceMapping === null` 的 symbol。提示只展示清单与“联网自动配对”按钮，不自动执行。
 - 用户点击“联网自动配对”后，以当时缺失清单为冻结输入，按 symbol 排序逐项验证 `${symbol}USDT`，无重试；收集完后只把仍存在、仍无 mapping 的成功项作为一次认证 mutation 保存。mapping 持久化后，可用一次批量 ticker 请求取得首次价格并作为第二次认证 mutation 保存。
-- 某项失败不删除资产、不回滚 B、不回滚其他成功 mapping；页面给出每项 code 与中文说明。锁定／切账本／卸载中断全部后续写回。
+- 某项失败或返回 `BINANCE_VALIDATION_UNAVAILABLE` 时，不删除资产、不回滚 B、不回滚其他成功 mapping；该项保持 `binanceMapping = null`，页面给出每项 code 与中文说明。只有成功项进入 mapping mutation，锁定／切账本／卸载中断全部后续写回。
 
 ### 5.4 失败与旧请求行为
 
 | 场景 | 必须结果 |
 | --- | --- |
-| 断网／DNS／fetch 抛错 | `BINANCE_NETWORK_ERROR`；本地事实、mapping、旧价格不变 |
+| symbol 验证拿不到可读 Response，且非明确 timeout／external abort | `BINANCE_VALIDATION_UNAVAILABLE`；不猜 missing／network，不发 ticker，不追加探测；本地事实、mapping、旧价格不变 |
+| ticker／价格刷新中的断网、DNS 或 fetch 抛错 | 继续返回 `BINANCE_NETWORK_ERROR`；旧 mapping、旧价格不变 |
 | 8 秒超时 | `BINANCE_TIMEOUT`；abort 一次，无重试 |
+| external abort | `BINANCE_ABORTED`；作为已取消操作处理，无写回 |
 | HTTP 418／429 | `BINANCE_RATE_LIMITED`，保留 status；无退避循环 |
 | 其他 4xx／5xx | `BINANCE_HTTP_ERROR`；不解析成成功 |
 | 非 JSON／字段缺失／重复 symbol | `BINANCE_MALFORMED_RESPONSE` 或既有精确 code |
@@ -268,6 +270,8 @@ B 的 `assets` 是完整本地清单，合法导入后原样进入记账、价�
 | 重复搜索 | 新操作先使旧 operation id 失效并 abort；旧 Promise 即使忽略 signal 晚到也零写回 |
 | 删除 mapping | 先使该资产请求失效；晚到 validation/ticker 都不得复活 mapping 或写价格 |
 | 切账本、锁定、卸载 | 同时递增 generation、abort、清 UI operation；晚到 Promise 不得 setState／mutation |
+
+`BINANCE_VALIDATION_UNAVAILABLE` 只适用于 `validateSpotSymbol` 的 exchangeInfo 请求无法取得可读 Response；不得机械覆盖 ticker 的普通网络错误。UI 固定表达：“当前无法验证该 Binance 交易对。该交易对可能不存在，也可能是 Binance 的错误响应无法被浏览器读取，或当前网络／服务暂时不可用。本地资产、历史交易和手动价格均未改变，可以继续使用手动价格或稍后重试。”
 
 允许联网的动作只有：用户点击单资产验证、单资产刷新、全局刷新、导入后的联网自动配对。离线新增／删除资产、删除 mapping、手动价格、B 读取／预检／导入、C 新建／保存／重开／锁定、页面导航、图表计算必须有零网络测试。
 
@@ -514,24 +518,24 @@ zhennn/w14-v3-cash-assets-market-data
 | ASSET-05 | 资产分别被主体交易、非零 feeCurrency、price、active/inactive FeeRule 引用 | 每类均阻止删除；一次报告全部 collection/count/path；无级联 | P0 |
 | ASSET-06 | 无任何依赖但有 mapping 的资产 | 删除资产成功且 mapping 随 Asset 消失；其他事实不变 | P1 |
 | ASSET-07 | 有全部依赖的资产仅删除 mapping | Asset 变 null 并更新时间；Trade／Price／FeeRule／Asset 均保留；晚到请求零写回 | P0 |
-| ASSET-08 | 无 mapping 的 SOL 添加当天 manual USDT price | 经现有 price selection/position/valuation 生效；不以成交价或零替代 | P0 |
+| ASSET-08 | mapping=null 的虚构资产持有非零仓位，并为连续多个日期保存不同 manual USDT price | 每次录价 fetch=0；各日按当时最新可得手动价 as-of 估值，总资产趋势随日期变化；未来价拒绝、缺价不以成交价／成本／零替代；不新增单币价格图 | P0 |
 | NET-01 | 对 SOL 分别输入 `SOL`、` solusdt ` | 候选均为 SOLUSDT；各只请求指定 exchangeInfo；合法 Spot 响应保存同一 mapping | P0 |
 | NET-02 | SOL 输入 ETHUSDT；响应 base=ETH | base mismatch，mapping／价格不变，不发 ticker | P0 |
-| NET-03 | 响应 quote=USDC、status 非 TRADING、Spot=false、symbols 空 | 分别返回 quote/trading/spot/missing 稳定 code；零写入 | P0 |
-| NET-04 | 断网、8 秒超时、HTTP 418、429、500 | 对应 network/timeout/rate-limited/http code；无重试、旧价格保留 | P0 |
+| NET-03 | 可读响应分别为 quote=USDC、status 非 TRADING、Spot=false、symbols 空 | 分别返回 quote/trading/spot/missing 稳定 code；零写入 | P0 |
+| NET-04 | symbol 验证 fetch 因 CORS／不可读响应抛异常；另测 timeout、external abort、可读 HTTP 418、429、500；ticker fetch 抛错 | 前者为 `BINANCE_VALIDATION_UNAVAILABLE`，timeout/aborted/rate-limited/http 保持精确，ticker 仍为 network；全部无重试、旧价格保留 | P0 |
 | NET-05 | 非 JSON、重复 symbol、字段缺失、ticker 为 0/负/NaN 文本 | malformed/invalid-price；不保存错误 mapping 或价格 | P0 |
 | NET-06 | exchangeInfo 成功，mapping readback 成功，首次 ticker 失败 | mapping 保留且 UI 明确“映射已保存、首次价格失败”；不回滚 | P0 |
 | NET-07 | 重复搜索，旧 fetch 忽略 AbortSignal 后晚到 | operation id 已失效；旧结果不 setState、不 mutation、不覆盖新结果 | P0 |
 | NET-08 | 请求中删除 mapping／资产、切账本、锁定、卸载 | generation/epoch/signature 拦截 validation 与 ticker；无复活、无卸载更新 | P0 |
 | NET-09 | 解锁、hydrate、切页、B 预检／导入、离线新增／手动价 | 严格 fetch spy 调用数 0；不存在 mount 自动 refresh | P0 |
 | NET-10 | 用户点击刷新一个已 mapping 资产与“刷新非零持仓” | 只请求点击范围；零持仓跳过；成功价格经认证 mutation 持久化 | P1 |
-| NET-11 | 导入后缺 SOL/KNIGHT mapping；用户点击自动配对，SOL 成功、KNIGHT 无对 | B 已落盘；成功 mapping 一次 mutation、价格第二次 mutation；KNIGHT 保留 null；失败不回滚 C | P0 |
+| NET-11 | 导入后缺 SOL/KNIGHT mapping；用户点击自动配对，SOL 成功、KNIGHT 验证响应不可读 | B 已落盘；成功 mapping 一次 mutation、价格第二次 mutation；KNIGHT 返回 validation-unavailable 并保留 null；不发 KNIGHT ticker、不重试，不回滚 C、现金、交易、资产或手动价格 | P0 |
 
 ### 9.3 B、C 与导入安全
 
 | 编号 | 输入／动作 | 唯一预期结果 | 等级 |
 | --- | --- | --- | --- |
-| B-01 | 含负现金、五类 collection 与 null／有效 mapping 的合法 V3 | 导出 exact BackupEnvelopeV3、2 空格、末尾换行；再解析得到 canonical LedgerData identity 相同 | P0 |
+| B-01 | 含负现金、五类 collection、null／有效 mapping 与多日手动价格的合法 V3 | 导出 exact BackupEnvelopeV3、2 空格、末尾换行；再解析得到 canonical LedgerData identity 相同，多日手动价格及来源保持 | P0 |
 | B-02 | backupFormatVersion 2 的合法旧 B | 版本阶段明确拒绝；candidate/report-success/confirm 不产生；C write 与 fetch 均 0 | P0 |
 | B-03 | V3 外层未知键、schema 不一致、LedgerData 未知键 | exact shape/schema mismatch；不静默重建成候选 | P0 |
 | B-04 | 负余额合法 B；另测非法枚举、负流量 amount、校准算术矛盾 | 前者仅 warning 并可导入；后三者按 path 阻止 | P0 |
@@ -542,8 +546,8 @@ zhennn/w14-v3-cash-assets-market-data
 | B-09 | 导入全过程安装会抛错的 fetch spy | 导入成功且 fetch 调用 0；成功后只生成纯缺 mapping 清单 | P0 |
 | B-10 | 导入后主动配对全部失败 | C 中 V3 ledger 保持；资产与现金不回滚；只有后续配对错误状态 | P0 |
 | C-01 | 新建 V3 C | 外层 v2/crypto v1，current schema 3、previous null、parent null；解密 payload exact V3 | P0 |
-| C-02 | 连续保存两次不同事实 | 每次新 IV/revision；current/previous 相邻且独立密文；parent 正确，旧 previous 丢弃 | P0 |
-| C-03 | 保存后锁定、重开正确密码 | 锁定清密钥和 pending state；重开验证 fileId/current 后解密，页面只发布 verified current | P0 |
+| C-02 | 连续保存两次不同事实，其中包含 mapping=null 资产的多日手动价格 | 每次新 IV/revision；current/previous 相邻且独立密文；parent 正确，旧 previous 丢弃；多日价格完整进入 current | P0 |
+| C-03 | 保存多日手动价格后锁定、重开正确密码 | 锁定清密钥和 pending state；重开验证 fileId/current 后解密，页面只发布 verified current；多日价格、来源和 mapping=null 保持 | P0 |
 | C-04 | current 认证失败但 previous 完整，执行现有恢复入口 | 明确恢复 previous，并以其为依据形成新 current；不把损坏 current 当空账本 | P0 |
 | C-05 | 外层 v2、generation schema 2 的旧 C | passphrase/KDF/decrypt/write/connection publish 调用 0；返回 unsupported ledger schema | P0 |
 | C-06 | 错密、篡改 AAD、ciphertext、payload 多余键或非法 cash | 分别 auth/payload/contract 失败；文件零写、页面不发布、密钥不保留 | P0 |
@@ -560,7 +564,7 @@ zhennn/w14-v3-cash-assets-market-data
 | --- | --- | --- | --- |
 | UI-01 | 资产市值 900、cash 100；再设 cash -100 | 总资产分别 1000／800；现金行始终显示；负值不修零 | P0 |
 | UI-02 | 正 cash、负 cash、净值为零、资产无价格 | 正现金有扇区；负现金只显示 deficit legend 且无 abs 扇区；零分母空态；缺价标 incomplete | P1 |
-| UI-03 | 跨三日 Trade/CashEvent/Price | 趋势逐日 asOf 重放，不把今天现金或未来价格回填历史 | P0 |
+| UI-03 | 跨三日 Trade/CashEvent/Price；mapping=null 的非零虚构持仓具有多日不同手动价格 | 趋势逐日 asOf 重放并反映各日当时最新手动价，不把今天现金或未来价格回填历史；计算零 fetch | P0 |
 | UI-04 | 只有 CashEvent 改变 | 平均购价、成本、已实现／未实现 P&L 与热力图完全不变；现金字段为 `—` | P0 |
 | UI-05 | 全部 activity，逐类型、SOL 与 USDT 筛选 | 稳定倒序；类型交集正确；SOL 仅主体交易，USDT 仅 CashEvent | P1 |
 | UI-06 | 展开四类现金与买卖详情 | 字段、现金 delta、校准三字段、手续费可靠性完整且无派生字段伪装持久化 | P1 |
@@ -582,7 +586,7 @@ zhennn/w14-v3-cash-assets-market-data
 5. **生产构建**：`npm run build`，确认 production bundle 完成；开发服务器页面可见不替代该门。
 6. **差异卫生**：`git diff --check`，再检查 status、完整 diff、diff stat 和 staged diff；无空白错误、意外二进制、真实 B/C 或越界文件。
 7. **版本残留扫描**：定点扫描 `schemaVersion: 2`、`ledgerSchemaVersion: 2`、BackupEnvelopeV2、`DEFAULT_BINANCE_MAPPINGS`、`autoAttemptedRef` 与 mount refresh。允许的旧值只剩明确的 V2 拒绝 fixtures／断言及 C 外层 `fileFormatVersion = 2`；生产账本、B 和 generation 不得残留 V2。
-8. **联网边界扫描**：枚举全部 `fetch(`、Binance client 与 refresh 调用点；逐项证明只有四类用户点击入口可达。严格零 fetch 测试覆盖解锁、hydrate、切页、导入、本地资产、手动价格和 C 文件操作；无 API key、代理、retry loop、timer polling 或 WebSocket。
+8. **联网边界扫描**：枚举全部 `fetch(`、Binance client 与 refresh 调用点；逐项证明只有四类用户点击入口可达。严格零 fetch 测试覆盖解锁、hydrate、切页、导入、本地资产、手动价格和 C 文件操作；无 API key、代理／中间服务器、失败后二次诊断、全量 exchangeInfo、OKX／多行情提供方、retry loop、timer polling 或 WebSocket。
 
 定向测试的实际文件清单以源码 diff 中“本批新增或修改且属于第九节”的测试为闭集，不允许因命令过长漏掉某个 stage；完整 `npm test` 再负责全仓回归。质量门结果只能证明开发候选，不得写成独立验收。
 
@@ -612,16 +616,16 @@ w14-v3-fictional-v2.json
 | CH-02 | 入金 1000、出金 100、外部支出 50、校准目标 800 | 四条可见现金事实；校准显示 before 850、target 800、adjustment -50；余额 800 |
 | CH-03 | 新增 SOL，买入 total 900、fee 5 USDT | 保存前明确缺口 105 的第二确认；取消零变化，再确认后现金 -105；只生成一条 Trade |
 | CH-04 | 卖出部分 SOL total 200、fee 2 USDT；展开并删除一条现金事实 | 现金变 93 后按删除结果重新重放；流水详情与缺口确认符合最新状态 |
-| CH-05 | 完全离线新增 KNIGHT，并给它手动 USDT 价格 | 本地资产、记账和估值可用；新增过程 Network 无 Binance 请求 |
+| CH-05 | 完全离线新增 KNIGHT，建立非零虚构持仓，并为不同日期保存手动 USDT 价格 | 本地资产、记账和估值可用；mapping=null；手动价格保存与重开保留；全过程 Network 无 Binance 请求 |
 | CH-06 | 恢复网络，SOL 输入 `SOL` 后点击“验证并保存”，再明确点击刷新 | exchangeInfo→mapping 持久化→ticker 顺序成立；没有后台第二轮；SOLUSDT 也能得到同一候选 |
-| CH-07 | KNIGHT 点击验证得到无交易对；Chrome 切 Offline 后导航、记账、手动价、锁定／重开 | KNIGHT 不被删除；本地功能继续；断网失败不写零、不破坏旧价；无自动重试 |
+| CH-07 | KNIGHT 点击验证并触发 CORS／不可读响应；再切 Offline 后导航、记账、手动价、锁定／重开 | 只发一次指定 exchangeInfo；显示“当前无法验证”，不显示确定无对或单纯网络不可用；KNIGHT 保留、mapping=null、手动价保留；无 ticker、探测或 retry，本地功能继续 |
 | CH-08 | Online 后从 primary 导出合法 V3 B；检查文件名，再锁定 | B 是虚构 V3；锁定后页面不保留明文或可编辑状态 |
 | CH-09 | 新建空 import-target C，经原生选择器导入合法 B，全程观察 Network | close/readback 完成后页面一次切换；现金／资产／交易一致；导入期间 Binance 请求 0；缺 mapping 只提示 |
-| CH-10 | 点击导入后联网配对；让 KNIGHT 失败 | SOL 等成功项持久化，KNIGHT 仍为 null；已导入 C、现金和历史不回滚 |
+| CH-10 | 点击导入后联网配对；SOL 成功，KNIGHT 返回 validation-unavailable | SOL 等成功项独立持久化；KNIGHT 仍为 null 且无 ticker／retry；已导入 C、现金、交易、资产和手动价格不回滚 |
 | CH-11 | 对空的专用目标分别导入 invalid-cash V3 与 V2 B | 前者报告精确 cash path，后者明确 V2 不迁移；目标 revision／页面均不变，Network 0 |
 | CH-12 | 在 primary 连续完成两次保存，锁定并重开；再用只损坏 current 的虚构副本走现有 previous 恢复入口 | 正常重开取 current；双代相邻；损坏 current 不变空账本，previous 恢复后数据与对应 revision 一致 |
 | CH-13 | 桌面宽度与 390px 各完成现金／资产切换、筛选、详情、危险确认；再只用键盘重复关键路径 | 无溢出遮挡；焦点、label、live status、Escape 与返回焦点正确；非颜色信息完整 |
-| CH-14 | 检查首页总资产、现金行、分配、趋势、P&L 与热力图，并审阅全程 Console／Network | signed cash 数值一致；负现金无伪正扇区；P&L/热力图排除现金；零未解释 error/warning，零意外 Binance 请求 |
+| CH-14 | 检查首页总资产、现金行、分配、趋势、P&L 与热力图，并审阅全程 Console／Network | signed cash 数值一致；多日手动价按 as-of 进入现有总资产趋势；缺价不修零且无单币价格图；负现金无伪正扇区；P&L/热力图排除现金；零未解释 error/warning，零意外 Binance 请求 |
 
 每一步记录 Chrome 版本、源码 branch/HEAD、目标 C 文件名、预期与实际、Console error/warning 数和 Binance 请求触发点。记录中不得粘贴密码、密钥、完整 ciphertext 或任何个人账本。CH-01～14 任一失败，开发结果为 `FAIL`，不能用自动测试、截图或另一次不同路径的成功抵消。
 
