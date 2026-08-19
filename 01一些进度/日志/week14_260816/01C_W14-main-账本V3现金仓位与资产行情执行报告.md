@@ -1,22 +1,22 @@
 # 01C_W14-main｜账本 V3 现金仓位与资产行情执行报告
 
 - 执行日期：2026-08-19
-- 最终结论：`BLOCKED`
+- 最终结论：`FAIL`
 - 源码轨道：长期账本产品 `main` 的功能分支
 - 功能分支：`zhennn/w14-v3-cash-assets-market-data`
-- 最后一个已确认安全的源码提交：`59ee9235b98b5182784f81d1c8225f8f55cc0186`
+- 最后一个已确认安全的源码提交：`578f4a5af6551b321eb6677c555dd459fa2b168e`
 - 产品定义：`01一些进度/日志/week14_260816/01A_W14-main-账本V3现金仓位与资产行情产品定义.md`
 - 执行合同：`01一些进度/日志/week14_260816/01B_W14-main-账本V3现金仓位与资产行情执行文档.md`
 
 ## 结论
 
-八阶段源码实施、五个独立 `fix:` 提交和最后一轮自动化质量门已经完成。最后一轮有效结果为：55 个本批定向测试文件、713 项测试通过；完整 `npm test` 为 84 个测试文件、900 项测试通过；typecheck、lint、production build、diff-check、版本残留扫描和联网边界扫描全部通过。源码工作区干净，候选完整停留在指定本地功能分支，没有 upstream、merge 或 push。
+首次执行在 CH-07 遇到 Binance 无效 symbol 的 400 响应被 CORS 隔离，当时正确记为 `BLOCKED`。产品负责人随后明确选择“改良版 C”：页面无法读取 Binance 错误响应时，统一返回 `BINANCE_VALIDATION_UNAVAILABLE`，文案同时说明“交易对可能不存在”和“网络／服务／错误响应不可读”，不删除资产、不写 mapping、不请求 ticker、不自动重试。决策由根文档提交 `683d12ec60414880438889355eaaa727c7d94064` 固定。
 
-真实 Google Chrome 已在 production build 上完成 CH-01～CH-06。CH-07 发现新的、可复现的浏览器网络边界：Binance 对不存在的 `KNIGHTUSDT` 返回 HTTP 400 和 `{"code":-1121,"msg":"Invalid symbol."}`，但该错误响应没有 `Access-Control-Allow-Origin`；Chrome 的页面脚本因此只能得到 `fetch` 异常，当前应用按既定代码落到 `BINANCE_NETWORK_ERROR`，无法得到 01B 要求的 `BINANCE_SYMBOL_MISSING`。
+恢复执行新增两个独立源码修复：`86d7ee416d54ed4ab8d3491ff319fc42ab62f1ee` 实现改良版 C；真实 Chrome 随后又发现普通 V3 B 可通过预检但 ready import 误要求历史 `Trade.rawText`，`578f4a5af6551b321eb6677c555dd459fa2b168e` 将该要求限定到显式历史模式，同时继续拒绝伪造冻结证据。任一源码／测试变化后都废弃旧绿灯并从头重测。
 
-01A／01B 没有定义“上游错误响应被 CORS 隔离”时的唯一处理。01B 同时禁止代理、全量 `exchangeInfo` 和自动重试，并要求区分断网、418／429、其他 HTTP 错误与无交易对。加入同源代理、二次诊断请求，或放宽错误口径都会新增产品／网络／安全决定，不能由本轮执行者猜测。因此没有修改源码或测试来伪造成功，终态按目标模式规则记为 `BLOCKED`。
+最后一轮有效自动化结果为：56 个本批定向文件、726 项测试通过；完整 `npm test` 为 84 个测试文件、911 项测试通过；typecheck、lint、production build、diff-check、schema 残留扫描、联网边界扫描、敏感数据与调试残留扫描全部通过。源码工作区干净，候选停留在本地功能分支，无 upstream、merge 或 push。
 
-CH-08～CH-14 在最后一轮有效 Chrome 链中没有继续执行；第一次真实 B 导入、合并与推送继续禁止。此前 CH-13 曾发现并修复统一流水键盘事件冒泡缺陷，但源码修改后旧 Chrome 链已按规则作废，不能把局部旧结果计入最终通过数。
+真实 Chrome 的 CH-01～CH-14 功能链已全部跑完；业务、文件、恢复、响应式与图表语义的观测结果均符合预期。但 01B 规定了精确证据原点 `http://127.0.0.1:3414`；该原点在现有 Chrome 中已记住一个归属未知的旧账本连接。为避免读取、忘记或覆盖未知用户状态，本轮没有操作它，而是在隔离的 `http://localhost:3414` 完成虚构链。两个 hostname 的浏览器存储与文件授权相互隔离，因此不能把 localhost 证据冒充为 127.0.0.1 合同证据。根据“任一硬门不满足即失败”，最终结论是 `FAIL`，不是 `PASS`，也不再是 `BLOCKED`。
 
 ## 开始前现场
 
@@ -65,8 +65,10 @@ CH-08～CH-14 在最后一轮有效 Chrome 链中没有继续执行；第一次�
 | `245150173272c848d334535beb42e89749cbf853` `fix: align V3 regression fixtures with USDT contract` | 第一轮定向闭集有 3 项旧 fixture／期望仍按 USD 或错误 FeeRule 引用 | V3 只接受 USDT；非法 USD 不聚合；feeRuleId 必须与事实引用匹配 | 直接相关 3 个文件、67 项测试通过；随后重新全量测试 |
 | `b71987b4a5c37cdd0e7d62f07aeb4215d198588e` `fix: keep cash feature imports within module boundaries` | 完整测试的 source layout 规则发现 cash feature 内部通过稳定入口自引用 | 改为模块内相对导入；行为和数据合同不变 | sourceLayout + CashEventPanel 共 2 个文件、12 项测试通过；随后重新全量测试 |
 | `59ee9235b98b5182784f81d1c8225f8f55cc0186` `fix: preserve keyboard actions in activity rows` | 真实 Chrome 390px 键盘路径发现删除按钮 Enter／Space 冒泡到整行，展开详情而不进入二次确认 | 行级键盘处理忽略 button／link／input／select；新增 ActivityTable 正式键盘回归 | 新测试 1 file / 1 test；本批 55／713、全量 84／900 和全部质量门重新通过 |
+| `86d7ee416d54ed4ab8d3491ff319fc42ab62f1ee` `fix: report unavailable Binance validation honestly` | Binance 无效 symbol 的 400 错误响应被 CORS 隔离，浏览器不能安全区分 missing、断网、429 或 5xx | 按产品决定实现 `BINANCE_VALIDATION_UNAVAILABLE`；不新增代理、诊断请求、全量列表或自动重试；失败零 mutation | client／mapping／controls／导入后配对的正式回归通过；随后全量重测 |
+| `578f4a5af6551b321eb6677c555dd459fa2b168e` `fix: allow normal V3 backups through ready import` | 真实 Chrome 中普通 V3 B 预检为零硬错，但 ready import 被历史 `Trade.rawText` 授权条件误拒绝 | 将 `requireHistoricalRawText` 绑定到真实冻结证据、context 与 session；普通 V3 保持 rawText 可选，显式历史模式仍强制，伪造证据仍零写入拒绝 | 导入授权、hook 与 file repository 回归通过；随后重跑 56／726、84／911 及全部质量门 |
 
-额外 fix 共 5 个，全部独立提交；没有 amend 或 squash。
+额外 fix 共 7 个，全部独立提交；没有 amend 或 squash。
 
 ## 全量测试—修复闭环
 
@@ -107,9 +109,25 @@ CH-08～CH-14 在最后一轮有效 Chrome 链中没有继续执行；第一次�
 - 版本残留扫描：通过。生产账本、B 与 generation 均为 V3；允许的 V2 只剩明确拒绝 fixture／断言及 C 外层 `fileFormatVersion = 2`。
 - 联网边界扫描：通过。可达 Binance 的生产入口仍只有用户点击验证、单资产刷新、全局刷新和导入后配对；无 API key、WebSocket、timer polling、自动 retry 或 mount refresh。
 
-最后一轮自动化没有未解决失败。终态 `BLOCKED` 只来自随后真实 Chrome 暴露的上游 CORS 错误边界没有安全唯一方案。
+该轮自动化没有未解决失败。它是首次 `BLOCKED` 前的有效史料；产品决策和后续源码修改使该轮绿灯不再能作为最终结果。
 
-## 真实 Google Chrome CH-01～CH-14
+### 第 5 轮：改良版 C 与普通 V3 导入修复后的最终结果
+
+- 源码 HEAD：`578f4a5af6551b321eb6677c555dd459fa2b168e`。
+- 本批 diff 定向闭集：56 files / 726 tests 全部通过。
+- `npm test`：84 files / 911 tests 全部通过。
+- `npm run typecheck`：退出 0，零 TypeScript 错误。
+- `npm run lint`：退出 0，零 warning、零 error。
+- `npm run build`：退出 0，Next.js 15.5.22 production build 完成；`/` route 338 kB，First Load JS 440 kB。
+- `git diff --check` 与 `git diff --check main...HEAD`：退出 0。
+- schema 扫描：生产 LedgerData、B 和 C 内部均为 V3；只保留明确 V2 拒绝 fixture／断言与 C 外层 `fileFormatVersion = 2`。
+- 联网扫描：生产域名只有 `https://data-api.binance.vision`；只有单 symbol `exchangeInfo` 与 ticker；无代理、API key、WebSocket、全量 `exchangeInfo`、多供应商、mount refresh、timer polling 或自动 retry。
+- 调试／测试扫描：无 `console.log`、`console.debug`、`debugger`、`.only`、`.skip`；没有新增敏感文件或二进制 diff。
+- fixture 扫描：回归中明确使用“虚构历史交易原句，非真实用户数据”。
+
+本轮自动化没有未解决失败；最终 `FAIL` 只来自 Chrome 证据原点不符合 01B 的精确地址合同，不是源码、测试或功能链失败。
+
+## 首次 `BLOCKED` 执行的历史 Chrome 记录
 
 - Chrome：Google Chrome `151.0.7922.140`
 - 环境：production build，`npm run start -- --port 3414`，`http://127.0.0.1:3414`
@@ -134,9 +152,9 @@ CH-08～CH-14 在最后一轮有效 Chrome 链中没有继续执行；第一次�
 | CH-13 | 未执行 | 前一轮局部检查发现并修复键盘缺陷；源码变化后该轮证据作废。最后一轮有效 Chrome 链在 CH-07 停止，不能复用旧结果。 |
 | CH-14 | 未执行 | 没有完成最后一轮 CH 全链，不能以局部首页查看或自动测试替代总账、图表与全程日志复核。 |
 
-CH-01～CH-14 的总体结果为 `BLOCKED`，不是 `PASS`。
+该次历史执行的 CH-01～CH-14 总体结果为 `BLOCKED`，不是 `PASS`。后续产品决策、源码修复和新鲜全链见下文。
 
-## Console、Network、原生 picker 与虚构文件证据
+## 首次执行的历史 Console、Network、picker 与虚构文件证据
 
 | 证据 | 结果 |
 | --- | --- |
@@ -150,7 +168,7 @@ CH-01～CH-14 的总体结果为 `BLOCKED`，不是 `PASS`。
 
 最初 Chrome 运行在 CH-01 原生保存选择器时，Mac 自动锁屏，连续检查均需要用户手动解锁，因此第一版 01C 记录为 `BLOCKED`。用户随后明确解锁；本轮启动防休眠，成功完成原生 primary 创建／重选、CH-01～CH-06 和新的网络调查。B-01 已解决，不再是最终 blocker。
 
-## 未解决问题 B-02：Binance 无效 symbol 的 400 响应被 CORS 隔离
+## 历史问题 B-02：Binance 无效 symbol 的 400 响应被 CORS 隔离
 
 | 字段 | 记录 |
 | --- | --- |
@@ -178,24 +196,80 @@ CH-01～CH-14 的总体结果为 `BLOCKED`，不是 `PASS`。
 - [Binance Spot REST API](https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md)：无效 `symbol` 会返回 Invalid symbol；公开行情建议使用 `data-api.binance.vision`。
 - [Binance Spot 错误码](https://github.com/binance/binance-spot-api-docs/blob/master/errors.md)：`-1121 BAD_SYMBOL`。
 
+## 改良版 C 恢复执行：最终 Chrome CH-01～CH-14
+
+- Chrome：Google Chrome `151.0.7922.140`。
+- 生产启动：`npm run start -- --port 3414`。
+- 01B 指定原点：`http://127.0.0.1:3414`。
+- 实际虚构链原点：`http://localhost:3414`。
+- 最终源码：`zhennn/w14-v3-cash-assets-market-data@578f4a5af6551b321eb6677c555dd459fa2b168e`。
+- 虚构证据目录：`/private/tmp/w14-v3-chrome-proof.kl6Ukx`。
+- 数据边界：只使用虚构资产、金额、备注、密码和 B／C；没有读取、复制或导入真实用户账本或投资数据。
+
+`127.0.0.1` 原点的归属未知旧连接被原样保留，没有读取、忘记、清空或覆盖。下表的“功能符合”只记录 localhost 隔离链中的观测，不能换算为 01B 合同 `PASS`。
+
+| 步骤 | 功能观测 | 新鲜证据 |
+| --- | --- | --- |
+| CH-01 | 符合 | 真实 Chrome 与 macOS 原生保存面板创建 `w14-v3-fictional-primary.lftl`；C 外层 `fileFormatVersion = 2`、内部 `ledgerSchemaVersion = 3`、`previous = null`；BTC／ETH／ADA 可见，现金 0。 |
+| CH-02 | 符合 | 依次保存入金 1000、出金 100、外部支出 50、校准目标 800；校准显示 before 850、target 800、adjustment -50；4 条现金事实、余额 800。 |
+| CH-03 | 符合 | 本地 SOL 的 mapping 为 null；买入 quantity 9、price 100、total 900、fee 5。负现金确认显示当前 800、delta -905、结果 -105、缺口 105；首次取消零写入，二次确认后恰好 1 条 SOL 买入，没有伪正现金扇区。 |
+| CH-04 | 符合 | SOL 卖出 total 200、fee 2 后现金 93；统一流水详情显示 fact ID、type、currency、date、timePrecision、createdAt、updatedAt；外部支出经二段确认与 5 秒撤销窗后事实 6→5、现金 143。 |
+| CH-05 | 符合 | DevTools 明确切换 Offline；离线新增 KNIGHT，保存买入 quantity 10、price 1 以及 2026-08-15=7、2026-08-18=9 两个手动价；离线锁定／解锁后现金 133、mapping=null、最新手动价 9 均持久化。 |
+| CH-06 | 符合 | 明确恢复 Online；`SOL` 与 ` solusdt ` 均得到 SOLUSDT candidate 并成功；mapping 先落盘，随后 ticker 价格落盘；单资产刷新成功，页面曾显示 `78.43000000 USDT · Binance`；等待期间无后台第二轮。 |
+| CH-07 | 符合 | KNIGHT 明确验证后显示 `BINANCE_VALIDATION_UNAVAILABLE`及改良版 C 完整文案；KNIGHT 保留、mapping=null、手动价 9 保留，无 ticker 与自动重试。随后离线切页、入金 1、保存 2026-08-19=11 手动价、锁定／解锁后，现金 134 与手动价 11 仍在。 |
+| CH-08 | 符合 | SOL mapping 经二段确认删除，已有 API 价格事实保留；原生下载导出合法 V3 B，再复制为 `B.json`，两者 SHA-256 均为 `7a9843fe66cce883ac2bca69c7b4fb8c4730accba430a8e969e81df8d9e3cb05`；锁定后无工作区明文与可编辑状态。 |
+| CH-09 | 符合 | 原生新建 import-target C，原生选择 `B.json`；预检为 B3／schema3、5 资产、3 Trade、4 现金事实、4 价格、0 规则、现金 134、硬错 0，缺 mapping 为 KNIGHT／SOL，hash 完全一致。首次确认恢复暴露 ready-import rawText 缺陷；修复并从头重跑后成功落盘，首页现金 134、流水 7 条、资产／交易／手动价完整。 |
+| CH-10 | 符合 | 在独立 pairing-target 中重复 CH-09，导入后面板列出 KNIGHT／SOL。首次因 Offline 残留两项均 unavailable；明确切回 Online 且只有手动点击“重试仍缺失的资产”才再联网。最终 SOL mapping 与价格各落盘 1 项，KNIGHT 仍 unavailable；现金 134、7 条事实、KNIGHT 手动价 11 无回滚。 |
+| CH-11 | 符合 | 从真实 Chrome 创建的 import-target 中取导入前真实空 `previous` 修订，机械生成两个专用空 C，再由原生 picker 分别选中。invalid-cash V3 精确报 `LEDGER_DATA_INVALID_ENTITY · cashEvents[0].amount · must be greater than 0`；V2 报 `BACKUP_UNSUPPORTED_FORMAT_VERSION · 这是 V2 备份；V3 不提供迁移`。两个 C 拒绝前后 hash 均为 `e3753bc31e2edf50c87a657f2dc39d0cf5f5f494f60098e2ceff811f2cda2791`，current revision 不变、`previous=null`、现金 0。 |
+| CH-12 | 符合 | primary 连续入金 2 与 3，每次等到“已保存到加密文件”，现金 136→139，current／previous 严格相邻；锁定重开 current 为 139。仅改动副本 current ciphertext 第一字符，副本与 primary 中的 previous 对象 SHA-256 完全一致。解锁时损坏 current 被拒绝，页面明确“最新一次保存没有恢复”；确认后由 previous 生成新 current，复读现金 136。 |
+| CH-13 | 符合 | 默认 1495×812 与显式 390×844 viewport 均满足 `scrollWidth === clientWidth`。两种尺寸下现金／KNIGHT 表单切换无过期表单；资产／类型／准确日期筛选正确；Enter 可展开／收起详情、清除筛选、打开危险确认与取消；取消后现金 136 和数据完整。 |
+| CH-14 | 符合 | 首页显示净总资产 795.01、现金 136、SOL 549.01、KNIGHT 110；分配恰好 3 个正资产扇区。现金从 134 变到 136 后，已实现／未实现盈亏仍为 -3.111111…／-54.878888…，证明 P&L 不吸收现金事实。趋势文案明确“总资产逐日重放现金与可得行情；成本线仍只读取交易”；热力图仅显示 8月14日 1 笔买入、8月19日 1 买 1 卖，未把 5 条现金事实计为交易。页面标题仅有总资产／成本趋势、分配、P&L 与交易热力图，没有单币价格图。Console warning/error 为 0。 |
+
+功能观测合计为 CH-01～CH-14 全部符合，但合同结果仍为 `FAIL`：所有观测均来自 `localhost`，不是冻结的 `127.0.0.1`。
+
+### 最终文件与运行证据
+
+| 证据 | 结果 |
+| --- | --- |
+| 合法 B | `B.json` 为 Backup V3／schema 3，5 资产、3 Trade、4 现金事实、4 价格，现金 134；SHA-256 `7a9843fe66cce883ac2bca69c7b4fb8c4730accba430a8e969e81df8d9e3cb05`。 |
+| invalid-cash V3 | SHA-256 `83023edc8ffdc8848612bc276329dbfb9644ba90ac98cf3f540a8f0f7947f408`。 |
+| V2 B | SHA-256 `901605845c5dbefa259082b4885d9b6d5fbd00e534d19dac437781f9c901c301`。 |
+| primary C | 最终双代为 current `c5bdedc4…`／previous `0403a9b9…`，`current.parentRevisionId === previous.revisionId`；SHA-256 `6817febd51c3207c9bee5513705c30987d2477e015dacb385af10ebdc5d9c804`。 |
+| recovered C | 损坏 current 恢复后的新 current 为 `cc0e3de7…`，parent 与 previous 均为 `0403a9b9…`；SHA-256 `e6f1f46413c934798b9eb663830f15fa6f5ac54762bf60b24b8c5507459e9706`。 |
+| 零写入 C | invalid-cash-target 与 v2-target 拒绝后 SHA-256 均为 `e3753bc31e2edf50c87a657f2dc39d0cf5f5f494f60098e2ceff811f2cda2791`，修订与 `previous=null` 不变。 |
+| picker | C 的创建／重选、B 的导出／选择均走 macOS 原生面板；用户曾手动帮助选中一次 `B.json`，其余由执行者完成。 |
+| Console | 最终页面开发者日志 warning/error 共 0。 |
+| Network 边界 | 无可导出的 raw HAR；请求次数／顺序证据来自明确点击前后页面状态、等待无第二轮的观察，以及冻结 HEAD 的代码／正式测试／联网扫描；不冒充为完整 DevTools HAR。 |
+| 临时截图 | 为检查隐藏系统提示而产生的全屏临时截图已从 `/private/tmp` 删除，不可恢复；不作为验收证据。 |
+
+### B-02 决策与解决状态
+
+- 决策：选择改良版 C，而不是代理、额外诊断请求或全量列表。
+- 失败码：`BINANCE_VALIDATION_UNAVAILABLE`。
+- 用户可见口径：无法确认时同时保留“交易对可能不存在”和“错误响应不可读／网络或服务不可用”两种真实可能。
+- 失败边界：资产、历史交易与手动价不改，mapping 不写，ticker 不请求，没有自动 retry／poll。
+- 实现提交：`86d7ee416d54ed4ab8d3491ff319fc42ab62f1ee`。
+- 真实 Chrome：KNIGHT 稳定进入 unavailable；SOL 在 Online 且明确手动重试后成功，证明改良版 C 没有把全部网络结果猜成 missing。
+- 结论：B-02 已解决，不再是 blocker。本报告最终 `FAIL` 与 B-02 无关，只由精确 Chrome 原点不符合产生。
+
 ## 最终 Git 现场
 
 ### 源码仓库
 
 - 当前分支：`zhennn/w14-v3-cash-assets-market-data`
-- HEAD：`59ee9235b98b5182784f81d1c8225f8f55cc0186`
+- HEAD：`578f4a5af6551b321eb6677c555dd459fa2b168e`
 - `main`：仍为 `0d0cb555e5d2fac1660ac51e7b577bcb9710582d`
 - 工作区：clean，无 staged、unstaged、untracked
-- `origin/main...HEAD = 0/13`
+- `origin/main...HEAD = 0/15`
 - upstream：无
-- 固定阶段提交：8 个；额外 fix：5 个
+- 固定阶段提交：8 个；额外 fix：7 个
 
 ### 根文档仓库
 
-- 恢复执行前：`main@d1ae5c9053eca2a1b4c1b9cdebfb520a56ec67a4`，clean，`origin/main...HEAD = 0/5`
+- 本次报告提交前：`main@683d12ec60414880438889355eaaa727c7d94064`，clean，`origin/main...HEAD = 0/7`
 - 本轮只更新同一份 01C，不修改 01A、01B、`00-当前开发状态.md`、README 或其他 Week 14 文件
 - 只暂存并提交本 01C；更新提交 hash 在最终回复记录，避免文档自引用和 amend
-- 提交后应为 `main`、clean、相对 `origin/main` ahead 6／behind 0
+- 提交后应为 `main`、clean、相对 `origin/main` ahead 8／behind 0
 
 ## 边界声明
 
@@ -204,8 +278,11 @@ CH-01～CH-14 的总体结果为 `BLOCKED`，不是 `PASS`。
 - 没有修改或进入 CS2026 源码轨道。
 - 没有导入、复制或读取真实 B/C；没有使用真实投资数据。
 - 自动化与本报告不是独立复审；独立执行者复审尚未执行。
-- `BLOCKED` 不撤销八阶段、五个 fix 和最后一轮自动化绿灯，但也不能升级为本地开发候选 `PASS`。
+- B-02 已解决，源码与 localhost 功能链均无未解决失败；但 `FAIL` 不能升级为本地开发候选 `PASS`。
+- 不使用 localhost 证据更新独立验收记录，不开始第一次真实 B 导入。
 
-## 恢复通过线
+## 下一步
 
-产品负责人先决定 B-02 的网络／错误口径，并据此更新或明确授权修改 01A／01B。之后从 `59ee923...` 建立新的独立 `fix:` 提交与正式测试，重新完成 55 文件定向闭集、完整测试、typecheck、lint、build、diff-check、版本／联网扫描，再从受影响的 Chrome 链按合同重跑；若代码、网络或文件合同变化，CH-01～CH-14 必须重新完整执行。全部通过后仍需新鲜独立执行者复审，真实 B 才可能进入下一步。
+`交由新的独立执行者复审`。
+
+独立执行者必须在不读取、删除或覆盖未知用户状态的前提下，建立全新隔离的 Chrome 证据环境，并严格使用 `http://127.0.0.1:3414` 重跑冻结 HEAD 的 CH-01～CH-14。只有该精确原点的新鲜独立证据也全部通过，才能重新评估 `PASS`；在此之前继续禁止真实 B 导入、merge 和 push。
