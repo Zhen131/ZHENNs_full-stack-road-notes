@@ -109,3 +109,27 @@ R2 开发任务已完成；下一步只能由全新独立执行者冻结 `49fa99
 - 未修改源码 `main`，未进入或修改 `CS2026`、`02_NLP`、外部参考项目或私人数据。
 - 未生成或导入真实 V3 B/C，未输入正式清空文字，未执行清空。
 - 原 `01D = FAIL`、`01R1D = FAIL` 与 `W14-R1D-P1-01` 继续保留；自动测试全绿不改写独立结论。
+
+## 七、2026-08-22 产品负责人发布裁决与收口结果
+
+### 裁决
+
+产品负责人正式接受本报告已有的 R2 开发证据，并明确豁免任何新的 Vitest、Week 14／全量测试、typecheck、lint、build、Chrome 和独立复验。该决定取代本报告原先的临时“不得合入或推送”边界，足以授权本次发布；本报告原开发结论保持不变，本节不把它改写成独立复验报告。
+
+本次沿用但未重跑的证据包括 R2 定向 10/10、Week 14 闭集 58 files / 739 tests、全量 85 files / 919 tests 多次通过、既有 typecheck／lint／build／diff-check，以及 Guest Chrome 原生文件选择器和焦点循环证据。本次没有运行任何测试、质量门或浏览器复验，也没有修改业务源码、测试、配置或 fixture。
+
+### 源码收口
+
+- 既有 R2 证据基线：commit `49fa99ca70d87c455cebd3d48c5210fef4199ccb`；tree `eecd4e371e161ea1ae13cbdd7785720f533677dc`。
+- feature `zhennn/w14-v3-cash-assets-market-data` 以 `git merge --ff-only` 完整纳入 `main`，没有 merge commit、squash、rebase 或 cherry-pick。
+- 源码 README 发布提交：`9855f842f172d792582c9b0f5d40367d2bedfe46 docs: record Week 14 release decision`；最终 tree `6ea62e2d25b865be1535c2a458328352ad8ebd08`。该提交只修改 `README.md`。
+- 源码 `main` 已正常推送至 `origin/main`；`CS2026@a7d8b2158946c29829ecdfc8dd6ec053b0c8ee68` 普通 push 返回 `Everything up-to-date`，工作树内容未改。
+- 本地 feature 在确认已被 `main` 包含且推送成功后使用 `git branch -d` 删除；远端原本不存在同名 feature，无远端删除操作。
+- 源码本地及远端最终只保留 `main` 与 `CS2026`；产品与论文 worktree 均 clean，分别与远端为 `0/0`。
+
+### 根文档收口与证据边界
+
+- `01R1D` 以原 SHA-256 `b8a507b0ea73b2a80ef473f5e35e4644f7e23ed60945acc433501e6d72ce55dd` 原样归档，提交为 `36579bfdae23dac0eb10824c95d38e82b121a95e`。
+- 本节、`00-当前开发状态.md` 与 `99_W14-第十四周日志.md` 由第二笔中文提交统一记录，并随根仓库 `main` 正常推送至 `origin/main`；推送后根仓库 clean 且为 `0/0`。
+- 根仓库不存在 `README.md`，因此没有为制造差异而新建或修改根 README。
+- 原 `01D = FAIL` 与 `01R1D = FAIL` 完整保留；没有创建 `01R2D`，没有产生或伪造新的独立复验 `PASS`。Week 14 的实际终态是“产品负责人接受现有 R2 证据、批准发布并完成收口”。
