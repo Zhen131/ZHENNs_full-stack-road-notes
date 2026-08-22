@@ -56,6 +56,12 @@ If a request mixes modes, use the user’s concrete outcome as the primary mode 
 
 - Treat the workspace root as the documentation and planning repository.
 - Treat the two `LocalFirstTradingLedger*` directories as separate worktrees of one independent source repository: the original directory is `main`; the `-CS2026` directory is `CS2026`.
+- Keep the root documentation repository private permanently because it contains personal development logs. Never change it to public.
+- Treat the source repository as public-facing. Before making it public, inspect official branches and tags, PR and Issue metadata, Actions, artifacts, releases, and secret-like content; require explicit user authorization for the visibility change.
+- The 2026-08-22 cleanup uses documented risk acceptance: do not file a GitHub Support purge request, and accept that numeric-only matches in old PR refs may remain visible. This decision does not permit any new real user data in Git.
+- Treat `/Users/zhuzhen0131/Downloads/history_OKX/` and everything below it as a local-only private data area outside both Git repositories. Never copy, link, stage, commit, or push its raw inputs, scripts, intermediate tables, reports, or B files; never reuse them in PRs, Issues, tests, fixtures, examples, or development logs.
+- Read or write that private area only for an explicitly requested real-data conversion or private acceptance task. Report only non-identifying aggregate evidence outside it.
+- After any sensitive-history rewrite, continue normal pushes only from local repositories rebuilt from the clean remote history. Never pull, merge, or push from retained old Git metadata.
 - Never combine the root repository with source status, diff, staging, commits, or pushes.
 - When root documentation and one source track both change, verify and report them separately. If the user also authorizes staging, committing, or pushing, perform those operations separately. A successful source commit is not evidence that the root documentation repository was updated, or vice versa.
 - Never create a merge PR between `main` and `CS2026`.
