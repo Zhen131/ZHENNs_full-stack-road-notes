@@ -390,7 +390,7 @@ const sampleTrade: Trade = {
   timePrecision: "day",
   type: "buy",
   assetSymbol: "BTC",
-  quantity: "0.24265306",
+  quantity: "0.12345678",
   price: "67121.7",
   totalValue: "11",
   currency: "USD",

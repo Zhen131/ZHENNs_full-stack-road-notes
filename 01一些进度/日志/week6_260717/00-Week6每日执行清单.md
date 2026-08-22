@@ -147,8 +147,8 @@
 - 清空用户交易和价格，保留生产资产目录。
 - 逐笔输入 5 条 golden 交易：BTC buy、ETH buy、ADA buy、ADA buy、ADA sell。
 - 核对：
-  - BTC：quantity `0.24265306`、costBasis `11`、realizedPnl `0`。
-  - ETH：quantity `0.400040`、costBasis `10`、realizedPnl `0`。
+  - BTC：quantity `2`、costBasis `20`、realizedPnl `0`。
+  - ETH：quantity `3`、costBasis `24`、realizedPnl `0`。
   - ADA：quantity `85.3244`、costBasis `21.297822152886115445`、realizedPnl `-0.702177847113884555`。
 - 输入 BTC 价格 `70000 USD`，核对 marketValue `11.4716`、unrealizedPnl `0.4716`。
 - 尝试超卖，确认交易列表和持仓不变。

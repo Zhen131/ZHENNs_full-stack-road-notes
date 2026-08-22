@@ -85,7 +85,7 @@ import type { DecimalString, Position, Trade } from "../models";
 | `import`                             | 从别的文件拿东西进来用。                                               |
 | `type`                               | 表示这里拿的只是 TypeScript 类型，不是运行时函数或对象。                         |
 | `{ DecimalString, Position, Trade }` | 从 `../models` 里拿三个类型名字。                                    |
-| `DecimalString`                      | 小数字符串类型，本质是 `string`，例如 `"0.400040"`。项目用字符串存小数，避免 JS 浮点误差。 |
+| `DecimalString`                      | 小数字符串类型，本质是 `string`，例如 `"0.123456"`。项目用字符串存小数，避免 JS 浮点误差。 |
 | `Position`                           | 最终计算出来的仓位结果类型。                                             |
 | `Trade`                              | 原始交易记录类型。                                                  |
 | `"../models"`                        | 相对路径，表示从当前文件上一级的 `models` 模块导入。                            |
@@ -556,7 +556,7 @@ averageCost = costBasis / quantity
 | 1 | 买入 BTC | 创建 BTC 草稿仓位，数量加 BTC 数量，成本加 `11` |
 | 2 | 买入 ETH | 创建 ETH 草稿仓位，数量加 ETH 数量，成本加 `10` |
 | 3 | 买入 ADA | 创建 ADA 草稿仓位，数量加 `41.58`，成本加 `10` |
-| 4 | 买入 ADA | 找到已有 ADA 草稿仓位，数量再加 `126.6825`，成本再加 `32` |
+| 4 | 买入 ADA | 找到已有 ADA 草稿仓位，数量再加 `20`，成本再加 `40` |
 | 5 | 卖出 ADA | 用 ADA 卖出前均价结转成本，减少数量和成本，计算已实现亏损 |
 
 ADA 的关键手算：

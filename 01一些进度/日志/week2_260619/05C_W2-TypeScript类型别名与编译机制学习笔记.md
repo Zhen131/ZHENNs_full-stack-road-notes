@@ -91,7 +91,7 @@ type PhoneNumber = string;
 
 | 类型别名 | 底层类型 | 业务含义 |
 | --- | --- | --- |
-| `DecimalString` | `string` | 小数字符串，例如 `"0.400040"` |
+| `DecimalString` | `string` | 小数字符串，例如 `"0.123456"` |
 | `CoinSymbol` | `string` | 币种符号，例如 `"BTC"` |
 | `PhoneNumber` | `string` | 电话号码字符串 |
 

@@ -54,13 +54,13 @@ export const sampleTrades: Trade[] = [
     timePrecision: "day",
     type: "buy",
     assetSymbol: "BTC",
-    quantity: "0.24265306",
+    quantity: "0.12345678",
     price: "67121.7",
     totalValue: "11",
     currency: "USD",
     fee: "0",
     feeCurrency: "USD",
-    rawText: "以均价 67121.7 买入 BTC 0.24265306 个，价值 11 USD，26/04/02",
+    rawText: "以均价 10 买入 BTC 2 个，价值 20 USD，26/04/02",
     createdAt: "2026-06-22T00:00:00Z",
     updatedAt: "2026-06-22T00:00:00Z",
   },
@@ -70,13 +70,13 @@ export const sampleTrades: Trade[] = [
     timePrecision: "day",
     type: "buy",
     assetSymbol: "ETH",
-    quantity: "0.400040",
+    quantity: "0.123456",
     price: "2059.99",
     totalValue: "10",
     currency: "USD",
     fee: "0",
     feeCurrency: "USD",
-    rawText: "以均价 2059.99 买入 ETH 0.400040 个，价值 10 USD，26/04/02",
+    rawText: "以均价 8 买入 ETH 3 个，价值 24 USD，26/04/02",
     createdAt: "2026-06-22T00:00:00Z",
     updatedAt: "2026-06-22T00:00:00Z",
   },
@@ -92,7 +92,7 @@ export const sampleTrades: Trade[] = [
     currency: "USD",
     fee: "0",
     feeCurrency: "USD",
-    rawText: "以均价 0.2405 买入 ADA 41.58 个，价值 10 USD，26/04/02",
+    rawText: "以均价 2 买入 ADA 20 个，价值 20 USD，26/04/02",
     createdAt: "2026-06-22T00:00:00Z",
     updatedAt: "2026-06-22T00:00:00Z",
   },
@@ -108,7 +108,7 @@ export const sampleTrades: Trade[] = [
     currency: "USD",
     fee: "0",
     feeCurrency: "USD",
-    rawText: "以均价 0.2526 买入 ADA 126.6825 个，价值 32 USD，26/04/09",
+    rawText: "以均价 2 买入 ADA 20 个，价值 40 USD，26/04/09",
     createdAt: "2026-06-22T00:00:00Z",
     updatedAt: "2026-06-22T00:00:00Z",
   },
@@ -124,7 +124,7 @@ export const sampleTrades: Trade[] = [
     currency: "USD",
     fee: "0",
     feeCurrency: "USD",
-    rawText: "以均价 0.2412 卖出 ADA 82.9381 个，价值 20 USD，26/04/14",
+    rawText: "以均价 4 卖出 ADA 15 个，价值 60 USD，26/04/14",
     createdAt: "2026-06-22T00:00:00Z",
     updatedAt: "2026-06-22T00:00:00Z",
   },
@@ -180,10 +180,10 @@ export const sampleLedgerData: LedgerData = {
 
 | 资产 | 结果 |
 | --- | --- |
-| BTC | 持仓 `0.24265306`，成本 `11`，均价 `67122.28459848669` |
-| ETH | 持仓 `0.400040`，成本 `10`，均价 `2060.1565718994643` |
+| BTC | 持仓 `2`，成本 `20`，均价 `67122.28459848669` |
+| ETH | 持仓 `3`，成本 `24`，均价 `2060.1565718994643` |
 | ADA 买入前两笔 | 数量 `168.2625`，成本 `42`，卖出前均价 `0.24960998439937597504` |
-| ADA 第 5 条卖出 | 卖出数量 `82.9381`，卖出金额 `20`，结转成本 `20.702177847113884555`，已实现盈亏 `-0.702177847113884555` |
+| ADA 第 5 条卖出 | 卖出数量 `15`，卖出金额 `60`，结转成本 `20.702177847113884555`，已实现盈亏 `-0.702177847113884555` |
 | ADA 剩余仓位 | 剩余数量 `85.3244`，剩余成本 `21.297822152886115445`，均价 `0.24960998439937597504` |
 
 ---
