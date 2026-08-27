@@ -68,6 +68,26 @@ If a request mixes modes, use the user’s concrete outcome as the primary mode 
 - Never automatically merge, rebase, cherry-pick, copy a fix, or edit both source tracks in one task.
 - When one track reveals something useful to the other, record only `可能值得参考` in the current-week log. Reimplement or copy it only after explicit user approval.
 
+## Schema versioning and migration
+
+The ledger carries four independent version numbers. Never merge them, and never bump one because another changed.
+
+| Version | Governs | Where |
+| --- | --- | --- |
+| `fileFormatVersion` | C file outer structure and generation layout | plaintext |
+| `cryptoVersion` | KDF and cipher parameters | plaintext |
+| `ledgerSchemaVersion` | ledger data shape: fact kinds and fields | plaintext |
+| `backupFormatVersion` | B file envelope: the canonical top-level keys | plaintext |
+
+- Every version number must stay in the plaintext outer layer. Never move one inside the encrypted payload: a low-version file must be identifiable before decryption, or the user only sees an unexplained failure and a future migration chain loses its entry check.
+- Bump only the version that actually changed. A data-shape change does not bump `backupFormatVersion`; a KDF change does not bump `ledgerSchemaVersion`.
+- **Whenever any version is bumped, add a golden sample file for that version to the source-repo test fixtures in the same change.** Use fictional data only, name the version in the filename, and never modify a golden sample once committed. Without golden samples a future migration must guess the old shape, and a wrong guess is silent data corruption that no test catches.
+- Current stage is Alpha: reject every lower version with a clear message, perform no migration, and never overwrite or delete the user's file. After a rejection the user must still be able to create a new ledger and reach the import flow.
+- The switch from rejection to migration happens before Beta and only when the user explicitly announces it. Never decide that switch autonomously.
+- After that switch the rule is read-old, write-new: maintain a one-way upgrade chain, never write an old format, never downgrade. Each migration step is a pure function, frozen once released, applied in memory only, saved as a new file after explicit user confirmation, and fails closed on error.
+
+Full rationale: `01一些进度/日志/week15_260826/000_W15-账本版本分层与迁移策略决策记录.md`.
+
 ## Context expansion
 
 Read these only when relevant:
