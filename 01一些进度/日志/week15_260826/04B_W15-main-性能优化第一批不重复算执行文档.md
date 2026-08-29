@@ -403,13 +403,32 @@ M-1 单列，因为按 `03A` R-2 它是允许与账本总量成正比的四件�
 
 | 位置 | 改法 |
 | --- | --- |
-| 文件顶部 import | 新增 `import { DEFAULT_LEDGER_RESOURCE_LIMITS } from "@/core/validation/resourcePolicy";` |
+| 文件顶部 import | 新增 `import { DEFAULT_LEDGER_RESOURCE_LIMITS } from "@/core/validation";` |
 | 用例内 | `"x".repeat(8 * 1024 * 1024)` 改为 `"x".repeat(DEFAULT_LEDGER_RESOURCE_LIMITS.fileBytes)` |
 | 用例标题 | 允许由写死 8 MiB 的表述改为不写死数字的表述 |
 
 **断言本身一个字不动**：仍然是"恰好上限返回 `{ ok: true }`、多一字节返回 `ok: false`"。这是让测试跟着常量走，不是放宽测试。
 
 经实测确认该改法下该文件 13/13 通过，用时约 182 ms；V8 对 `repeat` 与模板拼接采用惰性字符串，实测 RSS 未见明显上升。
+
+#### C.2.2 附注：import 路径的更正（2026-08-29 补）
+
+本节初版把 import 路径写成 `@/core/validation/resourcePolicy`，**该写法是错的**，已按上表更正为稳定入口 `@/core/validation`。
+
+源码仓库的结构守卫 `src/test-support/sourceLayout.test.ts` 禁止跨区域的深层引用，要求走各区域的稳定入口。照抄该守卫 `sourceLayout.test.ts:189-212` 的规则实跑，判定为：
+
+```
+违规 → deep core import         @/core/validation/resourcePolicy
+合法，守卫放行                       @/core/validation
+```
+
+三项佐证：
+
+1. `src/core/validation/index.ts:15-16` 确实从该稳定入口导出 `DEFAULT_LEDGER_RESOURCE_LIMITS`，改用稳定入口拿到的是同一个常量。
+2. 被改文件的同名产品文件 `src/platform/files/ledgerFileContract.ts:2-6` 本来就是 `from "@/core/validation"` 的写法，先例就在同一目录。
+3. 守卫只扫描 `SRC_ROOT`（`sourceLayout.test.ts:70`），`benchmarks/` 不在其范围内，故 C.3 要求"埋点只允许存在于 `benchmarks/`"不会触发同类冲突。
+
+**执行方照初版写法执行后 `sourceLayout.test.ts` 失败，并依 C-02 停止申报，做法正确，不计为执行方过失。** 该失败由本文件的错误指定引起，不属于 T1-05／T1-06 之外的新问题。
 
 ### C.2.3 本节的边界
 
@@ -419,6 +438,9 @@ M-1 单列，因为按 `03A` R-2 它是允许与账本总量成正比的四件�
 | C-02 | 若照本节改完仍有测试失败，**停止并申报**，不得继续扩大改动范围 |
 | C-03 | 本节修改与阶段二的 P-1～P-4 **必须是独立提交**，提交信息需能看出这是阶段一闸门的收尾 |
 | C-04 | 修改后必须重跑默认全量测试，`04C` 须给出实际文件数与用例数，并与 `04C-1` 第 1.1 节记录的 93 文件／1092 用例对比 |
+| C-05 | **本批任何修订文档中指定的 import 路径，若与 `src/test-support/sourceLayout.test.ts` 的结构守卫冲突，一律以守卫为准**，允许直接改用该区域对应的稳定入口（例如 `@/core/validation` 取代 `@/core/validation/resourcePolicy`），无需另行裁决，只需在 `04C` 中列出实际使用的路径。除"改用稳定入口"这一种情形外，任何其他偏离本节指定写法的改动仍须停止并申报 |
+
+C-05 的分寸：结构守卫是源码仓库的长期规矩，本批的临时执行文档不得压过它；但该条只放开"把深层路径换成稳定入口"这一种情形，不构成执行方自行调整任何其他写法的授权。
 
 原 `04B` 的 B-05（不得修改既有测试的断言或阈值）在本节授权范围之外继续完全有效。
 
