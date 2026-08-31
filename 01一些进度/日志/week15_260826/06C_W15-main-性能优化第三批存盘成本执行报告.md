@@ -3,7 +3,7 @@
 - 日期：2026-08-31
 - 源码分支：`zhennn/w15-main-chunked-storage`
 - 起点：`main@8df62d8`
-- 状态：**按 `06B` B-05 暂停并等待裁决**；阶段〇、阶段一已完成，格式代码零改动
+- 状态：**S-1 实施中触发 H-1，已停止并等待用户宣布迁移切换时点**；阶段〇、阶段一与 A.1 已完成
 - 合同：`06A_W15-main-性能优化第三批存盘成本产品定义.md`、`06B_W15-main-性能优化第三批存盘成本执行文档.md`
 
 ## 结论
@@ -440,3 +440,40 @@ A-07 逐文件 `expect(` 实测命令为 `git grep -o 'expect(' 755a050 -- <file
 | `src/app/ledgerFileAccessController.test.ts` | 203 | 203 | 0 |
 
 补充机械核对：`git diff -U0 755a050..1998a62 -- <上述三文件> | rg '^[+-].*expect\\('` 无输出（`rg` 退出码 1，意为没有匹配）；乙类文件与 legacy 目录在 A.1 提交中 diff 为零。A.1 后定向测试 5 文件 131 项全通过，`npm run typecheck`、`npm run lint` 通过。A.4 的三条通电检查将在 S-1 产品实现具备 V3 输出后执行；当前尚未取得，未用 A.1 的解析替换冒充产品通电证据。
+
+### S-1 实施中触发 H-1：V2 黄金样例的产品路径与迁移时点冲突
+
+S-1 实现前扩大检索范围时，发现第一次 B-11 枚举只覆盖了带 V2／base64 线索的解析点，遗漏一个不含这些字样、但同样直接绑定当前输出字节形状的甲类点：
+
+```text
+src/platform/files/ledgerFileRepository.test.ts:3166:    handle.mutateAfterClose = (serialized) => `${serialized}\n`;
+src/platform/files/ledgerFileRepository.test.ts:3180:    expect(handle.text().endsWith("\n")).toBe(true);
+```
+
+该测试保护“语义有效但字节不完全一致的 candidate readback 不得被当成精确写入，也不得在恢复不确定时补偿覆盖”。V2 用整份 JSON 尾随空白构造；V3 的等价物是只给 JSON 头增加尾随空白并同步头长度，原始密文体不变、文件总长度仍与头声明精确一致。它明确属于甲类，补记为 **A-23**，不是丙类。未提交的 S-1 工作现场只把读取对象从整份 V2 JSON 换为 V3 JSON 头，matcher `endsWith("\n")` 与期望 `true` 不变；`expect(` 数量不变。后续最终 A.3 表须补入 A-23 及本次扩大检索发现的二进制测试替身读取点，不能再把 A-01～A-22 误写成全量。
+
+随后 S-1 二进制容器原型已做到当前产品路径的定向测试 **6 files／186 tests PASS**，且 `npm run typecheck` PASS；这些只是未提交工作现场，尚未形成 S-1 提交，也未执行 S-1 M-3。按 A-08 立即复测冻结 V2 合同与黄金样例，结果为：
+
+```text
+Test Files  1 failed | 2 passed (3)
+Tests       1 failed | 18 passed (19)
+
+FAIL goldenStorageFixtures.test.ts
+"freezes and opens the product-path file format V2 fixture"
+LedgerFileRepositoryError:
+Ledger file format V2 is retired and is not opened before migration is enabled
+```
+
+失败点不是黄金样例字节、哈希或断言被改动；`goldenStorageFixtures.test.ts`、`ledgerFileContract.test.ts`、`ledgerFileCrypto.test.ts` 均保持原样。冲突来自乙类黄金测试原样要求：
+
+1. `inspectLedgerFile(adapter, handle)` 成功识别并返回 V2；
+2. `LedgerFileRepository.open(...)` 走产品路径成功打开 V2；
+3. `repository.load()` 返回冻结的完整虚构账本。
+
+S-1 后当前产品只写 V3。若继续满足上述产品路径，必须在以下路径中选择一条：
+
+- 继续把打开的 V2 写回 V2：违反“产品不再写 V2”与单向升级规则；
+- 打开 V2 后只写 V3：这就是“读旧、写新”的迁移，等于把阶段五的迁移切换提前到 S-1；
+- 只为黄金样例保留特殊打开旁路或把测试改成 parser-only：会弱化 A-08 的产品路径守卫，禁止采用。
+
+因此 **H-1 已真实触发**：Alpha“遇低版本拒绝、不迁移”与原样保留的 V2 产品路径黄金测试不能同时成立。由拒绝切换为迁移的时点只能由用户宣布，执行者不得自行选择。当前已停止：没有提交 S-1，没有测 S-1 M-3，没有改动任何乙类测试或黄金样例，没有 merge／push／rebase，也没有读取私有数据。源码工作树保留未提交 S-1 现场供裁决后继续；根文档单独记录本次申报。
