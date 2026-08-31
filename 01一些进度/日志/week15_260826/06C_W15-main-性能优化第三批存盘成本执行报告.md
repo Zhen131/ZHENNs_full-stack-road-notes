@@ -181,6 +181,8 @@ V2 正式四档 M-3 基线已取得。逐档记录开始时刻与执行序号，
 
 四档均为 Chrome `151.0.7922.171`，`consoleErrors = []` 且 `temporaryArtifactsCleaned = true`。21:38 左右曾有一次 S-10K 探测因没有先记录开始时刻而被排除，未作为序号、未写入上表、未冒充中位数；此后重新静置五分钟再执行正式序号 3。
 
+原始 JSON、执行序号／开始时刻清单及 V2 实际文件字节数已从忽略目录机械复制到可跟踪路径 `benchmarks/evidence/w15-storage/v2-baseline/`，源码提交为 `755a050 Record the V2 storage benchmark baseline`。该目录只含确定性虚构数据；`run-metadata.json` 明确标记文件字节量尺不是浏览器 M-3 的替代数据。
+
 ### 修订 A 数量核对差异（再次暂停）
 
 修订 A 写明三个文件共有 33 处 `JSON.parse(...) as LedgerFileV2`，分布为 25／4／4；但在源码起点 `8df62d8` 与当前 `4a66905` 上逐文件复核，三文件之间没有 diff，实际结果为：
