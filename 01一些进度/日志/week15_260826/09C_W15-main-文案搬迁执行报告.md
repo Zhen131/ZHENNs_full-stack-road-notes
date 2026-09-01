@@ -131,3 +131,33 @@ Q-7 通电检查：先记录 `src/ui/i18n.tsx` SHA-256 `32d1ba05a78b58d73bb334e9
 ## 第八节：否定性声明
 
 未改任何既有测试断言、阈值或用例名；未改渲染结构、样式或交互；未引入语法复数；未让数字或日期随语言变化；未改文件格式、版本号、加密参数或派生计算；未在 09 阶段改目录结构或拆分文件；未改结构守卫；未引入依赖；未 push/rebase/amend；未读取真实数据区；根文档仓库只新建本报告及已提交的 08C。
+
+## 第二轮（修订 A／B 后续执行）
+
+### 误报更正与恢复依据
+
+撤回上一轮关于 H-2 的停止申报。误报原因是执行者凭记忆构造了不存在的路径 `src/features/portfolio/ledgerProjection.frozenDerivedSnapshot.test.ts`，而非照合同原文执行。
+
+合同原文与第二轮实跑命令一致：
+
+```text
+npx vitest run --config vitest.benchmarks.config.ts benchmarks/measure/derivedSnapshot.contract.ts
+
+Test Files  1 passed (1)
+Tests  7 passed (7)
+```
+
+故 H-2 未成立，第二轮在同一分支、原源码 HEAD `6855e5f` 后继续。修订 B 同时确认 `core`／`platform` 错误码改造移出本批；这些位置继续仅作 S-3 列表记录，不改源码。
+
+### 已更正的统计口径
+
+上一轮第七节 Q-10 的 `62` 为错误数字；第四节的分表实测正确。第二轮复核为：
+
+```text
+chineseMessages 370
+englishMessages 32
+hungarianMessages 32
+total 434
+```
+
+第二轮新增提交将在后续小节持续登记；目前已验证并提交：`774d118 refactor: localize dashboard shell helpers`、`75b4fba refactor: localize trade table`、`338f69b refactor: localize activity table`。每笔提交前均运行 `npm test`，结果为 106 files / 1185 tests passed。
