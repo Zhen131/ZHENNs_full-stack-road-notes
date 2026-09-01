@@ -2,7 +2,7 @@
 
 ## 结论
 
-09 阶段从 08 缝 `ffbe0ff470132efcab2d3651dd446837426d4b33` 开始，完成 3 笔按页面／稳定区域分开的纯文案搬运提交：导入导出、全局工作区框架、记账页。中文渲染、测试名与自动化闸门保持不变。
+09 阶段从 08 缝 `ffbe0ff470132efcab2d3651dd446837426d4b33` 开始，完成 11 笔按页面／稳定区域分开的纯文案搬运提交。中文渲染、测试名与自动化闸门保持不变。
 
 本报告如实记录：本轮没有完成全部中文文案迁出。范围自证发现的产品文件远大于合同背景，剩余文件完整列于第六节；均保留原中文而未臆断地修改计算、错误接口或受测试保护的业务文案。
 
@@ -68,6 +68,14 @@ S-6 普查命令：`rg -n -P 'join\\(["'"'"'][^"'"'"']*[\\p{Han}]|[：、，。]
 | `7847d60` | `refactor: localize the transfer workspace` | 导入与导出 | `transfer.*` 9 个 |
 | `87995d3` | `refactor: localize the workspace shell` | 全局导航／框架 | `shared.shell.*` 8 个 |
 | `a807760` | `refactor: localize the record workspace` | 记账 | `record.*` 12 个 |
+| `4d9f21c` | `refactor: localize negative cash confirmation` | 负现金确认 | `cash.negativeConfirmation.*` 8 个 |
+| `61f4653` | `refactor: localize holdings overview` | 持仓概览 | `portfolio.overview.*` 21 个 |
+| `6104dab` | `refactor: localize home punctuation` | 首页 T-1 标点 | `home.*Separator` 4 个 |
+| `11deb6f` | `refactor: localize confirm delete control` | 通用删除确认 | `shared.confirmDelete.*` 1 个 |
+| `84fa95a` | `refactor: localize trade delete control` | 交易删除控件 | `trades.delete.*` 7 个 |
+| `2a8ebb1` | `refactor: localize holding allocation chart` | 资产分配图 | `charts.allocation.*` 14 个 |
+| `ae71873` | `refactor: localize holding trend chart` | 趋势图 | `charts.trend.*` 17 个 |
+| `fe8c0ce` | `refactor: localize holdings details` | 完整持仓详情 | `portfolio.details.*` 24 个 |
 
 每笔提交前 `npm test` 原始结论均为 `Test Files 106 passed (106)`、`Tests 1185 passed (1185)`。
 
@@ -76,12 +84,12 @@ S-6 普查命令：`rg -n -P 'join\\(["'"'"'][^"'"'"']*[\\p{Han}]|[：、，。]
 命令：在 `src/ui/i18n.tsx` 各对象段落中枚举 `^  "<key>":`。
 
 ```text
-chineseMessages 62
+chineseMessages 158
 englishMessages 32
 hungarianMessages 32
 ```
 
-中文表 62 个 `TranslationKey` 均有值。英文、匈牙利语各缺 30 个中文 key，其中本轮新增的 `transfer.*`、`shared.shell.*`、`record.*` 均按 07 的回落机制显示中文。
+中文表 158 个 `TranslationKey` 均有值。英文、匈牙利语各缺 126 个中文 key；本轮新增项均按 07 的回落机制显示中文。
 
 ## 第五节：core/platform 错误码
 
@@ -89,7 +97,7 @@ hungarianMessages 32
 
 ## 第六节：跳过清单
 
-一档：`HomeWorkspace.tsx:223,296` 的 T-1 标点／连接符，保留原样，建议下一轮以同页纯搬运处理；另有 `DashboardShellHelpers.ts`、`SummaryMetricCard.tsx` 中 08 缝前的中文，M-4 禁止回改，交 08D／后续新提交裁决。
+一档：`DashboardShellHelpers.ts`、`SummaryMetricCard.tsx` 中 08 缝前的中文，M-4 禁止回改，交 08D／后续新提交裁决。`HomeWorkspace.tsx:223,296` 的 T-1 标点／连接符已由 `6104dab` 搬入文案表。
 
 二档：`core` 7 文件、`platform` 3 文件和以下剩余 UI／业务文件保留原样：`DashboardShell.tsx`、`HomeWorkspace.tsx`、`LedgerAccessGate.tsx`、`SettingsWorkspace.tsx`、`TransactionsWorkspace.tsx`、`layout.tsx`、`usePersistentLedger.ts`；`features/activity/ActivityTable.tsx`、`asset-transfers/{AssetTransferPanel.tsx,assetTransferService.ts}`、`assets/LocalAssetManager.tsx`、`backup/{BackupControls.tsx,backupEnvelope.ts,backupImportPreflight.ts,backupImportReport.ts}`、`cash/{CashEventPanel.tsx,NegativeCashConfirmationDialog.tsx,cashEventService.ts}`、`charts/{HoldingAllocationChart.tsx,HoldingTrendChart.tsx,TradeHeatmapChart.tsx,chartDataService.ts,chartOptionBuilders.ts}`、`fees/FeeRuleManager.tsx`、`market-data/{MarketDataControls.tsx,binanceMappingService.ts}`、`portfolio/{HoldingsDetails.tsx,HoldingsOverview.tsx,ledgerProjection.ts,pnlSummaryService.ts,valuationDisplay.ts}`、`prices/PriceForm.tsx`、`trades/{TradeDeleteControl.tsx,TradeForm.tsx,TradeTable.tsx,tradeRemovalService.ts}`、`ui/ConfirmDeleteButton.tsx`。原因：本轮合同未允许借搬迁修改受业务计算、错误信息、条件分支或既有断言保护的字符串；建议拆成按 feature 的专门页面批次。
 
