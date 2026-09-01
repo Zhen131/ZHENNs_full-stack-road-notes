@@ -2,7 +2,7 @@
 
 ## 结论
 
-09 阶段从 08 缝 `ffbe0ff470132efcab2d3651dd446837426d4b33` 开始，已完成 14 笔按页面／稳定区域分开的纯文案搬运提交。中文渲染、测试名与每笔提交前的全量测试保持不变。
+09 阶段从 08 缝 `ffbe0ff470132efcab2d3651dd446837426d4b33` 开始，已完成 18 笔按页面／稳定区域分开的纯文案搬运提交。中文渲染、测试名与每笔提交前的全量测试保持不变。
 
 本报告如实记录：本轮没有完成全部中文文案迁出。范围自证发现的产品文件远大于合同背景，剩余文件完整列于第六节；均保留原中文而未臆断地修改计算、错误接口或受测试保护的业务文案。
 
@@ -79,6 +79,10 @@ S-6 普查命令：`rg -n -P 'join\\(["'"'"'][^"'"'"']*[\\p{Han}]|[：、，。]
 | `d8739e9` | `refactor: localize trade heatmap` | 交易活跃热力图 | `charts.heatmap.*` 22 个 |
 | `6756384` | `refactor: localize settings workspace` | 设置工作区 | `settings.*` 31 个 |
 | `efefa50` | `refactor: localize price form` | 价格录入表单 | `prices.*` 28 个 |
+| `01a41b8` | `refactor: localize cash event panel` | 现金录入面板 | `cash.*` 40 个 |
+| `98f2f16` | `refactor: localize local asset manager` | 本地资产管理 | `assets.*` 41 个 |
+| `118bb26` | `refactor: localize fee rule manager` | 手续费规则管理 | `fees.*` 39 个 |
+| `e6530af` | `refactor: localize asset transfer panel` | 资产转入转出面板 | `assetTransfers.*` 51 个 |
 
 每笔提交前 `npm test` 原始结论均为 `Test Files 106 passed (106)`、`Tests 1185 passed (1185)`。
 
@@ -87,12 +91,12 @@ S-6 普查命令：`rg -n -P 'join\\(["'"'"'][^"'"'"']*[\\p{Han}]|[：、，。]
 命令：在 `src/ui/i18n.tsx` 各对象段落中枚举 `^  "<key>":`。
 
 ```text
-chineseMessages 239
+chineseMessages 370
 englishMessages 32
 hungarianMessages 32
 ```
 
-中文表 239 个 `TranslationKey` 均有值。英文、匈牙利语各缺 207 个中文 key；本轮新增项均按 07 的回落机制显示中文。
+中文表 370 个 `TranslationKey` 均有值。英文、匈牙利语各缺 338 个中文 key；本轮新增项均按 07 的回落机制显示中文。
 
 ## 第五节：core/platform 错误码
 
