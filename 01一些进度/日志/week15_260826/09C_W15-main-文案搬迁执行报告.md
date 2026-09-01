@@ -221,3 +221,5 @@ Q-11 收尾检索仅余：usePersistentLedger、ConfirmDeleteButton、tradeRemov
 Q-12：一档 0 处。二档 4 处。清空账本在 SettingsWorkspace.tsx:139 参与 confirmationValue 精确比较；现金 USDT 与 其他 是 chartDataService 的 assetSymbol 切片标识并在 191-198 行排序比较；且不提供迁移 被 backupImportPreflight.ts:661 的 endsWith 比较。三处注释不属于界面文案。layout metadata 为服务端静态定义，客户端 i18n 调用会使 build 失败，已由 b6738a8 恢复服务端边界。
 
 否定性声明：未改既有测试断言、阈值或用例名；未改守卫、依赖、文件格式、版本号、加密参数或派生计算；未 push/rebase/amend/squash/reset/force；未读取真实数据区；根文档仓库本轮只改本报告。
+
+Q-1 追加原始输出：sort -u /private/tmp/lftl-09-seam-tests.json.names 后与 /private/tmp/lftl-09-final2-tests.json.names 执行 diff -u，输出为空；wc -l 两侧均为 1168。第一次 1185 对 1168 的差异来自旧缝文件含重复名、最终侧已去重的口径不一致。
