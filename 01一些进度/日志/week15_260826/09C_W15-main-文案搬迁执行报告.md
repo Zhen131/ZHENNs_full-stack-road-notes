@@ -2,7 +2,7 @@
 
 ## 结论
 
-09 阶段从 08 缝 `ffbe0ff470132efcab2d3651dd446837426d4b33` 开始，完成 11 笔按页面／稳定区域分开的纯文案搬运提交。中文渲染、测试名与自动化闸门保持不变。
+09 阶段从 08 缝 `ffbe0ff470132efcab2d3651dd446837426d4b33` 开始，已完成 14 笔按页面／稳定区域分开的纯文案搬运提交。中文渲染、测试名与每笔提交前的全量测试保持不变。
 
 本报告如实记录：本轮没有完成全部中文文案迁出。范围自证发现的产品文件远大于合同背景，剩余文件完整列于第六节；均保留原中文而未臆断地修改计算、错误接口或受测试保护的业务文案。
 
@@ -76,6 +76,9 @@ S-6 普查命令：`rg -n -P 'join\\(["'"'"'][^"'"'"']*[\\p{Han}]|[：、，。]
 | `2a8ebb1` | `refactor: localize holding allocation chart` | 资产分配图 | `charts.allocation.*` 14 个 |
 | `ae71873` | `refactor: localize holding trend chart` | 趋势图 | `charts.trend.*` 17 个 |
 | `fe8c0ce` | `refactor: localize holdings details` | 完整持仓详情 | `portfolio.details.*` 24 个 |
+| `d8739e9` | `refactor: localize trade heatmap` | 交易活跃热力图 | `charts.heatmap.*` 22 个 |
+| `6756384` | `refactor: localize settings workspace` | 设置工作区 | `settings.*` 31 个 |
+| `efefa50` | `refactor: localize price form` | 价格录入表单 | `prices.*` 28 个 |
 
 每笔提交前 `npm test` 原始结论均为 `Test Files 106 passed (106)`、`Tests 1185 passed (1185)`。
 
@@ -84,12 +87,12 @@ S-6 普查命令：`rg -n -P 'join\\(["'"'"'][^"'"'"']*[\\p{Han}]|[：、，。]
 命令：在 `src/ui/i18n.tsx` 各对象段落中枚举 `^  "<key>":`。
 
 ```text
-chineseMessages 158
+chineseMessages 239
 englishMessages 32
 hungarianMessages 32
 ```
 
-中文表 158 个 `TranslationKey` 均有值。英文、匈牙利语各缺 126 个中文 key；本轮新增项均按 07 的回落机制显示中文。
+中文表 239 个 `TranslationKey` 均有值。英文、匈牙利语各缺 207 个中文 key；本轮新增项均按 07 的回落机制显示中文。
 
 ## 第五节：core/platform 错误码
 
@@ -99,7 +102,7 @@ hungarianMessages 32
 
 一档：`DashboardShellHelpers.ts`、`SummaryMetricCard.tsx` 中 08 缝前的中文，M-4 禁止回改，交 08D／后续新提交裁决。`HomeWorkspace.tsx:223,296` 的 T-1 标点／连接符已由 `6104dab` 搬入文案表。
 
-二档：`core` 7 文件、`platform` 3 文件和以下剩余 UI／业务文件保留原样：`DashboardShell.tsx`、`HomeWorkspace.tsx`、`LedgerAccessGate.tsx`、`SettingsWorkspace.tsx`、`TransactionsWorkspace.tsx`、`layout.tsx`、`usePersistentLedger.ts`；`features/activity/ActivityTable.tsx`、`asset-transfers/{AssetTransferPanel.tsx,assetTransferService.ts}`、`assets/LocalAssetManager.tsx`、`backup/{BackupControls.tsx,backupEnvelope.ts,backupImportPreflight.ts,backupImportReport.ts}`、`cash/{CashEventPanel.tsx,NegativeCashConfirmationDialog.tsx,cashEventService.ts}`、`charts/{HoldingAllocationChart.tsx,HoldingTrendChart.tsx,TradeHeatmapChart.tsx,chartDataService.ts,chartOptionBuilders.ts}`、`fees/FeeRuleManager.tsx`、`market-data/{MarketDataControls.tsx,binanceMappingService.ts}`、`portfolio/{HoldingsDetails.tsx,HoldingsOverview.tsx,ledgerProjection.ts,pnlSummaryService.ts,valuationDisplay.ts}`、`prices/PriceForm.tsx`、`trades/{TradeDeleteControl.tsx,TradeForm.tsx,TradeTable.tsx,tradeRemovalService.ts}`、`ui/ConfirmDeleteButton.tsx`。原因：本轮合同未允许借搬迁修改受业务计算、错误信息、条件分支或既有断言保护的字符串；建议拆成按 feature 的专门页面批次。
+二档：`core` 7 文件、`platform` 3 文件和以下尚未处理 UI／业务文件保留原样：`DashboardShell.tsx`、`HomeWorkspace.tsx`、`LedgerAccessGate.tsx`、`TransactionsWorkspace.tsx`、`layout.tsx`、`usePersistentLedger.ts`；`features/activity/ActivityTable.tsx`、`asset-transfers/{AssetTransferPanel.tsx,assetTransferService.ts}`、`assets/LocalAssetManager.tsx`、`backup/{BackupControls.tsx,backupEnvelope.ts,backupImportPreflight.ts,backupImportReport.ts}`、`cash/{CashEventPanel.tsx,cashEventService.ts}`、`charts/{chartDataService.ts,chartOptionBuilders.ts}`、`fees/FeeRuleManager.tsx`、`market-data/{MarketDataControls.tsx,binanceMappingService.ts}`、`portfolio/{ledgerProjection.ts,pnlSummaryService.ts,valuationDisplay.ts}`、`trades/{TradeForm.tsx,TradeTable.tsx,tradeRemovalService.ts}`。原因：尚未完成下一轮逐页面搬迁，或文案与受业务计算、错误信息、条件分支或既有断言保护的字符串耦合；建议继续按 feature 页面拆分执行。
 
 ## 第七节：Q-1～Q-10
 
