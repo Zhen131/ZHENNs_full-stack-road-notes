@@ -6,6 +6,8 @@
 
 本报告如实记录：本轮没有完成全部中文文案迁出。范围自证发现的产品文件远大于合同背景，剩余文件完整列于第六节；均保留原中文而未臆断地修改计算、错误接口或受测试保护的业务文案。
 
+收尾验证触发停止申报 **H-2**：合同要求的“冻结派生等价性快照”不能在当前源码树中定位。`npx vitest run src/features/portfolio/ledgerProjection.frozenDerivedSnapshot.test.ts` 输出 `No test files found`；检索当前测试文件后运行 `src/features/portfolio/ledgerProjection.test.ts`，实测仅 `Test Files 1 passed (1); Tests 3 passed (3)`，不是合同要求的 7/7。因此本报告记录至此并停止，不以其他测试替代该闸门。
+
 ## 第一节：缝与过缝闸门
 
 缝 SHA：`ffbe0ff470132efcab2d3651dd446837426d4b33`。
@@ -121,6 +123,8 @@ Q-8 final build: / 365 kB, First Load JS 467 kB
 Q-9 package and lock diff: (empty)
 Q-10 chineseMessages 62 and TranslationKey has the same 62-key source
 ```
+
+收尾复核时 Q-3 改为失败：`src/features/portfolio/ledgerProjection.frozenDerivedSnapshot.test.ts` 不存在；实际 `ledgerProjection.test.ts` 为 1 file / 3 tests。依合同 H-2 停止，不能报 Q-3 通过。
 
 Q-7 通电检查：先记录 `src/ui/i18n.tsx` SHA-256 `32d1ba05a78b58d73bb334e9555b3f07465ac53c83972171d8a3848a62f0b9d4`，临时加入 `"shared.i18n.probe": "总花费"`；`interfaceWording.test.ts` 原始失败输出为 `Received [ "ui/i18n.tsx: 总花费" ]`。删除探针后 SHA-256 恢复为同一值，守卫重新输出 `Test Files 1 passed (1); Tests 1 passed (1)`。
 
