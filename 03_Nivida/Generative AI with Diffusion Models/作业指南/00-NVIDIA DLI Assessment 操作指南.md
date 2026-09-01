@@ -6,7 +6,7 @@
 
 目标：只修改 `06_Assessment.ipynb`，完成训练，通过 Notebook 自动评分，再回课程页生成并下载证书。
 
-参考：[[03_Nivida/课件/06|06 Assessment 原始课件]]、[[03_Nivida/课件/02|02 Diffusion Models]]、[[03_Nivida/课件/04|04 Classifier-Free Diffusion Guidance]]
+参考：[[06|06 Assessment 原始课件]]、[[03_Nivida/Generative AI with Diffusion Models/课件/02|02 Diffusion Models]]、[[04|04 Classifier-Free Diffusion Guidance]]
 
 ## 先看结论
 
