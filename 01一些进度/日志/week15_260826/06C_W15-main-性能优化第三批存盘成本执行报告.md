@@ -3,16 +3,18 @@
 - 日期：2026-08-31
 - 源码分支：`zhennn/w15-main-chunked-storage`
 - 起点：`main@8df62d8`
-- 状态：**S-1 实施中触发 H-1，已停止并等待用户宣布迁移切换时点**；阶段〇、阶段一与 A.1 已完成
+- 状态：**H-1 已由修订 C／D 裁决；S-1 已独立提交，正在执行 S-1 四档 M-3**；本批不实现迁移器
 - 合同：`06A_W15-main-性能优化第三批存盘成本产品定义.md`、`06B_W15-main-性能优化第三批存盘成本执行文档.md`
 
 ## 结论
 
-阶段〇已先于任何格式代码改动完成并独立提交。版本 3 采用**双固定头槽 + 固定体槽 + 原始 AES-GCM 字节**：头槽只重写固定小区域，事实块独立加密并按需换槽；`previous` 只保存本次变化块的旧引用，未变化块由两代共享。块之间没有哈希链，改历史事实不要求重写其他事实块。
+阶段〇已先于任何格式代码改动完成并独立提交。版本 3 的最终目标仍是**双固定头槽 + 固定体槽 + 原始 AES-GCM 字节**：头槽只重写固定小区域，事实块独立加密并按需换槽；`previous` 只保存本次变化块的旧引用，未变化块由两代共享。块之间没有哈希链，改历史事实不要求重写其他事实块。
+
+H-1 的最终裁决是：产品继续处于 Alpha，只在解密前识别 V2 的明文版本并明确拒绝，不验证 V2 密文外壳、不派生密钥、不解密、不写回；本批不实现迁移器。S-1 已于源码提交 `2b87216` 完成，加密输出到落盘之间始终保持 `Uint8Array`，不再经过密文 base64 编码→解码往返。
 
 本报告随执行继续补齐。尚未取得的实测值不会提前推断。
 
-### 暂停申报：B-05 与现有测试发生不可回避的冲突
+### 历史暂停申报：B-05 与现有测试发生不可回避的冲突
 
 阶段一完成后、首次格式代码改动前审查测试，确认现有测试把“当前产品写出的 C 文件”直接当作 V2 纯 JSON：
 
@@ -20,7 +22,7 @@
 - `usePersistentLedger.fileCapabilities.test.tsx` 与 `ledgerFileAccessController.test.ts` 同样解析或构造 `LedgerFileV2`；
 - 新格式的原始密文字节不可能同时是可由 `JSON.parse` 读取的 V2 纯 JSON。
 
-因此实施 S-1 必然需要把上述**当前格式专属断言**迁移为 V3 等价断言，同时保留 V2 合同和阶段〇黄金样例测试。`06B` B-05 明确规定：“若既有测试因本批而必须调整，停止并在 `06C` 中申报，等待裁决。”执行者未修改任何既有测试断言、阈值或格式代码，现等待产品负责人明确决定是否允许：
+因此实施 S-1 必然需要把上述**当前格式专属断言**迁移为 V3 等价断言，同时保留 V2 合同和阶段〇黄金样例测试。`06B` B-05 明确规定：“若既有测试因本批而必须调整，停止并在 `06C` 中申报，等待裁决。”执行者当时未修改任何既有测试断言、阈值或格式代码，并等待产品负责人明确决定是否允许：
 
 1. 保留所有行为／安全语义断言与阈值；
 2. 只把直接绑定 V2 字节形状的既有断言迁移为 V3 字节形状；
@@ -196,7 +198,7 @@ V2 正式四档 M-3 基线已取得。逐档记录开始时刻与执行序号，
 
 因此当前可定位的是 22 个 V2 外壳读取点，而不是 33 个；其中只有 21 个符合修订 A 所写的强转文本。若把 33 理解为受这些读取点保护的断言数量，又缺少 25／4／4 的权威逐条位置，执行者无法在不猜测的前提下交出 A.3 的 33 行一一对照表，也不能声称完成“33 行解析替换”。据总合同“凡遇‘这样应该也行吧’一律停下来申报”，A.1 测试迁移与 S-1 再次暂停，等待产品负责人澄清 33 的统计对象或给出准确位置。
 
-S-1／S-2／S-3 分段后测、最终文件体积对照、块常量实测、冷启动、Q-1～Q-5、四档最终判定、10⁶ 探测与最终版本证明均**未取得**。H-1～H-5 均未触发；本次暂停不是 H-1～H-5，而是修订 A 的可审计数量与源码事实不一致。当前否定性事实：未改派生数值、未改既有测试断言、未改加密参数、未读私有数据区、未 merge／push／rebase、未改任何格式代码。
+截至第二次暂停，S-1／S-2／S-3 分段后测、最终文件体积对照、块常量实测、冷启动、Q-1～Q-5、四档最终判定、10⁶ 探测与最终版本证明均**未取得**。当时 H-1～H-5 均未触发；该次暂停不是 H-1～H-5，而是修订 A 的可审计数量与源码事实不一致。当时否定性事实：未改派生数值、未改既有测试断言、未改加密参数、未读私有数据区、未 merge／push／rebase、未改任何格式代码。
 
 
 ### 修订 B 解除与 B-11～B-13 自证
@@ -439,7 +441,7 @@ A-07 逐文件 `expect(` 实测命令为 `git grep -o 'expect(' 755a050 -- <file
 | `src/app/usePersistentLedger.fileCapabilities.test.tsx` | 169 | 169 | 0 |
 | `src/app/ledgerFileAccessController.test.ts` | 203 | 203 | 0 |
 
-补充机械核对：`git diff -U0 755a050..1998a62 -- <上述三文件> | rg '^[+-].*expect\\('` 无输出（`rg` 退出码 1，意为没有匹配）；乙类文件与 legacy 目录在 A.1 提交中 diff 为零。A.1 后定向测试 5 文件 131 项全通过，`npm run typecheck`、`npm run lint` 通过。A.4 的三条通电检查将在 S-1 产品实现具备 V3 输出后执行；当前尚未取得，未用 A.1 的解析替换冒充产品通电证据。
+补充机械核对：`git diff -U0 755a050..1998a62 -- <上述三文件> | rg '^[+-].*expect\\('` 无输出（`rg` 退出码 1，意为没有匹配）；乙类文件与 legacy 目录在 A.1 提交中 diff 为零。A.1 后定向测试 5 文件 131 项全通过，`npm run typecheck`、`npm run lint` 通过。在 A.1 节点，A.4 的三条通电检查尚未取得，未用 A.1 的解析替换冒充产品通电证据。
 
 ### S-1 实施中触发 H-1：V2 黄金样例的产品路径与迁移时点冲突
 
@@ -476,4 +478,58 @@ S-1 后当前产品只写 V3。若继续满足上述产品路径，必须在以�
 - 打开 V2 后只写 V3：这就是“读旧、写新”的迁移，等于把阶段五的迁移切换提前到 S-1；
 - 只为黄金样例保留特殊打开旁路或把测试改成 parser-only：会弱化 A-08 的产品路径守卫，禁止采用。
 
-因此 **H-1 已真实触发**：Alpha“遇低版本拒绝、不迁移”与原样保留的 V2 产品路径黄金测试不能同时成立。由拒绝切换为迁移的时点只能由用户宣布，执行者不得自行选择。当前已停止：没有提交 S-1，没有测 S-1 M-3，没有改动任何乙类测试或黄金样例，没有 merge／push／rebase，也没有读取私有数据。源码工作树保留未提交 S-1 现场供裁决后继续；根文档单独记录本次申报。
+因此 **H-1 已真实触发**：Alpha“遇低版本拒绝、不迁移”与原样保留的 V2 产品路径黄金测试不能同时成立。由拒绝切换为迁移的时点只能由用户宣布，执行者不得自行选择。当时已停止：没有提交 S-1，没有测 S-1 M-3，没有改动任何乙类测试或黄金样例，没有 merge／push／rebase，也没有读取私有数据。源码工作树当时保留未提交 S-1 现场供裁决后继续；根文档单独记录本次申报。
+
+### 修订 C／D 裁决与 C-01～C-04 落实
+
+根文档提交 `2198821` 与 `b965bbd` 已解除 H-1，裁决为“本批不做迁移，V2 一律拒绝”。修订 C 曾增加的 C-05／C-06 又由修订 D 撤销，因此本批未新增或修改用户可见文案。
+
+| 编号 | 落实情况 |
+| --- | --- |
+| C-01 | G-1 字节未改；S-1 提交前 `shasum -a 256` 仍为 `d143d621cb2dbb4404d254114294132a54213c70fbd445c6bc0fb49b42447427` |
+| C-02 | `inspectLedgerFile` 与 `LedgerFileRepository.open` 均在密码／解密前拒绝 G-1；错误为 `LEDGER_FILE_INVALID_FILE`，cause 指向 `fileFormatVersion` 且明确记录 V2；测试证明写入尝试为 0、前后字节和 SHA-256 均不变 |
+| C-03 | 本批未新增 V2 解码测试；产品 repository／app 路径不调用 V2 validator、encrypt 或 decrypt |
+| C-04 | `test-fixtures/golden/README.md` 已说明 G-1 为未来迁移项目保留，当前只被拒绝测试引用，解码覆盖待迁移立项时补齐 |
+
+C-02 授权的断言重组对照：
+
+| 文件与迁移前行号 | 迁移前原文 | 迁移后原文 | 它保护什么 |
+| --- | --- | --- | --- |
+| `goldenStorageFixtures.test.ts:76` | `it("freezes and opens the product-path file format V2 fixture", async () => {` | `it("freezes and rejects the product-path file format V2 fixture without mutation", async () => {` | Alpha 正路必须在解密前明确拒绝 V2，且不写入、删除或改变用户文件 |
+| 同用例 | `expect(envelope.fileFormatVersion).toBe(2);` 等四条解析断言，以及 `await expect(repository.load()).resolves.toEqual(createGoldenStorageScenario());` | `await expectV2Rejection(() => inspectLedgerFile(adapter, handle));`；`await expectV2Rejection(() => LedgerFileRepository.open(...));`；`expect(handle.writeAttempts).toBe(0);`；前后长度、SHA-256 与字节相等 | 用裁决后的正确产品行为取代已移出本批的迁移式打开；断言总数保持 12→12，无静默覆盖真空 |
+
+### S-1 实现与 A.4 通电检查
+
+S-1 源码提交：`2b87216 Adopt raw binary V3 ledger container`。落盘布局为 `LFTL3\r\n\0` magic＋4 B little-endian JSON 头长＋UTF-8 JSON 头＋current／previous 原始 AES-GCM 字节。四个版本号均在明文头顶层；密文从 Web Crypto 输出到写盘不经 base64。内层 payload 仍是原 JSON／UTF-8。
+
+A-23 补入 A.3 一一对照：
+
+| 编号 | 文件，前行→后行 | 迁移前断言 | 迁移后断言 | 它保护什么 |
+| --- | --- | --- | --- | --- |
+| A-23 | `ledgerFileRepository.test.ts:3180→3199` | `expect(handle.text().endsWith("\n")).toBe(true);` | `expect(readLedgerFileJsonHeaderForTest(handle.bytes).endsWith("\n")).toBe(true);` | 语义有效但字节不精确一致的 readback 不得被当成精确写入，也不得在不确定恢复时补偿覆盖 |
+
+最终 S-1 现场的逐文件 `expect(` 计数（迁移前为 `1998a62`）：
+
+| 文件 | 前 | 后 |
+| --- | ---: | ---: |
+| `ledgerFileRepository.test.ts` | 276 | 276 |
+| `usePersistentLedger.fileCapabilities.test.tsx` | 169 | 169 |
+| `ledgerFileAccessController.test.ts` | 203 | 203 |
+| `LedgerAccessGate.test.tsx` | 161 | 161 |
+| `usePersistentLedger.fileImport.test.tsx` | 101 | 101 |
+| `ledgerFileHandleAdapter.test.ts` | 50 | 53 |
+| `goldenStorageFixtures.test.ts` | 12 | 12 |
+
+A.4 在最终 S-1 实现上重新通电，三条均为临时破坏产品实现后红、精确恢复后绿：
+
+| 类别 | 临时破坏 | 定向用例 | 红灯 | 恢复后 |
+| --- | --- | --- | --- | --- |
+| 写入正确性 | 普通保存的 `previous: baseFile.current` 改为 `null` | `creates 300 then saves 301 and 302 as two adjacent independently decryptable full generations` | 1 failed，V3 修订链合同拒绝 | 1 passed／59 skipped |
+| 恢复正确性 | 恢复写入的 `previous: this.damagedFile.previous` 改为 `null` | `offers an explicit recovery candidate and restores exactly the independently verified previous generation` | 1 failed，恢复修订链合同拒绝 | 1 passed／59 skipped |
+| 拒绝被篡改文件 | 临时关闭 `verifyLedgerFile` 中盘上 crypto 元数据与会话绑定检查 | `rejects save salt drift without advancing the last verified ledger` | 1 failed，承诺错误地 resolve | 1 passed／59 skipped |
+
+三次有效通电检查后再跑默认全量：**101 files／1140 tests PASS**；typecheck、lint、`git diff --check` PASS。临时破坏均已恢复，S-1 提交后源码工作树 clean。
+
+### R-14｜迁移器与 V2 产品路径
+
+Q-3 已依修订 C 作废；本批未实现迁移器。产品的 repository／app 路径没有接受、解密或写出 V2 的调用；只在解密前解析非 V3 JSON 的 `fileFormatVersion` 与 `ledgerSchemaVersion` 明文字段，用于保留既有的版本／schema 拒绝分类。冻结的 `validateLedgerFileV2`、V2 crypto primitive 及其既有合同测试依 A-08 保留，但产品运行时无调用点。
