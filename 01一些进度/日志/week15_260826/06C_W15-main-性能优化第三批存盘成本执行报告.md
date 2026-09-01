@@ -3,7 +3,7 @@
 - 日期：2026-08-31
 - 源码分支：`zhennn/w15-main-chunked-storage`
 - 起点：`main@8df62d8`
-- 状态：**S-1 实现与独立 M-3 已完成；S-2 开工前发现其恢复合同依赖尚未实施的 S-3 分块，已停止并等待裁决**；本批不实现迁移器
+- 状态：**S-1／S-2 实现与各自独立 M-3 已完成；修订 E 已将 S-2 重定义为整本体槽局部写，现继续 S-3 数量分块**；本批不实现迁移器
 - 合同：`06A_W15-main-性能优化第三批存盘成本产品定义.md`、`06B_W15-main-性能优化第三批存盘成本执行文档.md`
 
 ## 结论
@@ -567,8 +567,70 @@ S-1 量尺完成并提交后，执行者在改动 S-2 代码前重新核对 `06A
 
 因此当前没有一种实现能同时满足“顺序必须 S-1 → S-2 → S-3”“三件事独立提交并分别归因”“S-2 后 previous 不存整本”“S-2 后写坏新版仍恢复”，又不把 S-3 偷跑进 S-2。依据总合同“凡遇‘这样应该也行吧’一律停下来申报”，源码在 `97a93eb` 停止，**尚未改动任何 S-2 产品代码或测试**。
 
-需要产品负责人裁决 S-2／S-3 的依赖关系，例如明确改为“先分块、后增量 previous”，或允许二者作为一个不可分割的格式步骤并相应修订独立归因要求；执行者不自行选择。
+需要产品负责人裁决 S-2／S-3 的依赖关系，例如明确改为“先分块、后增量 previous”，或允许二者作为一个不可分割的格式步骤并相应修订独立归因要求；执行者不自行选择。该停止随后由根文档提交 `89f7574` 的修订 E 解除；下文记录裁决后的实际 S-2，不回写或删除当时申报。
 
 ### R-14｜迁移器与 V2 产品路径
 
 Q-3 已依修订 C 作废；本批未实现迁移器。产品的 repository／app 路径没有接受、解密或写出 V2 的调用；只在解密前解析非 V3 JSON 的 `fileFormatVersion` 与 `ledgerSchemaVersion` 明文字段，用于保留既有的版本／schema 拒绝分类。冻结的 `validateLedgerFileV2`、V2 crypto primitive 及其既有合同测试依 A-08 保留，但产品运行时无调用点。
+
+### 修订 E 与 R-15｜S-2 整本体槽布局
+
+根文档提交 `89f7574` 的修订 E 确认第三次停止正确，并把 S-2 重定义为“不重写上一代所在区域”，而非“用 delta 表示 previous”。源码提交 `2723b46` 以三个固定整本体槽和两个固定头槽落地：
+
+- 有效头引用的 `current`、`previous` 各占一个整本体槽；第三个体槽是下一次局部写的安全目标。
+- 普通保存先将新 current 的整本 AES-GCM 密文写入第三槽，再将新头写入非活动头槽；补丁顺序固定为“体后头”。
+- 两体槽无法满足 S2-C：写新 current 必然先覆盖旧头引用的 previous，新头中断时旧头已不完整。三体槽使写头前始终保留当前有效头所引用的两个整本 blob。这仍是固定少数整本槽，没有事实分块、delta 或块间链。
+- 每代仍独立生成 12 B IV，独立 AES-GCM 认证；AAD 新增自身 `bodySlot`，不包含另一槽的密文或哈希。四个版本仍为 file 3／crypto 1／ledger schema 4／backup 3。
+- 体槽初建按当前密文取 25% 余量并对齐 64 KiB；未超容量的普通保存只写一体槽和一头槽。罕见容量增长越界时使用既有整文件原子替换并完整复读，不把重新布局冒充普通局部写。
+
+S2-B 的直接证明来自新用例 `leaves the previous whole-ledger body slot byte-identical during an ordinary save`：它同时记录底层定位写区间，断言普通保存只有两个写操作、两区间都不与旧 current／新 previous 槽相交，并对保存前后该槽整段字节做 `toEqual`。
+
+### R-16｜S2-E 局部写后的保存安全合同
+
+`keepExistingData` 仅在已通过完整盘前复读与已验证基线字节相等、且容量不变的局部写中设为 `true`。改动后既有合同逐项不弱化：
+
+1. **正常成功必须完整复读：** 体槽与头槽均写完后才 `close`，随后从同一 handle 重新读入整个 C；严格解析双头、槽界与零填充，独立认证 current／previous，校验完整 payload／revision／fileId／crypto 绑定，最后校验复读全字节与本次预期文件完全一致；此前不更新内存中的 verified 基线。
+2. **仅在能证明安全时补偿：** import 失败后先完整读盘；只有盘上字节精确等于 base 或本交易 candidate 时才确认状态。只有精确 candidate 允许用既有 `keepExistingData: false` 整文件原子写恢复 base，写后再完整复读与验证。
+3. **无法证明时停止：** 盘上若既不是精确 base 也不是精确 candidate，普通保存返回既有 `EXTERNAL_CHANGE`，import 进入既有 `IMPORT_RECOVERY_BLOCKED`；都不显示成功、不更新 verified、不继续盲写。
+4. **头写中断仍有完整入口：** 专门测试让第一个定位体写已发布、第二个头写失败；首次 save 拒绝，同会话重试检出未知字节后零写入停止，重新打开仍通过未触及的另一头槽加载旧账本。
+
+因此局部写没有把“写进 writable”当成成功，成功边界仍是“close 后完整复读、全链认证、精确字节相等”。
+
+### R-17｜S2-F／S2-G 与通电检查
+
+S2-F 正式用例直接翻转 current 体槽的一个密文字节，保留头槽与 previous 体槽原样；`openForAccess` 必须返回 `recovery-required`，确认后的 current 和 previous 账本均与损坏前的上一代逐字段相等。S2-G 用例同时校验定位写区间与 previous 整槽字节。
+
+| 硬测试 | 临时破坏产品实现 | 红灯 | 恢复后绿灯 |
+| --- | --- | --- | --- |
+| S2-G previous 不重写 | 在 `prepareLedgerFileWriteV3S2` 额外生成并发布一个覆盖 previous 整槽的补丁 | 1 failed／62 skipped，容器或认证拒绝被覆盖的 previous | 1 passed／62 skipped |
+| S2-F current 损坏恢复 | 临时关闭 `verifyLedgerFileForOpen` 中“current 失败而 previous 验证成功则返回 recovery-required”分支 | 1 failed／62 skipped，返回 `AUTHENTICATION_FAILED` | 1 passed／62 skipped |
+
+两次破坏都用 `apply_patch` 临时落在未提交工作树，各自取得红灯后立即精确恢复并取得绿灯。最后检索 `forbiddenPreviousPatch|false && file.previous` 无遗留，`git diff --check` 与 typecheck 通过。S-2 最终全量为 **102 files／1148 tests PASS**，typecheck、lint、production build、结构守卫 7/7、04 批冻结派生快照 7/7 与真实浏览器文件路径合同均通过。
+
+S-2 改动的既有测试文件 `expect(` 计数如下，前值来自 `97a93eb`，后值来自 `2723b46`；没有任何既有文件减少。
+
+| 文件 | S-2 前 | S-2 后 |
+| --- | ---: | ---: |
+| `LedgerAccessGate.test.tsx` | 161 | 161 |
+| `ledgerFileAccessController.test.ts` | 203 | 203 |
+| `usePersistentLedger.fileCapabilities.test.tsx` | 169 | 169 |
+| `usePersistentLedger.fileImport.test.tsx` | 101 | 101 |
+| `ledgerFileHandleAdapter.test.ts` | 53 | 58 |
+| `ledgerFileRepository.test.ts` | 276 | 292 |
+
+### R-18｜H-6 与 S-2 独立归因
+
+**H-6 未触发。** 两体槽方案确实无法与头写中断恢复共存，但修订 E 允许的“固定少数槽”范围内，三体槽已使局部写、完整复读、头中断恢复与 fail-closed 同时成立，因此没有采用需另行裁决的“整 file 重写但复用 previous 密文”退路。
+
+S-2 源码提交为 `2723b46`，提交后立即独立量尺，原始 JSON 与时刻／序号元数据由 `90d143f` 提交到 `benchmarks/evidence/w15-storage/s2-whole-ledger-slots/`。四档与 S-1 直接对照：
+
+| 序号 | 档位 | 开始 | 完成记录 | 样本 | S-1 M-3 | S-2 M-3 | S-2 独立变化 |
+| ---: | --- | --- | --- | ---: | ---: | ---: | ---: |
+| 1 | S-100 | 2026-09-01 09:17:23 +02:00 | 09:18:37 | 10 | 90.530 ms | 106.736 ms | +16.206 ms／+17.90% |
+| 2 | S-1K | 2026-09-01 09:23:56 +02:00 | 09:25:07 | 10 | 175.043 ms | 207.850 ms | +32.807 ms／+18.74% |
+| 3 | S-10K | 2026-09-01 09:30:29 +02:00 | 09:31:52 | 10 | 1,014.023 ms | 1,188.917 ms | +174.894 ms／+17.25% |
+| 4 | S-100K | 2026-09-01 09:37:07 +02:00 | 09:39:15 | 3 | 9,630.737 ms | 11,449.299 ms | +1,818.562 ms／+18.88% |
+
+相邻开始前静置 319／322／315 秒，末档后静置 318 秒；四档均为 Chrome `152.0.7977.65`、production、`consoleErrors = []`、`temporaryArtifactsCleaned = true`。一次 09:10:25 的 S-100 在 infrastructure 阶段因先前 dev 合同清掉 `.next` production 产物而无指标；重建 production 并静置后才从有效序号 1 重新开始，该失败只写入 `excludedRuns`。
+
+S-2 的可归因结果是**四档总 M-3 均变慢，未取得时延收益**。体写确已从“两本”降为“一本”，但为保证头中断时 current／previous 都不受触及，文件固定保留三个整本体槽；S2-E 又要求 close 后完整文件复读。实测表明该复读与大文件开销超过了少写一本的收益。这是负结果，不用体写字节数替代 M-3，也不伪作中位数改善；它是 S-3 的正式前置基线。
