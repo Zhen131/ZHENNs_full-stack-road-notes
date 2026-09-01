@@ -200,3 +200,24 @@ src/features/backup/BackupControls.tsx:135
 上述是尚未处理清单，不是跳过清单；未将其混入 Q-12。已核实的一档／K-2 跳过项仅为 `src/app/SettingsWorkspace.tsx:15` 的 `"清空账本"`：它在第 139 行作为用户输入的精确比较目标 `confirmationValue !== PUBLIC_CLEAR_LEDGER_CONFIRMATION_TEXT`，同时第 343 行显示给用户。把它改为按当前界面语言变化的文案会改变破坏性清空操作的确认口令，非纯搬运；故保留常量，待最终 Q-12 逐条列明。
 
 继续执行已新增 `a08d41e refactor: localize trade form`、`556d46c refactor: localize ledger access gate` 与 `4964c95 refactor: localize transactions workspace`。三笔均先通过 `npm test`，原始结论均为 `Test Files 106 passed (106)` 与 `Tests 1185 passed (1185)`。后续范围扫描显示最大剩余界面文件为 `DashboardShell.tsx:92` 和 `BackupControls.tsx:135`；这些是未处理，不是跳过。
+
+### 第二轮收尾核验
+
+HEAD b6738a8dfd12b67408607f0b8e897b39364a95fe；缝 ffbe0ff470132efcab2d3651dd446837426d4b33；自缝实测 47 笔源码提交。
+
+```text
+npm test: Test Files 106 passed (106); Tests 1185 passed (1185)
+derived snapshot: Test Files 1 passed (1); Tests 7 passed (7)
+sourceLayout/interfaceWording: Test Files 2 passed (2); Tests 8 passed (8)
+lint: eslint . --max-warnings=0
+build: compiled successfully; static pages 5/5; / 376 kB; First Load JS 479 kB
+i18n: zh 655; en 32; hu 32
+core/platform ui import scan: (empty)
+package and lock diff: (empty)
+```
+
+Q-11 收尾检索仅余：usePersistentLedger、ConfirmDeleteButton、tradeRemovalService 的中文注释；SettingsWorkspace.tsx:15 的 清空账本；chartDataService.ts:152 的 现金 USDT 与 :246 的 其他；backupImportPreflight.ts:661 的 且不提供迁移。
+
+Q-12：一档 0 处。二档 4 处。清空账本在 SettingsWorkspace.tsx:139 参与 confirmationValue 精确比较；现金 USDT 与 其他 是 chartDataService 的 assetSymbol 切片标识并在 191-198 行排序比较；且不提供迁移 被 backupImportPreflight.ts:661 的 endsWith 比较。三处注释不属于界面文案。layout metadata 为服务端静态定义，客户端 i18n 调用会使 build 失败，已由 b6738a8 恢复服务端边界。
+
+否定性声明：未改既有测试断言、阈值或用例名；未改守卫、依赖、文件格式、版本号、加密参数或派生计算；未 push/rebase/amend/squash/reset/force；未读取真实数据区；根文档仓库本轮只改本报告。
