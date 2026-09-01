@@ -161,3 +161,40 @@ total 434
 ```
 
 第二轮新增提交将在后续小节持续登记；目前已验证并提交：`774d118 refactor: localize dashboard shell helpers`、`75b4fba refactor: localize trade table`、`338f69b refactor: localize activity table`。每笔提交前均运行 `npm test`，结果为 106 files / 1185 tests passed。
+
+### 后续进度（未收尾）
+
+新增源码提交：`9360a6f refactor: localize market data controls`。该笔迁移 `MarketDataControls.tsx` 的运行状态、提示、操作、配置表和 Binance 失败说明，并新增 `marketData.*` key；提交前原始测试结论：
+
+```text
+Test Files  106 passed (106)
+Tests  1185 passed (1185)
+```
+
+当前范围扫描原始输出（排除 `src/ui/i18n.tsx` 和测试）：
+
+```text
+src/app/SettingsWorkspace.tsx:1
+src/app/layout.tsx:1
+src/features/market-data/binanceMappingService.ts:1
+src/features/backup/backupEnvelope.ts:2
+src/features/charts/chartDataService.ts:2
+src/features/portfolio/ledgerProjection.ts:2
+src/features/trades/tradeRemovalService.ts:2
+src/ui/ConfirmDeleteButton.tsx:2
+src/features/portfolio/valuationDisplay.ts:3
+src/features/portfolio/pnlSummaryService.ts:5
+src/app/usePersistentLedger.ts:12
+src/features/cash/cashEventService.ts:12
+src/features/asset-transfers/assetTransferService.ts:35
+src/features/backup/backupImportPreflight.ts:36
+src/features/charts/chartOptionBuilders.ts:36
+src/features/backup/backupImportReport.ts:63
+src/app/TransactionsWorkspace.tsx:69
+src/features/trades/TradeForm.tsx:80
+src/app/LedgerAccessGate.tsx:87
+src/app/DashboardShell.tsx:92
+src/features/backup/BackupControls.tsx:135
+```
+
+上述是尚未处理清单，不是跳过清单；未将其混入 Q-12。已核实的一档／K-2 跳过项仅为 `src/app/SettingsWorkspace.tsx:15` 的 `"清空账本"`：它在第 139 行作为用户输入的精确比较目标 `confirmationValue !== PUBLIC_CLEAR_LEDGER_CONFIRMATION_TEXT`，同时第 343 行显示给用户。把它改为按当前界面语言变化的文案会改变破坏性清空操作的确认口令，非纯搬运；故保留常量，待最终 Q-12 逐条列明。
