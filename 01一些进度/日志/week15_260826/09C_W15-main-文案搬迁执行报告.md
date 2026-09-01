@@ -198,3 +198,5 @@ src/features/backup/BackupControls.tsx:135
 ```
 
 上述是尚未处理清单，不是跳过清单；未将其混入 Q-12。已核实的一档／K-2 跳过项仅为 `src/app/SettingsWorkspace.tsx:15` 的 `"清空账本"`：它在第 139 行作为用户输入的精确比较目标 `confirmationValue !== PUBLIC_CLEAR_LEDGER_CONFIRMATION_TEXT`，同时第 343 行显示给用户。把它改为按当前界面语言变化的文案会改变破坏性清空操作的确认口令，非纯搬运；故保留常量，待最终 Q-12 逐条列明。
+
+继续执行已新增 `a08d41e refactor: localize trade form`、`556d46c refactor: localize ledger access gate` 与 `4964c95 refactor: localize transactions workspace`。三笔均先通过 `npm test`，原始结论均为 `Test Files 106 passed (106)` 与 `Tests 1185 passed (1185)`。后续范围扫描显示最大剩余界面文件为 `DashboardShell.tsx:92` 和 `BackupControls.tsx:135`；这些是未处理，不是跳过。
