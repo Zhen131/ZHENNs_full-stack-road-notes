@@ -381,3 +381,166 @@ grep -rn -P '[：、，。？！；]' src/app src/features src/ui \
 三档规则不变。**但本轮的四处修复不适用一档跳过**——它们是已确认的缺陷，必须修完。
 
 若某处修复会牵动既有测试断言 → **停止申报**（这是本轮新增的第四条停止条件）。理由：缝上原文与断言应当一致，若不一致说明缺陷比已知的更深。
+
+---
+
+## 修订 D（2026-09-02）：依 `09D-2` = FAIL 修复第五处，并把守卫扩到 `translateDefault`
+
+**上文与修订 A／B／C 原文一字不改写。** 本修订用于**第五轮**，在同一分支 `zhennn/w15-main-app-split` 上接着 `c830e79` 往下做。**修复完成前，09 批不得合入 `main`。**
+
+### 前情：本轮不是因为你上一轮干砸了
+
+`09D-2` 判 FAIL，但**第四轮交付的 5 笔提交（`b45ec1e`..`c830e79`）质量合格**：四处修复逐字复原、F-2 无违反、守卫通电有效、全部闸门绿、`8fd0b6e → c830e79` 区间内零新增中文改写。
+
+FAIL 事由是**存量缺陷**——09 更早某一轮埋下、`09D` 未查出、`09D-2` 新增一道方法后检出。本轮修它，外加补一个守卫覆盖缺口。
+
+### A. 缺陷五：`prices.field.asset` 一 key 两用
+
+| | 内容 |
+| --- | --- |
+| 位置 | `src/features/prices/PriceForm.tsx:89` |
+| key | `prices.field.asset`（当前值 `价格资产`） |
+| 缝上调用点一 | `PriceForm.tsx:53`　`fieldLabels.assetSymbol = "资产"` |
+| 缝上调用点二 | `PriceForm.tsx:362`　JSX 标签文字 `价格资产` |
+| 被改掉的 | **`资产` → `价格资产`** |
+| 用户可见后果 | 价格表单资产字段校验提示：`资产不能为空或格式不正确` → `价格资产不能为空或格式不正确` |
+| 测试覆盖 | **零**（全仓搜 `不能为空或格式不正确` 只命中文案表定义，无任何断言） |
+
+根因与已修四处**完全相同**，违反 D-3「中文渲染结果逐字不变」。
+
+### B. 修复要求（沿用修订 C 的 F-1～F-5，编号续排）
+
+| 编号 | 要求 |
+| --- | --- |
+| **F-6** | 为 `PriceForm.tsx:89` 的 `assetSymbol` 字段名**新建一个专用 key**，值取缝上原文 `资产`。以 `git show ffbe0ff:src/features/prices/PriceForm.tsx` 取原文逐字核对 |
+| **F-7** | **不得改动 `prices.field.asset` 的值。** 它在 `PriceForm.tsx:370`（JSX 标签）上是正确的，改了就是把缺陷搬到对面 |
+| **F-8** | 新 key 命名遵循已冻结规则 `区域.组件或语义分区.用途`，用第三段区分，**不得用编号**（例如 `prices.field.assetSymbolLabel`） |
+| **F-9** | 修完后 `prices.field.asset` 只剩 1 个调用点，**必须从守卫允许清单中移除**。守卫的 `staleApprovals` 断言会强制这一步——若你没移除，测试会红 |
+| **F-10** | **逐处贴出三者对照**：缝上原文 → 修复前渲染 → 修复后渲染，证明第三者与第一者逐字相同 |
+
+### C. 守卫扩容：把 `translateDefault` 纳入扫描
+
+**产品负责人 2026-09-02 裁决：此项并入 09 批收口，不另立项。**
+
+`09D-2` §5.4 查明，`src/test-support/translationKeyUsage.test.ts` 第 281–296 行把扫描条件写死为 `node.expression.text === "t"`，因此**完全看不见 `translateDefault(...)` 这一调用形式**。产品负责人实测：`translateDefault` 在生产代码中有 **189 处**，分布 9 个文件——
+
+```text
+src/app/usePersistentLedger.ts
+src/features/cash/cashEventService.ts
+src/features/asset-transfers/assetTransferService.ts
+src/features/portfolio/valuationDisplay.ts
+src/features/portfolio/pnlSummaryService.ts
+src/features/portfolio/ledgerProjection.ts
+src/features/backup/backupEnvelope.ts
+src/features/backup/backupImportReport.ts
+src/features/backup/backupImportPreflight.ts
+```
+
+其中构成「一 key 多用」的另有 **10 个 key** 完全在守卫视野之外（`09D-2` §5.4：按 `t` 计复用 key 117 个，按 `t` + `translateDefault` 计 127 个）。
+
+**并入本批的理由**：已修四处中的第 1 处（`BackupControls` 的 `message:` 字段）正是服务层风格字符串，与 `translateDefault` 的使用场景高度重合；而 `usePersistentLedger.ts` 是 **10 批的首要对象**，守卫在那里是瞎的，不得带病进入。
+
+| 编号 | 要求 |
+| --- | --- |
+| **G-6** | 扩展扫描条件，使守卫同时识别 `t("...")` 与 `translateDefault("...")`。**只改扫描条件，不改断言结构**（`unapprovedKeys` 与 `staleApprovals` 两条断言保持原样） |
+| **G-7** | **允许清单新增条目必须逐条举证，不得凭合理推断书写注释。** 每一条新增 key，在提交说明或 `09C-2` 报告中贴出：该 key 在缝 `ffbe0ff` 上**每一个**调用点的原文（用 `git show ffbe0ff:<文件>` 取），证明它们**确实是同一句中文** |
+| **G-8** | **若发现某个新增 key 的两个缝上调用点原文并不相同 → 那是第六处缺陷 → 立即停止申报，不得写进允许清单。** 这是本轮最重要的一条停止条件 |
+| **G-9** | 通电检查须**针对新扫描形式重做**：临时把某个单调用点 key 以 `translateDefault("key")` 形式复用到第二处，确认守卫变红；还原后核对文件 SHA-256 一致。**只证明 `t()` 形式会红不算数** |
+| **G-10** | 通电检查必须在**临时 git worktree** 中进行，主工作目录零改动。做完确认 `git status --porcelain` 为空 |
+| **G-11** | 若时间允许，一并处理 `09D-2` §5.4 列出的另两种盲区（成员调用 `obj.t("key")`、变量 key `t(someVar)`）。**这两项非本轮收口条件**，做不了就如实记录，不得因此停止申报 |
+
+### D. 为什么 G-7 是本轮的核心条款
+
+`09D-2` §5.3 判定：现有 117 条允许清单是**照着现状抄的名单，逐条理由是事后补写的合理化说明，不是核对结果**。决定性反例正是 `prices.field.asset`——注释写着「Price form areas use the same Asset field label.」，而缝上那两处根本不是同一句话。**只要逐条核对过，这一条必然被发现；它没有被发现，说明核对没有发生。**
+
+因此本轮新增条目**必须附缝上原文**。允许清单的价值全部在于「加入清单是一个需要人确认的动作」（G-3 原意）；没有举证的清单条目，等于把守卫变成装饰品。
+
+**好消息是这 10 条的证据已经现成**：`09D-2` §6.3(d) 已对全部 127 个复用 key、286 个调用点做过逐点回填重建比对，除 `prices.field.asset` 外全部合格。你仍须自己举证，但预期不会有新缺陷。
+
+### E. 改动范围
+
+**本轮只允许改动以下文件**，多一个都不行：
+
+```text
+src/features/prices/PriceForm.tsx
+src/ui/i18n.tsx
+src/test-support/translationKeyUsage.test.ts
+```
+
+**不得修改任何既有测试的断言或阈值。不得新增除守卫扩容外的任何测试。**
+
+### F. 提交要求
+
+| 编号 | 要求 |
+| --- | --- |
+| **P-7** | **两笔提交**：第一笔 F-6～F-10 的文案修复，第二笔 G-6～G-10 的守卫扩容。标题英文 |
+| **P-8** | 第一笔标题格式沿用修订 C 的 F-4：`fix: restore <原文语义> wording` |
+| **P-9** | **每笔提交前 `npm test` 全绿才提交。** 红了先还原这一笔 |
+| **P-10** | **不得 `git push`。不得合并到 `main`。** 推送只有产品负责人本人做 |
+
+### G. 收口闸门（命令一律照抄本节原文）
+
+**判定任何闸门「无法执行」之前，先核对命令与本节逐字一致。** 09 第一轮曾凭记忆构造了一条本仓库从不存在的测试路径，误报停止申报，浪费整整一轮（E-1／E-2）。
+
+```bash
+npm test
+```
+
+```bash
+npx vitest run --config vitest.benchmarks.config.ts benchmarks/measure/derivedSnapshot.contract.ts
+```
+
+```bash
+npm run build
+```
+
+```bash
+npm run typecheck
+```
+
+```bash
+npm run lint
+```
+
+```bash
+npx vitest run src/test-support/sourceLayout.test.ts src/test-support/interfaceWording.test.ts
+```
+
+```bash
+git diff --check
+```
+
+```bash
+git diff origin/main...HEAD --check
+```
+
+顺序：`build` 先跑，`typecheck` 在 `build` 之后串行。
+
+参考值（`09D-2` 在 `c830e79` 上实测，**供对照异常，不是让你抄**）：全量 107 files／1186 tests；冻结派生快照 1 file／7 tests；结构守卫 2 files／8 tests；两项 whitespace 均为空。
+
+### H. 收口判据
+
+| 编号 | 判据 |
+| --- | --- |
+| **Q-22** | 第五处修复后的渲染与缝上原文**逐字相同**，贴出三者对照 |
+| **Q-23** | 守卫扩容后能识别 `translateDefault`，**且通电检查以 `translateDefault` 形式证明它会红** |
+| **Q-24** | 允许清单每一条**新增**条目附缝上全部调用点原文，证明确为同一句 |
+| **Q-25** | `prices.field.asset` 已从允许清单移除，且 `staleApprovals` 通过 |
+| **Q-26** | 全部闸门重跑通过（G 节命令） |
+| **Q-27** | **不得引入任何新的中文改写。** 自查 `c830e79 → 新 HEAD` 区间，给出你的自查方法与结果（全量 AST 复核由独立验收方另做，你不必代劳） |
+
+### I. 停止条件
+
+出现以下任一情况，**立即停止并如实申报，不得自行扩大范围处置**：
+
+1. **G-8：某个新增允许清单 key 的缝上调用点原文不一致 → 第六处缺陷 → 停止**
+2. 修复第五处会牵动既有测试断言 → 停止（沿用修订 C 第四条停止条件）
+3. 改动需要超出 E 节列出的三个文件 → 停止，说明为什么
+4. 任何闸门变红且非本轮改动直接所致 → 停止，贴原始输出
+5. 守卫扩容后允许清单需新增的条目**远多于 10 条** → 停止，说明实际数量与差异原因
+
+**本轮不适用任何「找不到干净边界可以跳过」类退路。** 第五处是已确认缺陷，守卫扩容是产品负责人裁决事项，**两项都必须做完**。G-11 的两种额外盲区是唯一可跳过项，且跳过须如实记录。
+
+### J. 交付物
+
+新建 `09C-2_W15-main-文案搬迁第五轮执行报告.md`，**不得改写 `09C` 原文**。须含 Q-22～Q-27 逐项证据、G-7 的逐条举证、通电检查过程、全部闸门原始输出、以及如实的未完成事项清单。
