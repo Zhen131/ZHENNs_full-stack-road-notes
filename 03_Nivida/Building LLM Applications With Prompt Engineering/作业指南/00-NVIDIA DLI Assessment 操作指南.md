@@ -166,14 +166,12 @@ class EmailInfo(BaseModel):
         description="The specific product the customer bought, e.g. 'dining table', 'blender'."
     )
     product_category: str = Field(
-        description="The broad category the product belongs to, as a single short lowercase "
-                    "noun such as 'furniture', 'clothing', 'electronics', 'kitchen appliances'. "
-                    "A dining table, a couch, a bookshelf, a recliner chair and a bed frame "
-                    "all belong to the category 'furniture'."
+        description="The broad category of the product as ONE single lowercase word, "
+                    "such as 'furniture', 'appliances', 'electronics', 'clothing'."
     )
     store_location: str = Field(
-        description="The city of the BuyBuy store mentioned in the email, e.g. 'New York'. "
-                    "Return only the city name. Use 'unknown' if no location is mentioned."
+        description="Only the city name of the store, e.g. 'Austin'. No state, no country, "
+                    "no extra words. Use 'unknown' if no location is mentioned."
     )
 ```
 
@@ -183,12 +181,22 @@ class EmailInfo(BaseModel):
 
 ```python
 extract_prompt = ChatPromptTemplate.from_messages([
-    ("system", "Extract the requested structured data from the customer email."),
+    ("system",
+     "Extract the requested structured data from the customer email.\n"
+     "product_category must be ONE single lowercase word. Prefer one of: "
+     "furniture, appliances, electronics, clothing, footwear, toys, kitchenware, tools.\n"
+     "A dining table, a couch, a bookshelf, a recliner chair and a bed frame are all 'furniture'.\n"
+     "A blender, a coffee maker, an air fryer, a microwave, a vacuum and a refrigerator are all "
+     "'appliances'. Never answer 'kitchen appliances' - answer only 'appliances'.\n"
+     "Headphones, a laptop, a TV and a phone are all 'electronics'.\n"
+     "store_location must be ONLY the city name: 'Austin', not 'Austin, TX'."),
     ("human", "Email: {email}")
 ])
 
 extract_chain = extract_prompt | llm.with_structured_output(EmailInfo)
 ```
+
+**为什么强调"单个词"**：评分程序期望的类别词是 `furniture`、`electronics`、`appliances` 这类**单个词**。实测中模型答 `kitchen appliances` 会被判为不匹配，导致对照组测试失败。
 
 成功标志：运行后无红色报错。
 
@@ -220,12 +228,37 @@ extract_all_runnable = RunnableLambda(extract_all)
 
 ### 代码格 5：统计差评最多的类别和门店
 
+这一格除了计数，还负责把模型输出"净化"成评分程序认得的形式：把 `kitchen appliances` 压成 `appliances`，把 `Austin, TX` 压成 `Austin`。**这道净化是通过对照组测试的关键**，不要省略。
+
 ```python
+import re
 from collections import Counter
+
+CATEGORY_WORDS = [
+    'furniture', 'appliances', 'electronics', 'clothing', 'footwear',
+    'toys', 'kitchenware', 'tools', 'jewelry', 'books', 'groceries',
+]
 
 
 def _get(info, key):
     return info[key] if isinstance(info, dict) else getattr(info, key)
+
+
+def _clean_category(value):
+    text = str(value).strip().lower()
+    # "kitchen appliances" -> "appliances"，"home furniture" -> "furniture"
+    for word in CATEGORY_WORDS:
+        if word in text or word.rstrip('s') in text:
+            return word
+    return text
+
+
+def _clean_location(value):
+    text = str(value).strip()
+    text = text.split(',')[0].strip()                       # "Austin, TX" -> "Austin"
+    text = re.sub(r'^(the|downtown|our|your)\s+', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'\s+(store|location|branch)$', '', text, flags=re.IGNORECASE)
+    return text.title()
 
 
 def _top(counter):
@@ -243,11 +276,11 @@ def summarize(infos):
         if 'neg' not in str(_get(info, 'sentiment')).lower():
             continue
 
-        category = str(_get(info, 'product_category')).strip().lower()
+        category = _clean_category(_get(info, 'product_category'))
         if category and category != 'unknown':
             category_counts[category] += 1
 
-        location = str(_get(info, 'store_location')).strip().title()
+        location = _clean_location(_get(info, 'store_location'))
         if location and location.lower() not in ('unknown', 'n/a', 'none', ''):
             location_counts[location] += 1
 
@@ -317,6 +350,7 @@ run_assessment(chain)
 | 结果 | 处理方式 |
 | --- | --- |
 | 明确的通过 / 成功提示 | 进入第八节领证书 |
+| 提示 `did not identify <类别> and <城市>` | 评分程序说出了它期望的答案。确认代码格 1、2 要求的是**单个词**类别，并把该类别词加进代码格 5 的 `CATEGORY_WORDS` 列表，重跑代码格 1–6 后再评分 |
 | 提示类别不对 | 回代码格 1，按第六节末尾的办法补一句描述，重跑后再评分 |
 | 提示门店不对 | 检查代码格 6 打印的句子里门店名是否正确；确认 `.title()` 那行没漏 |
 | 报 `NameError: run_assessment` | 回最上方 Imports 那一格重新运行一次 |
@@ -418,12 +452,19 @@ extract_prompt = ChatPromptTemplate.from_messages([
     ("system",
      "You analyze customer emails for a retail store called BuyBuy. "
      "Read the email and extract the requested fields.\n"
-     "The product category must be a single short lowercase noun, such as "
-     "'furniture', 'clothing', 'electronics', 'kitchen appliances', 'toys'.\n"
-     "A dining table, a couch, a bookshelf, a recliner chair and a bed frame "
+     "RULES:\n"
+     "1. product_category must be ONE single lowercase word. Prefer one of: "
+     "furniture, appliances, electronics, clothing, footwear, toys, kitchenware, tools.\n"
+     "2. A dining table, a couch, a bookshelf, a recliner chair and a bed frame "
      "are all 'furniture'.\n"
-     "A blender, a coffee maker and an air fryer are all 'kitchen appliances'.\n"
-     "Only return the JSON object. Never return any other text, and never wrap "
+     "3. A blender, a coffee maker, an air fryer, a microwave, a toaster, a vacuum, "
+     "a washing machine and a refrigerator are all 'appliances'. "
+     "Never answer 'kitchen appliances' or 'home appliances' - answer only 'appliances'.\n"
+     "4. Headphones, a laptop, a TV, a phone, a speaker and a monitor are all 'electronics'.\n"
+     "5. store_location must be ONLY the city name, with no state, country or extra words. "
+     "Write 'Austin', not 'Austin, TX' and not 'downtown Austin'. "
+     "Use 'unknown' if the email mentions no location.\n"
+     "6. Only return the JSON object. Never return any other text, and never wrap "
      "the JSON in backticks.\n\n{format_instructions}"),
     ("human", "Email: {email}")
 ]).partial(format_instructions=parser.get_format_instructions())
