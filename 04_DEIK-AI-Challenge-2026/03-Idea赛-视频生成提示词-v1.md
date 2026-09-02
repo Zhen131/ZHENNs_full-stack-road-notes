@@ -1,182 +1,175 @@
-# 03 — Idea 赛视频画面生成提示词 · v1（初稿）
+# 03 — Idea 赛视频画面生成提示词 · v1（中文审阅版）
 
-日期：2026-09-02　｜　状态：**v1 初稿，待逐拍修改**
+日期：2026-09-02　｜　状态：**中文稿，待产品负责人逐拍审阅**
 对应脚本：`02-Idea赛-视频脚本-v6.md`（八拍，2 分 48 秒）
-用途：把八拍的画面变成可以直接粘进 Gemini / ChatGPT 的提示词，生成的片段由产品负责人自己拼接剪辑。
 
-> **版本管理**：本文件每改一版另起 `-v2`、`-v3`，旧版不动，与 `02` 系列同惯例。
+> **本稿是给人看的，不是给模型看的。** 产品负责人先用中文把八拍全部过一遍，改到满意，**之后再统一翻译成英文**，英文版另起 `-v2`。
+> 英文初稿已存在 git 提交 `0a20274` 里，需要时可以调出来对照。
 
 ---
 
-## 一、生成路线（两步法）
-
-**不要直接文生视频。** 文生视频八次生成八个画风，压不住。走这两步：
+## 一、怎么用（两步法）
 
 | 步 | 做什么 | 用哪家 |
 | --- | --- | --- |
-| 1 | 用「静态图提示词」出一张扁平插画，锁死构图和画风 | ChatGPT 出图 或 Gemini 出图（两个会员都有） |
-| 2 | 把这张图 + 「视频提示词」一起喂进去，做**图生视频** | Gemini 里的 Veo，或 ChatGPT 里的 Sora |
+| 1 | 复制**通用前缀** + 该拍的**静态图提示词**，出一张扁平插画 | ChatGPT 出图 |
+| 2 | 把这张图 + 复制**通用前缀** + 该拍的**视频提示词**，做图生视频 | Gemini 里的 Veo |
 
-**第一拍先只做第 1 步。** 拍 1 的静态图满意之后，把那张图当作全片的**画风样张**，后面每一拍出静态图时都把样张一起传进去说「保持这个画风」。这一步能把返工次数从二三十次压到五六次。
+**每次生成前，通用前缀都完整复制一遍**，不管是出图还是出视频，就复制这一段，不用分三段。
 
-**不要为这个视频购买 Seedance、海螺、Runway 等额外会员。** 这个风格越简单，模型之间的差距越小，花的钱换不来东西。
+**开工顺序**：先只跑拍 1 的静态图。画风满意之后，把那张图存下来当**画风样张**，后面每一拍出静态图时都把样张一起传进去，说"保持这个画风"。这一步能把返工次数从二三十次压到五六次。
 
-**风险提前说清楚**：Veo 和 Sora 是奔着真实感训练的，你给它扁平白底图，它的本能是加纹理、加阴影、让线条呼吸抖动、让人物五官慢慢漂移。所以下面每条视频提示词里都带一整段「动作约束」，作用就是把它按住。如果某一拍生成三四次还是在变形，**放弃那一拍的 AI 视频，直接用静态图 + 剪辑软件里的位移淡入**，效果一样，不值得跟模型死磕。
+**不要买 Seedance、海螺、Runway 的会员。** 这个风格越简单，模型之间差距越小，钱换不来东西。Gemini 和 ChatGPT 的会员已经够。
+
+**风险提前说清楚**：Veo 和 Sora 都是奔着真实感训练的，喂给它扁平白底图，它的本能是加纹理、加阴影、让线条呼吸抖动、让人物五官慢慢漂移。通用前缀里那一大段动作约束，作用就是把它按住。如果某一拍生成三四次还在变形，**放弃那一拍的 AI 视频，直接用静态图 + 剪辑软件里的位移淡入**，效果一样，不值得跟模型死磕。
 
 ---
 
-## 二、全局风格锁（每条提示词开头原样粘贴，一个字不改）
+## 二、通用前缀（每次生成前原样复制这一整段，一个字不要改）
 
 ```
-STYLE LOCK - do not change any part of this block.
-Flat 2D vector illustration, minimalist explainer-video style.
-Pure white background, completely empty, no texture, no gradient, no shadow, no depth.
-Straight-on front view. No perspective, no isometric angle, no tabletop or overhead view.
-All elements are simple flat shapes with clean, even outlines of uniform weight.
-Warm limited palette only: warm off-white, soft terracotta orange, warm sand beige, muted warm brown, light warm grey.
-Very few elements. Large amounts of empty white space around them. The composition is horizontally centered and sits in the upper two thirds of the frame.
-The entire bottom-right quadrant of the frame is left completely empty. No element may enter it.
-16:9 aspect ratio.
-```
+【画风锁定】
+画风：扁平二维矢量插画，极简说明动画风格。
+背景：纯白，完全空白。不要纹理，不要渐变，不要阴影，不要景深。
+视角：正面平视。不要透视，不要俯视，不要等距视角，不要桌面视角。
+元素：全部是简单的扁平形状，轮廓线干净、粗细均匀。
+配色：只用暖色。暖白、柔和的赭石橙、暖沙米色、低饱和暖棕、浅暖灰。不要冷蓝，不要绿色，不要紫色。
+构图：元素极少，四周留大量空白。整体水平居中，位于画面上方三分之二处。
+留空：画面右下角四分之一的区域必须完全空白，任何元素都不许进入。
+画幅：16:9。
 
-## 三、全局禁止项（跟在风格锁后面，原样粘贴）
+【绝对不要出现】
+任何文字、任何字母、任何单词、任何数字、任何可辨认的手写字、任何软件界面、任何标签、任何 logo、任何水印。
+写实照片感、三维渲染、真实光照、投影、纸张纹理、噪点、景深虚化。
+描述之外的任何额外人物、道具、家具、植物、桌子或背景物件。
 
-```
-DO NOT INCLUDE: any text, any letters, any words, any numbers, any digits, any readable handwriting, any user interface, any labels, any logos, any watermark.
-DO NOT INCLUDE: photorealism, 3D rendering, realistic lighting, cast shadows, paper texture, grain, depth of field, bokeh.
-DO NOT INCLUDE: any additional characters, props, furniture, plants, desks or background objects beyond what is described.
-```
-
-## 四、全局动作约束（只用于视频提示词，跟在画面描述后面）
-
-```
-MOTION RULES - do not change any part of this block.
-The camera is completely locked. Zero camera movement: no pan, no zoom, no dolly, no tilt, no parallax, no handheld shake.
-The background stays pure white and perfectly still for the entire clip.
-Nothing morphs and nothing warps. No element changes its shape, its colour, or its outline weight.
-Any character keeps exactly the same face, proportions and colours as in the source image, in every single frame.
-Only the movements described above happen. Everything else in the frame is completely static.
-Slow, calm, smooth motion. No fast action, no bounce-heavy animation, no transitions, no fades to black, no cuts.
-Duration: 8 seconds.
+【动作约束】（生成视频时生效；生成静态图时一起复制不影响结果）
+镜头完全锁定。零镜头运动：不推、不拉、不摇、不移、不视差、不手持抖动。
+背景全程保持纯白且完全静止。
+任何元素都不许变形、不许扭曲、不许改变形状、颜色或线条粗细。
+画面里如果有人物，人物的脸、比例、颜色每一帧都必须和参考图完全一致。
+只发生下面描述的动作，画面里其他一切完全静止。
+动作缓慢、平静、平滑。不要快动作，不要弹跳感强的动画，不要转场，不要淡入淡出黑场，不要剪切。
+时长：8 秒。
 ```
 
 ---
 
-# 五、八拍提示词
-
-> 每条提示词的完整用法：**风格锁 + 禁止项 + 本拍画面描述**（出静态图）；**风格锁 + 本拍动作描述 + 动作约束**（图生视频）。
+# 三、八拍提示词
 
 ---
 
 ## 拍 1 — 我是谁（0:00–0:15）
 
-口播：`Hi, I'm Zhen. I am a long-term investor. I have kept a ledger since I was a teenager. And for the last two years I've written down every single trade by hand.`
+**口播**：`Hi, I'm Zhen. I am a long-term investor. I have kept a ledger since I was a teenager. And for the last two years I've written down every single trade by hand.`
 
-**画面要传达的**：不是「记账」，是**「手写」和「两年」这个量**。
+**这一拍要砸出去的**：不是"记账"，是**"手写"和"两年"这个量**。
 
 **静态图提示词**
 ```
-SCENE: One flat vector character, front view, visible from the waist up, positioned just left of the frame centre. Simple rounded body shapes, soft terracotta orange top, dark warm-brown hair, minimal facial features: two small dots for eyes and one short line for a mouth. The character holds a plain slim pencil in one raised hand.
-To the character's right, at the same height, floats an open notebook drawn as two rounded rectangles side by side, warm off-white pages with a thin warm-brown outline. On the left page there are three short horizontal light-grey bars, evenly spaced, suggesting handwritten lines. These bars are plain solid grey rectangles and are not readable characters of any kind.
-Nothing else is in the frame.
+画面：一个扁平矢量小人，正面，只画到腰部以上，位置略偏画面中心左侧。身体由简单圆润的形状构成，上衣是柔和的赭石橙，头发是深暖棕，五官极简：两个小圆点当眼睛，一条短横线当嘴。小人一只手举起，握着一支细长的普通铅笔。
+小人右侧、同样高度，悬浮着一本摊开的账本，由两个并排的圆角矩形构成，页面暖白色，轮廓是细的暖棕线。左页上有三条短的浅灰色水平色块，间距均匀，用来暗示手写的行。这些色块就是纯灰色的实心长条，不是任何可辨认的字符。
+画面里没有别的东西。
 ```
 
 **视频提示词**
 ```
-ANIMATION: The pencil moves slowly left and right in a short horizontal sweep just above the notebook page. Each time it finishes one pass, one more short grey horizontal bar appears on the page, one line below the previous one, until the page holds six bars. Then two closed notebooks quietly fade in and stack beneath the open notebook, one after the other. The character stays completely still apart from the pencil hand.
-```
-
-**后期叠**：字幕。可选：左上角一行小字标题。
-
----
-
-## 拍 2 — 我的问题（0:15–0:30）
-
-口播：`My ledger can tell me exactly how much I lost. Down to the cent. It has never told me why I lost it. I cannot change what I lost. I can only change what I do next.`
-
-**画面要传达的**：账本什么都知道，就是不知道「为什么」。
-
-**静态图提示词**
-```
-SCENE: One open notebook drawn as two rounded rectangles side by side, centred in the frame, warm off-white pages with a thin warm-brown outline. Both pages are filled with short horizontal light-grey bars, evenly spaced, suggesting dense handwritten records. These bars are plain solid grey rectangles and are not readable characters.
-Floating above and slightly behind the notebook is one large flat question mark symbol in soft terracotta orange. The question mark symbol is the only glyph allowed in this image; no other letters, words or digits appear anywhere.
-To the left of the notebook stands the same flat vector character from the previous shot, visible from the waist up, both palms turned upward in a small shrug, eyebrows raised slightly.
-Nothing else is in the frame.
-```
-
-**视频提示词**
-```
-ANIMATION: The grey bars on both notebook pages brighten one by one, from the top line down to the bottom line, in a quick even rhythm. Then the large terracotta question mark rises slowly from behind the notebook and settles into place above it, holding still. At the same moment the character's shoulders lift slightly into a shrug and stay there. Nothing else moves.
+动作：铅笔在账本页面上方缓慢地左右做短距离横向移动。每完成一次来回，页面上就在上一条的下一行出现一条新的浅灰色水平色块，直到页面上有六条。之后，两本合着的账本安静地淡入，依次叠在摊开的账本下方。除了握铅笔的那只手，小人全程静止。
 ```
 
 **后期叠**：字幕。
 
 ---
 
-## 拍 3 — 不只是我（0:30–0:53）
+## 拍 2 — 我的问题（0:15–0:30）
 
-口播：`Between 1991 and 1996, two researchers studied sixty-six thousand American households. The ones who traded the most earned eleven point four percent a year. The market earned seventeen point nine. That gap is not about picking bad stocks. It is about behaviour.`
+**口播**：`My ledger can tell me exactly how much I lost. Down to the cent. It has never told me why I lost it. I cannot change what I lost. I can only change what I do next.`
 
-**画面要传达的**：一群人 → 两根柱子 → **中间那道缺口**。数字全部后期叠。
+**这一拍要砸出去的**：账本什么都知道，就是不知道**"为什么"**。
 
 **静态图提示词**
 ```
-SCENE: The frame is divided into two halves by empty white space, with no divider line.
-On the left half: a row of six identical tiny flat person icons, each a simple rounded head above a simple rounded body, warm sand beige, standing side by side in a straight line, evenly spaced.
-On the right half: two flat vertical bars standing on an invisible horizontal baseline. The left bar is short and soft terracotta orange. The right bar is clearly much taller and muted warm brown. A wide band of empty white space separates the top of the short bar from the height of the tall bar, and this empty band is the visual focus of the composition.
-There are no axes, no gridlines, no labels, no tick marks, no numbers anywhere.
+画面：一本摊开的账本居中，由两个并排的圆角矩形构成，页面暖白色，细暖棕轮廓。两页都写满了短的浅灰色水平色块，间距均匀，表示密密麻麻的手写记录。这些色块是纯灰色的实心长条，不是可辨认的字符。
+账本上方偏后，悬浮着一个大的扁平问号符号，柔和赭石橙色。这个问号是本图唯一允许出现的符号，除它之外画面任何地方都不许有字母、单词或数字。
+账本左侧站着一个扁平矢量小人，画到腰部以上，双手手心朝上做一个小幅度的摊手动作，眉毛微微上扬。
+画面里没有别的东西。
 ```
 
 **视频提示词**
 ```
-ANIMATION: The six person icons fade in one by one from left to right. Once all six are visible, they slide together toward the right and compress smoothly into the short terracotta bar, which grows upward from the baseline to its final height and stops. Then the tall warm-brown bar grows upward from the same baseline and stops clearly higher than the first bar. Both bars then hold completely still, with the empty white gap between their tops fully visible for the last two seconds.
+动作：账本两页上的灰色色块从最上面一行开始，一行一行依次变亮，节奏均匀偏快。之后那个大的赭石橙问号从账本后方缓缓升起，停在账本上方不动。与此同时小人的肩膀微微抬起，做出摊手的姿势并保持住。其他一切不动。
 ```
 
-**后期叠**：`11.4%` 压在矮柱顶上，`17.9%` 压在高柱顶上，`BEHAVIOUR` 打在缺口里。**这三处字后期叠，模型一个都不许写。**
+**后期叠**：字幕。
+
+> **待你确认**：问号是个符号，跟"画面不许有字"这条有点冲突，我单独开了口子放它进来。你要是不接受，就换成小人挠头，告诉我。
+
+---
+
+## 拍 3 — 不只是我（0:30–0:53）
+
+**口播**：`Between 1991 and 1996, two researchers studied sixty-six thousand American households. The ones who traded the most earned eleven point four percent a year. The market earned seventeen point nine. That gap is not about picking bad stocks. It is about behaviour.`
+
+**这一拍要砸出去的**：一群人 → 两根柱子 → **中间那道缺口**。数字全部后期叠，模型一个都不许写。
+
+**静态图提示词**
+```
+画面：整个画面被空白分成左右两半，中间没有分隔线。
+左半边：一排六个一模一样的小人图标，每个都是一个圆润的头加一个圆润的身体，暖沙米色，并排站成一条直线，间距均匀。
+右半边：两根扁平的竖直柱子，立在一条看不见的水平基线上。左边那根短，柔和赭石橙。右边那根明显高很多，低饱和暖棕。短柱的顶端和高柱的高度之间隔着一大片空白，这片空白是整个构图的视觉重点。
+画面里没有坐标轴、没有网格线、没有标签、没有刻度、没有任何数字。
+```
+
+**视频提示词**
+```
+动作：六个小人图标从左到右一个一个淡入。六个全部出现后，它们一起向右滑动并平滑地压缩成左边那根短的赭石橙柱子，柱子从基线向上长到最终高度后停住。接着右边那根暖棕高柱从同一条基线向上长出来，停在明显更高的位置。之后两根柱子完全静止，最后两秒里，两根柱子顶端之间的那片空白要完整可见。
+```
+
+**后期叠**：`11.4%` 压在矮柱顶上，`17.9%` 压在高柱顶上，`BEHAVIOUR` 打在缺口里。
 
 ---
 
 ## 拍 4 — 我找过工具，都不行（0:53–1:15）
 
-口播：`So I went looking for a tool. The open-source ones have no AI. The AI ones only follow the money. The ones that look at psychology sit in the cloud, expensive, and ask me to fill in a form. I don't want to fill in a form.`
+**口播**：`So I went looking for a tool. The open-source ones have no AI. The AI ones only follow the money. The ones that look at psychology sit in the cloud, expensive, and ask me to fill in a form. I don't want to fill in a form.`
 
-**画面要传达的**：三个都不行，最后一个还要我填表。
+**这一拍要砸出去的**：三个都不行，最后一个还要我填表。
 
 **静态图提示词**
 ```
-SCENE: Three identical rounded-rectangle cards in a horizontal row, evenly spaced and centred in the frame, flat warm off-white fill with thin warm-brown outlines.
-Inside the first card, one simple branching fork symbol made of three dots joined by two short lines, muted warm brown.
-Inside the second card, one plain solid circle in soft terracotta orange, like a simple coin.
-Inside the third card, one simple flat cloud shape in light warm grey.
-The cards contain no text, no labels and no numbers of any kind.
-Nothing else is in the frame.
+画面：三张一模一样的圆角矩形卡片横向排成一行，间距均匀，整体居中，暖白色填充，细暖棕轮廓。
+第一张卡片中间是一个简单的分叉符号：三个圆点用两条短线连起来，低饱和暖棕色。
+第二张卡片中间是一个纯色实心圆，柔和赭石橙，像一枚简化的硬币。
+第三张卡片中间是一个简单的扁平云朵形状，浅暖灰。
+卡片上没有任何文字、标签或数字。
+画面里没有别的东西。
 ```
 
 **视频提示词**
 ```
-ANIMATION: The three cards fade in one after another from left to right, half a second apart. After the third card settles, a thick flat cross mark in soft terracotta orange draws itself over the third card in two quick strokes and stays. Then a small upright sheet with four empty light-grey boxes stacked on it slides in from the right edge and stops next to the third card; a simple flat hand shape enters from the left, pushes the sheet gently, and the sheet slides back out of the right edge of the frame. The three cards stay completely still throughout.
+动作：三张卡片从左到右依次淡入，每张间隔约半秒。第三张卡片稳定后，一个粗的赭石橙叉号分两笔画在第三张卡片上，画完后保持不动。之后一张竖着的小纸片从画面右边滑进来，停在第三张卡片旁边，纸片上有四个上下排列的空的浅灰色方框。然后一只简单的扁平手掌从左边伸进来，轻轻把纸片推走，纸片从画面右边缘滑出去。三张卡片全程静止。
 ```
 
-**后期叠**：三张竞品截图分别压在三张卡片位置上（或紧接其后单独一屏），价格页红叉。名字只上屏不念。
+**后期叠**：三张竞品截图（或紧接其后单独一屏），价格页红叉。名字只上屏不念。
 
 ---
 
 ## 拍 5 — 我不找了，我自己做（1:15–1:38）
 
-口播：`So I stopped looking. I built my own. My ledger already knows when every trade happened, and what the price was doing then. Take one trade. I bought at the top of a day that went up fourteen percent. The trade itself is the data. I never had to tell anyone how I felt.`
+**口播**：`So I stopped looking. I built my own. My ledger already knows when every trade happened, and what the price was doing then. Take one trade. I bought at the top of a day that went up fourteen percent. The trade itself is the data. I never had to tell anyone how I felt.`
 
-**画面要传达的**：**买在最高点**，然后它掉了。画面上不出现任何形容词，也不出现数字。
+**这一拍要砸出去的**：**买在最高点**，然后它掉了。画面上不出现任何形容词，也不出现数字。
 
 **静态图提示词**
 ```
-SCENE: One bold polyline drawn in muted warm brown with a uniform thick stroke, centred in the frame. The line rises steeply from the lower-left, reaches a single sharp peak slightly above and left of the frame centre, then turns and descends to the lower-right. One solid soft terracotta orange circle dot sits exactly on the peak.
-On the far left of the frame stands the same flat vector character from the earlier shots, small, visible from the waist up, arms at the sides, head turned toward the line.
-There are no axes, no gridlines, no candlesticks, no labels, no numbers.
+画面：一条粗细均匀的折线，低饱和暖棕色，居中。折线从画面左下方陡峭上升，在画面中心略偏左上方形成一个尖锐的顶点，然后转向右下方下降。顶点上正好压着一个柔和赭石橙的实心圆点。
+画面最左侧站着一个扁平矢量小人，很小，画到腰部以上，双手自然下垂，头朝折线方向看。
+画面里没有坐标轴、没有网格线、没有K线柱、没有标签、没有数字。
 ```
 
 **视频提示词**
 ```
-ANIMATION: The polyline draws itself progressively from the lower-left up to the peak, as if being traced by an invisible pen. When it reaches the peak, the terracotta dot appears on the peak with one small settle. The line then continues drawing from the peak downward to the lower-right and keeps descending until it leaves the frame edge. The character stays still except for a very slight downward tilt of the head at the end. Nothing else moves.
+动作：折线从左下方开始，像被一支看不见的笔一路描出来一样，逐渐向上画到顶点。画到顶点时，赭石橙圆点出现在顶点上，轻轻落定一下。之后折线继续从顶点向右下方画出去，一路下降，直到走出画面边缘。小人全程静止，只在最后头部非常轻微地向下低了一点。其他一切不动。
 ```
 
 **后期叠**：时间戳、`+14%`。**不要叠任何形容词。**
@@ -185,79 +178,79 @@ ANIMATION: The polyline draws itself progressively from the lower-left up to the
 
 ## 拍 6 — 爆点：我的话 vs 账本的话（1:38–2:14）
 
-口播：`But what if I do say something? ... So I wrote: the fundamentals changed, I am here for the long term. And my ledger says: you bought at the top of a fourteen percent day. One of those two sentences is a lie. And it is not the ledger.`
+**口播**：`But what if I do say something? ... So I wrote: the fundamentals changed, I am here for the long term. And my ledger says: you bought at the top of a fourteen percent day. One of those two sentences is a lie. And it is not the ledger.`
 
-**画面要传达的**：**全片唯一必须被记住的画面。** 先出我的话（暖），停一拍让观众认同；再出账本的话（冷）；最后中间裂开。
+**这一拍要砸出去的**：**全片唯一必须被记住的画面。** 先出我的话（暖），停一拍让观众认同；再出账本的话（冷）；最后中间裂开。
 
-> **这一拍破例使用冷色**，是全片唯一一处。风格锁里「只用暖色」这一句在本拍需要替换，替换句已写在下面提示词里。
+> **这一拍破例使用冷色，是全片唯一一处。** 通用前缀里"只用暖色"那句在这一拍要被下面的描述覆盖，覆盖的说法已经写进提示词里了。
 
 **静态图提示词**
 ```
-SCENE: The frame is split into two halves by one thin vertical light-warm-grey line running from top to bottom through the exact centre.
-On the left half: one large empty rounded speech bubble filled with soft terracotta orange, with a short tail pointing down-left.
-On the right half: one large empty rounded speech bubble filled with muted cool blue-grey, with a short tail pointing down-right. This single cool blue-grey element is a deliberate exception to the warm palette rule and is the only cool colour permitted in this image.
-Both speech bubbles are completely empty inside: no lines, no dots, no text, no placeholder marks of any kind.
-Nothing else is in the frame.
+画面：一条细的浅暖灰竖线从画面顶端贯穿到底端，正好把画面分成左右两半。
+左半边：一个大的空的圆角对话气泡，填充柔和赭石橙，气泡尾巴朝左下方。
+右半边：一个大的空的圆角对话气泡，填充低饱和冷灰蓝，气泡尾巴朝右下方。这一个冷灰蓝元素是对"只用暖色"这条规则的刻意破例，也是本图唯一允许出现的冷色。
+两个气泡内部完全空白：没有线条、没有圆点、没有文字、没有任何占位符号。
+画面里没有别的东西。
 ```
 
 **视频提示词**
 ```
-ANIMATION: The clip begins with an empty white frame and the thin vertical centre line already in place. The warm terracotta speech bubble scales up gently on the left half and settles, then holds completely still for two full seconds. Then the cool blue-grey speech bubble scales up gently on the right half and settles. Both bubbles then hold still, and a thin jagged crack draws itself downward along the vertical centre line between them, from top to bottom. Both bubbles remain completely empty for the entire clip.
+动作：片段开始时画面是纯白的，中间那条细竖线已经在位。左半边的暖色赭石橙气泡轻轻放大出现并停住，然后完全静止保持整整两秒。之后右半边的冷灰蓝气泡轻轻放大出现并停住。两个气泡都静止后，一条细的锯齿状裂缝沿着中间那条竖线，从上往下画出来。两个气泡内部全程保持完全空白。
 ```
 
 **后期叠**：左气泡内 `"The fundamentals changed. I am here for the long term."`；右气泡内 `You bought at the top of a fourteen percent day.`；裂缝画完后中间浮出 `A LIE`。**念到 `One of those two sentences is a lie.` 停一拍，让 `A LIE` 浮出来。**
 
-**另需一小段**：这一拍开头还有一屏代码高亮 `rawText` 字段，那是录屏，不用 AI 生成。
+**另需**：这一拍开头还有一屏代码高亮 `rawText` 字段，那是录屏，不用 AI 生成。
 
 ---
 
 ## 拍 7 — 为什么非要 AI（2:14–2:25）
 
-口播：`A fixed rule can only catch the excuses I already thought of. And I am creative. I always find a new one. No rule written in advance can keep up with me. But AI can.`
+**口播**：`A fixed rule can only catch the excuses I already thought of. And I am creative. I always find a new one. No rule written in advance can keep up with me. But AI can.`
 
-**画面要传达的**：清单是有限的，花样是无限的。**清单抓不到清单上没有的东西。**
+**这一拍要砸出去的**：清单是有限的，花样是无限的。**清单抓不到清单上没有的东西。**
 
 **静态图提示词**
 ```
-SCENE: On the left half of the frame, a vertical column of five identical small rounded squares, stacked with even spacing, flat warm sand beige fill with thin warm-brown outlines. All five squares are identical in size and shape.
-The right half of the frame is completely empty white space.
-There are no text, no checkmarks, no numbers and no symbols inside the squares.
+画面：左半边是一列竖直排列的五个一模一样的小圆角方块，上下间距均匀，暖沙米色填充，细暖棕轮廓。五个方块大小形状完全一致。
+右半边是完全空白的白色空间。
+方块里没有文字、没有对勾、没有数字、没有任何符号。
 ```
 
 **视频提示词**
 ```
-ANIMATION: The five squares in the left column light up one by one from top to bottom, each changing from warm sand beige to soft terracotta orange and then holding that colour. After the fifth square lights up, the column holds completely still. Then, in the empty right half of the frame, three new shapes fade in slowly one after another in muted warm brown: first a triangle, then a five-pointed star, then a small irregular blob. None of these three shapes resembles the squares on the left. The five squares never change again and never react.
+动作：左边那列五个方块从上到下一个一个亮起来，每个都从暖沙米色变成柔和赭石橙，然后保持住。第五个亮起后，整列完全静止。之后在右半边的空白处，三个新形状缓慢地一个接一个淡入，都是低饱和暖棕色：先是一个三角形，再是一个五角星，最后是一个小的不规则圆团。这三个形状跟左边的方块都不一样。左边那五个方块此后不再有任何变化，也没有任何反应。
 ```
 
-**后期叠**：字幕。可选：左列旁边一行小字 `IF / ELSE`（如果要，也是后期叠，不让模型写）。
+**后期叠**：字幕。可选：左列旁边一行小字 `IF / ELSE`（要的话也是后期叠，不让模型写）。
 
 ---
 
 ## 拍 8 — 超越性价值 + 收尾（2:25–2:46）
 
-口播：`Wealth does not come from being right once. It comes from not making the same mistake twice. And you cannot stop a mistake if you do not remember it. Every tool today tells you what happened to your money. I am building the one that tells you what happened to you.`
+**口播**：`Wealth does not come from being right once. It comes from not making the same mistake twice. And you cannot stop a mistake if you do not remember it. Every tool today tells you what happened to your money. I am building the one that tells you what happened to you.`
 
-**画面要传达的**：全部留白，让字自己说话。脚步是「一步一个脚印」的呼应。
+**这一拍要砸出去的**：全部留白，让字自己说话。脚印是对"财富是一步一个脚印"的呼应。
 
 **静态图提示词**
 ```
-SCENE: A nearly empty white frame. Along the lower-left area, a trail of four small flat footprint shapes in light warm grey, evenly spaced, progressing from the left edge toward the centre of the frame. The footprints are simple rounded oval shapes with no toe detail.
-The upper two thirds of the frame and the entire right side are completely empty white space.
-Nothing else is in the frame.
+画面：几乎全空的白色画面。画面左下区域有一串四个小的扁平脚印形状，浅暖灰色，间距均匀，从左边缘朝画面中心方向延伸。脚印就是简单的圆润椭圆形，不画脚趾细节。
+画面上方三分之二和整个右侧完全空白。
+画面里没有别的东西。
 ```
 
 **视频提示词**
 ```
-ANIMATION: The footprints appear one at a time, from the left edge toward the centre, spaced about one second apart, each fading in softly and then staying. After the fourth footprint appears, the frame holds completely still for the remaining seconds with all four footprints visible and the rest of the frame empty white.
+动作：脚印从左边缘朝画面中心方向，一个一个依次出现，每个间隔约一秒，每个都柔和地淡入然后保持住。第四个脚印出现后，画面在剩下的时间里完全静止，四个脚印全部可见，画面其余部分保持空白。
 ```
 
 **后期叠**：四句排比逐句出现在上方留白里；最后一句停住，下方打 GitHub 链接，停留到片尾。
 
-> **备选版本**（如果觉得只有脚印太空）：把之前那个扁平小人放在最后一个脚印上，侧身朝右，静止不动。风险是小人五官在 8 秒里会漂，建议先试脚印版。
+> **备选版本**：如果觉得只有脚印太空，把扁平小人放在最后一个脚印上，侧身朝右，静止不动。风险是小人五官在 8 秒里会漂，建议先试脚印版。
 
 ---
 
-# 六、后期叠加清单（别漏）
+# 四、后期叠加清单（别漏）
 
 | 拍 | 要叠什么 |
 | --- | --- |
@@ -274,9 +267,9 @@ ANIMATION: The footprints appear one at a time, from the left edge toward the ce
 
 ---
 
-# 七、时长缺口怎么补
+# 五、时长缺口怎么补
 
-八段 AI 片段每段 8 秒，合计约 64 秒，全片 168 秒，**缺口约 104 秒**。缺口不需要全靠 AI 补，建议这样填：
+八段 AI 片段每段 8 秒，合计约 64 秒；全片 168 秒，**缺口约 104 秒**。缺口不用全靠 AI 补：
 
 | 来源 | 大概能占 | 说明 |
 | --- | --- | --- |
@@ -285,14 +278,17 @@ ANIMATION: The footprints appear one at a time, from the left edge toward the ce
 | 纯留白字幕页（拍 8 的四句排比） | 15–20 秒 | 剪辑里做，不用 AI |
 | 每段 AI 片段末帧定格 + 缓慢推近 | 每段 3–5 秒 | 剪辑里两秒钟就能做 |
 
-**如果这样还不够，需要第二段 AI 片段的拍次，按这个优先级：拍 6（36 秒，最长）→ 拍 3（23 秒）→ 拍 5（23 秒）。** 这三拍的第二段拍什么，等 v1 定型后在 v2 里展开写。
+**如果还不够，需要第二段 AI 片段的优先级：拍 6（36 秒，最长）→ 拍 3（23 秒）→ 拍 5（23 秒）。** 这三拍的第二段拍什么，等本稿定型后再写。
 
 ---
 
-# 八、待办
+# 六、待办
 
+- [ ] **产品负责人逐拍审阅本中文稿**，改到满意
+- [ ] 满意后统一翻译成英文，另起 `03 … -v2`
 - [ ] 先只跑**拍 1 的静态图**，确认画风。画风定了再往下生成，别一次跑八张
-- [ ] 拍 1 满意的那张图存为「画风样张」，后面每拍出图都传它
-- [ ] 确认 Veo / Sora 单次生成的时长上限（本文件按 8 秒写）
+- [ ] 拍 1 满意的那张图存为"画风样张"，后面每拍出图都传它
+- [ ] 确认 Veo 单次生成的时长上限（本文件按 8 秒写）
 - [ ] 试一段图生视频，看扁平风会不会被加纹理、加阴影、五官漂移。**漂了就退回静态图 + 剪辑位移，不要死磕**
+- [ ] 拍 2 的问号符号：接受 / 换成小人挠头（待定）
 - [ ] 拍 6 的冷色气泡出来后，跟前后拍放一起看，确认破例没有割裂感
