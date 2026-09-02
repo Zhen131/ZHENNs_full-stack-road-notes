@@ -72,7 +72,8 @@
 **画面**：`11.4%` 与 `17.9%` 两个数字砸出来，中间一道缺口，缺口上打一个词 `BEHAVIOUR`。
 
 **English**
-> And it is not just me. Between 1991 and 1996, two researchers tracked sixty-six thousand American households. The ones who traded most made eleven point four percent a year. The market made seventeen point nine. That gap is not bad stock picking. That gap is behaviour.
+> And it is not just me. Between 1991 and 1996, two researchers tracked sixty-six thousand American households.
+>  The ones who traded most made eleven point four percent a year. The market made seventeen point nine. That gap is not bad stock picking. That gap is behaviour.
 
 **中文**
 而且这不只是我一个人。1991 到 1996 年，两位研究者追踪了六万六千户美国散户。交易最频繁的那批人年化 11.4%，同期市场是 17.9%。这个差距不是选股不行，这个差距是行为。
