@@ -1,10 +1,14 @@
-# 02 — Idea 赛 3 分钟视频脚本 · v2
+# 02 — Idea 赛 3 分钟视频脚本 · v3
 
-日期：2026-09-02　｜　状态：v2 初稿，待出声试念
+日期：2026-09-02　｜　状态：v3，待出声试念
 交付：YouTube 链接（不超过 3 分钟）
 
-> **v2 相对 v1 的改动**：开场由「数据砸脸」改为个人叙事；Barber & Odean 的数据后移一拍，作用从开场变为「不只是我一个人的毛病」；结尾新增超越性价值。
-> v1 的七拍分镜保留在本文件末尾的「v1 存档」一节。
+> **版本沿革**（每版单独成文件，旧版不改动，保留进步过程）
+> - **v1** `02-Idea赛-视频脚本.md` —— 数据砸脸开场。
+> - **v2** `02-Idea赛-视频脚本-v2.md` —— 改为个人叙事开场；Barber & Odean 数据后移一拍，作用由开场变为「不只是我一个人的毛病」；结尾新增超越性价值。
+> - **v3**（本文件）—— 修正拍 6 关于 `rawText` 的**虚假陈述**（详见 00 文件第五节的作废标注）；新增第三层「沉默即数据」。拍 6 由 72 词增至 75 词，全片 358 词。
+>
+> **未解决**：全片仍未回答「为什么这件事非要 AI 不可」。比赛名为 AI Challenge，这是评委最可能发问的方向，待定后出 v4。
 
 ---
 
@@ -13,7 +17,7 @@
 - **官网只规定两件事**：`a presentation video of up to 3 minutes`；语言匈牙利语或英语。格式、分辨率、是否露脸均无规定。
 - **词数上限 350。** 非母语者稳妥语速约 130 词/分钟，3 分钟理论上限 390 词，扣掉停顿与喘气后可用约 350。
 - **不先写中文再翻译。** 翻出来的英文必定超长且是书面语。中英并排写，英文是念的，中文是理解用的，按英文词数卡死。
-- 本稿实际 **355 词**，按 130 词/分钟约 **2 分 44 秒**，留 16 秒余量。
+- 本稿实际 **358 词**，按 130 词/分钟约 **2 分 45 秒**，留 15 秒余量。
 
 ## 本稿的三条执行决定
 
@@ -103,13 +107,14 @@
 **画面**：先切一屏代码，高亮那句校验（历史导入要求保留原句，rawText 必须非空，不会被 trim、摘要或重写）。然后左右分屏：左边冷色 `You bought at the top.`，右边暖色 `"Fundamentals changed. Long term."`，中间一条线拉开，浮出 `THE GAP`。
 
 **English**
-> And every trade in my ledger carries the sentence I wrote at the time. My ledger refuses to import a trade without it, and forbids rewriting it. That was decided long before this idea existed. So the system says: you bought at the top. My own words say: fundamentals changed, long term. The distance between those two sentences is how much I lie to myself. That is what I want to measure.
+> And every trade in my ledger can carry the sentence I wrote at the time. That field has been there since the first version — long before this idea existed. So the system says: you bought at the top. My own words say: fundamentals changed, long term. The distance between those two sentences is how much I lie to myself. And when I write nothing at all? That is not missing data. That is the answer.
 
 **中文**
-而且我账本里的每一笔交易，都带着我当时写下的那句话。我的账本会拒绝导入任何一笔没有原句的交易，并且禁止改写它。这条规矩是在这个想法出现之前很久就定下的。所以系统说：你在顶部买入。我自己的话说：基本面变了，长期看好。这两句话之间的距离，就是我自欺的程度。我想量的就是这个。
+而且我账本里的每一笔交易，都可以带着我当时写下的那句话。这个字段从账本第一版就在了——远在这个想法出现之前。所以系统说：你在顶部买入。我自己的话说：基本面变了，长期看好。这两句话之间的距离，就是我自欺的程度。那如果我什么都不写呢？那不是数据缺失，那本身就是答案。
 
 > **全片爆点。念到「The distance between those two sentences」要停一拍**，让分屏那条线拉开。这是整个视频唯一必须让人记住的画面。
-> 「That was decided long before this idea existed」是全篇最有力的一句——它一句话干掉了「这人是不是听说 AI 火了才临时想的」。
+> 「long before this idea existed」是全篇最有力的一句——它一句话干掉了「这人是不是听说 AI 火了才临时想的」。**事实已核实**：`rawText` 字段 2026-06 下旬随账本类型系统一同建立；「原句必须非空、不得 trim 摘要或重写」的模式 2026-07-31（提交 `fd680c5`）加入。两者都早于本想法（2026-09-02 成形）。
+> **末尾那句「That is the answer」是 v3 新增的第三层：沉默即数据。** 人不写理由不是随机的——冲动时不写、心虚时不写、在机场赶时间时不写。缺席与冲动正相关，因此缺席本身是信号，不是缺口。详见 00 文件。
 
 ---
 
@@ -149,15 +154,15 @@
 | 3 | 不只是我（数据） | 45 | 112 |
 | 4 | 找过工具都不行 | 45 | 157 |
 | 5 | 第一层：不问了 | 44 | 201 |
-| 6 | **THE GAP + 凭什么是我** | 72 | 273 |
-| 7 | 它怎么说话 | 32 | 305 |
-| 8 | **超越性价值 + 收尾** | 50 | 355 |
+| 6 | **THE GAP + 凭什么是我 + 沉默即数据** | 75 | 276 |
+| 7 | 它怎么说话 | 32 | 308 |
+| 8 | **超越性价值 + 收尾** | 50 | 358 |
 
-**355 词 ≈ 2 分 44 秒**（130 词/分钟），留 16 秒余量。
+**358 词 ≈ 2 分 45 秒**（130 词/分钟），留 15 秒余量。
 
 ### 超时删减顺序
 
-1. **先砍拍 7**（32 词，剩 2 分 29 秒）。它的内容 PDF 里有，删掉不伤逻辑。
+1. **先砍拍 7**（32 词，剩 2 分 30 秒）。它的内容 PDF 里有，删掉不伤逻辑。
 2. 再砍拍 4 最后一句 `Nobody fills in the form.`
 3. **拍 1、拍 6、拍 8 一个字都不能动**——分别是记忆点、爆点、超越性价值。
 
