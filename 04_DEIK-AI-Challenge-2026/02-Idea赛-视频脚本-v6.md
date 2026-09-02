@@ -1,6 +1,6 @@
-# 02 — Idea 赛 3 分钟视频脚本 · v6（口语化定稿候选）
+# 02 — Idea 赛 3 分钟视频脚本 · v6（最终版）
 
-日期：2026-09-02　｜　状态：v6，待出声试念
+日期：2026-09-02　｜　状态：**v6 = 最终版**（英文已定稿），待出声试念掐表
 交付：YouTube 链接（不超过 3 分钟）
 
 > **版本沿革**（每版单独成文件，旧版不动）
@@ -51,7 +51,7 @@
 
 **English**
 > Hi, I'm Zhen. I am a long-term investor. I have kept a ledger since I was a teenager. 
-> And for the last two years I've written down every single trade by hand
+> And for the last two years I've written down every single trade by hand.
 
 **中文**
 你好，我叫 Zhen，是一个长期投资者。我从少年时代就开始记账。
@@ -105,7 +105,7 @@
 > So I went looking for a tool. 
 > The open-source ones have no AI. 
 > The AI ones only follow the money. 
-> The ones that look at psychology sit in the cloud, expensive,and ask me to fill in a form. 
+> The ones that look at psychology sit in the cloud, expensive, and ask me to fill in a form. 
 > I don't want to fill in a form.
 
 **中文**
@@ -128,20 +128,24 @@
 **English**
 > So I stopped looking. I built my own. 
 > My ledger already knows when every trade happened, and what the price was doing then. 
-> If I bought at the top of a day that went up fourteen percent.
-> The trade itself is the data 
+> Take one trade. I bought at the top of a day that went up fourteen percent.
+> The trade itself is the data.
 > I never had to tell anyone how I felt.
 
 **中文**
 所以我不找了，我自己做了一个。
 我的账本本来就知道每一笔交易发生在什么时候，也知道那一刻价格在干什么。
-如果我买在一个当天涨了 14% 的日子的最高点上。
+拿一笔交易来说。我买在了一个当天涨 14% 的日子的最高点上。
 这笔交易本身就是数据。
 我从来不需要告诉任何人我当时是什么感受。
 
 > **`stopped` 与 `started` 的连读问题已解决**：拆成两句，`started building` 换成 `built my own`。`built` 单音节、好发音，且比 `started building` 更有力。
 > **「不问用户」这层意思不用明说。** 上一拍刚说完「要我填表」，这一拍直接接「这笔交易本身就是数据」，对比自己就成立了。
 > 结尾由 v6 原稿的 `that is not a feeling I reported. That is a fact.` 改为 `The trade itself is the data. I never had to tell anyone how I felt.`——**原句是负面对比（不是 X，是 Y），听众得拎着 X 等 Y；新句是正面陈述，听一遍就进去。**
+> **`If …` 的残句已改为 `Take one trade. I bought at the top …`**，三点理由：
+> 1. 原文是条件从句后面直接句号，没有主句，语法上不成立，Descript 生成字幕时也会断错。
+> 2. `Take one trade.` 三个短词，等于告诉观众「例子来了」，听众的注意力会自动收拢——这是演讲里很便宜的一个动作。
+> 3. **由假设改成陈述，等于由「假如我追高」变成「我追过高」。招供比假设有力得多**，而且与拍 6 的 `you bought at the top of a fourteen percent day` 前后呼应，同一件事说两遍，第二遍是账本在说。
 > `candle`（K 线柱）是交易行话，评委是信息学院教授，未必懂，已改为 `a day that went up fourteen percent`。
 
 ---
@@ -241,43 +245,49 @@
 | 1 | 我是谁 | 32 |
 | 2 | 我的问题 | 37 |
 | 3 | 不只是我（数据） | 48 |
-| 4 | 找过工具都不行 | 46 |
-| 5 | 第一层：我自己做 | 52 |
+| 4 | 找过工具都不行 | 47 |
+| 5 | 第一层：我自己做 | 54 |
 | 6 | **THE GAP + 凭什么是我 + 沉默即数据** | 90 |
 | 7 | **为什么非要 AI** | 35 |
 | 8 | **超越性价值 + 收尾** | 51 |
 
-**合计 391 词。**
+**合计 394 词。**
 
-## ⚠️ 时长警告：现在是踩线，不是安全
+## 时长：靠语速解决，不靠删内容
 
-391 词 ÷ 130 词/分钟 = **正好 3 分 00 秒**，而上限就是 3 分钟。**这还没算停顿。**
+产品负责人决定**不砍内容，用语速压时长**。三档实测换算：
 
-脚本里明确要求了两处停顿（拍 3 的两串数字放慢、拍 6 的 `One of those two sentences is a lie.` 停一拍），再加上换气，实际大概率超。
+| 语速 | 时长 | 判断 |
+| --- | --- | --- |
+| 130 词/分钟 | 3 分 01 秒 | 超 |
+| **140 词/分钟** | **2 分 48 秒** | **过，且留 12 秒给停顿** |
+| 150 词/分钟 | 2 分 37 秒 | 过，但偏快 |
 
-不确定的是真实语速：这一版全是简单词，非母语者念简单句可以到 140 词/分钟，那就是 **2 分 48 秒**，能过。**所以第一件事是出声掐表，不是先砍。**
+**目标定在 140。** 这一版全是简单词、短句，140 是很自然的讲述速度，不算赶。
 
-### 掐表超了之后，按这个顺序砍（已按新稿重排）
+一条实际经验供参考：**1.2 倍速基本无损，1.5 倍速开始掉可懂度**——尤其是拍 3 的两串数字和拍 7 结尾。所以建议不要全片匀速加快，而是：
 
-| 序 | 砍什么 | 省 | 砍完剩 |
+- **拍 3 的 `eleven point four percent` / `seventeen point nine` 照常速念**，画面同时打 `11.4%` 与 `17.9%` 兜底。
+- **拍 6 的 `One of those two sentences is a lie.` 之后照常停一拍**，那是全片唯一的记忆点，省这一秒不值。
+- 其余部分（拍 4 的三条竞品、拍 8 的排比）可以推快，本来就是连贯的短句，快反而有气势。
+
+### 万一掐表还是超了，按这个顺序砍
+
+| 序 | 砍什么 | 省 | 剩 |
 | ---: | --- | ---: | ---: |
-| 1 | 拍 2 的 `Down to the cent.` | 4 | 387 |
-| 2 | 拍 3 的 `Between 1991 and 1996,`（年份打在画面上） | 4 | 383 |
-| 3 | 拍 4 的 `The AI ones only follow the money.`（截图配字说明） | 7 | 376 |
-| 4 | 拍 6 的 `in my ledger`（`Every trade can also keep…`） | 3 | 373 |
-| 5 | 拍 3 的 `That gap is not about picking bad stocks.` | 8 | 365 |
-
-砍到第 4 条是 373 词（130 词/分钟约 2 分 52 秒），砍满是 365 词（约 2 分 48 秒）。
+| 1 | 拍 2 的 `Down to the cent.` | 4 | 390 |
+| 2 | 拍 3 的 `Between 1991 and 1996,`（年份打画面） | 4 | 386 |
+| 3 | 拍 4 的 `The AI ones only follow the money.`（截图配字） | 7 | 379 |
+| 4 | 拍 6 的 `in my ledger` | 3 | 376 |
+| 5 | 拍 3 的 `That gap is not about picking bad stocks.` | 8 | 368 |
 
 ### 一个字都不能动的
 
 - **拍 1** —— 记忆点，全片唯一让评委记住「你是谁」的地方。
-- **拍 4 最后一句 `I don't want to fill in a form.`** —— 它是拍 5 结尾的支点，删了拍 5 那句就没有回响。
+- **拍 4 最后一句 `I don't want to fill in a form.`** —— 拍 5 结尾的支点，删了那句就没有回响。
 - **拍 6 的 `But what if I do say something?` 与 `One of those two sentences is a lie. And it is not the ledger.`** —— 转折与爆点。
 - **拍 7 的 `And I am creative. I always find a new one.` 与 `But AI can.`** —— AI 比赛里的唯一落点。
 - **拍 8 全部** —— 超越性价值。
-
-> **绝对不要靠加快语速压时间。** 非母语者一快就糊，而这一版的全部价值就在于「听得清」。宁可砍内容，不要赶。
 
 ## 制作方案
 
@@ -342,11 +352,15 @@
 | 6 | 整拍重写：加 `But what if I do say something?`；我的话与账本的话调换顺序；结论句改为 `One of those two sentences is a lie. And it is not the ledger.`；沉默那句改为 `Those are the ones I did not want to explain.` | 解决与拍 5 的逻辑打架；由「解释」改为「指认」 |
 | 7 | 整拍重写为 `A fixed rule can only catch the excuses I already thought of. And I am creative. I always find a new one. No rule written in advance can keep up with me. But AI can.` | 原版太抽象；新版点名 AI，且用 `written in advance` 指出规则系统的枚举问题 |
 
-### 三处英文小问题，**未擅自修改**，请自行决定
+### 三处英文小问题 —— 已按产品负责人指示处理（2026-09-02）
 
-1. **拍 4：`in the cloud, expensive,and ask me`** —— 逗号后缺一个空格（`expensive,and`）。另外 `sit in the cloud, expensive, and ask me` 是把一个形容词塞进了动词并列里，语法上有点松。若要改：`sit in the cloud, cost a lot, and ask me to fill in a form`。
-2. **拍 5：`If I bought at the top of a day that went up fourteen percent.`** —— 这是个条件从句，后面用了句号，语法上是残句（没有主句）。**念的时候当成一个悬停可以很有效果**，但如果想工整：把句号改成逗号或破折号，接到 `The trade itself is the data`。
-3. **拍 1 结尾 `every single trade by hand`** —— 句末没有句号。纯排版，念不出来，但字幕生成时可能会连到下一句。
+| # | 问题 | 处理 |
+| --- | --- | --- |
+| 1 | 拍 4 `expensive,and` 逗号后缺空格 | **已补空格。** 仅此一处，未动其他措辞 |
+| 2 | 拍 5 `If I bought at the top of a day that went up fourteen percent.` 是残句（条件从句加句号，没有主句） | **已改为 `Take one trade. I bought at the top of a day that went up fourteen percent.`**，理由见拍 5 备注 |
+| 3 | 拍 1 句末缺句号 | **已补。** 影响的是 Descript 字幕断句，念不出来 |
+
+> **仍然保留、未改的一处**：拍 4 的 `sit in the cloud, expensive, and ask me` 把形容词塞进了动词并列，语法上偏松。产品负责人本轮只要求补空格，故未动。若将来想工整化：`sit in the cloud, cost a lot, and ask me to fill in a form`。
 
 ### 目录整理
 
