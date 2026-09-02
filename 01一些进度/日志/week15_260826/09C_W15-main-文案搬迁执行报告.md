@@ -223,3 +223,209 @@ Q-12：一档 0 处。二档 4 处。清空账本在 SettingsWorkspace.tsx:139 �
 否定性声明：未改既有测试断言、阈值或用例名；未改守卫、依赖、文件格式、版本号、加密参数或派生计算；未 push/rebase/amend/squash/reset/force；未读取真实数据区；根文档仓库本轮只改本报告。
 
 Q-1 追加原始输出：sort -u /private/tmp/lftl-09-seam-tests.json.names 后与 /private/tmp/lftl-09-final2-tests.json.names 执行 diff -u，输出为空；wc -l 两侧均为 1168。第一次 1185 对 1168 的差异来自旧缝文件含重复名、最终侧已去重的口径不一致。
+
+## 第三轮（修订 B 收口）
+
+本轮从 `b6738a8dfd12b67408607f0b8e897b39364a95fe` 继续，范围仅为界面层 `t()` 外的全角中文标点与 `join()` 中文分隔符。共新增 15 个中文 key；未改测试、逻辑、样式、结构或版本定义。
+
+### 提交清单与文案表增量
+
+| SHA | 标题 | 文件／区域 | 新增 key |
+| --- | --- | --- | --- |
+| `ff3f9a0` | `refactor: localize app punctuation separators` | `DashboardShell.tsx`、`SettingsWorkspace.tsx` | `dashboard.futureFacts.colonSeparator`、`settings.clear.unavailableSeparator` |
+| `a929bb0` | `refactor: localize cash punctuation separators` | `CashEventPanel.tsx` | `cash.adjustment.listSeparator`、`cash.adjustment.semicolonSeparator`、`cash.pagination.listSeparator` |
+| `3b2f876` | `refactor: localize heatmap punctuation separators` | `TradeHeatmapChart.tsx` | `charts.heatmap.overview.listSeparator`、`charts.heatmap.home.ariaSeparator` |
+| `c7efa1e` | `refactor: localize chart punctuation separators` | `chartOptionBuilders.ts` | `charts.option.allocation.memberSeparator`、`charts.option.history.listSeparator` |
+| `34f8708` | `refactor: localize backup report separators` | `backupImportReport.ts` | `backup.markdown.lineColonSeparator`、`backup.markdown.listSeparator` |
+| `ddd5494` | `refactor: localize asset transfer separator` | `AssetTransferPanel.tsx` | `assetTransfers.pagination.listSeparator` |
+| `0e8f36c` | `refactor: localize market data separator` | `MarketDataControls.tsx` | `marketData.holdings.colonSeparator` |
+| `7eaf9a3` | `refactor: localize activity separator` | `ActivityTable.tsx` | `activity.details.unreliableSeparator` |
+| `8fd0b6e` | `refactor: localize trade table separator` | `TradeTable.tsx` | `trades.table.unreliableSeparator` |
+
+每笔提交前均执行 `npm test`。原始共同结论为：
+
+```text
+Test Files  106 passed (106)
+Tests  1185 passed (1185)
+```
+
+三轮最终文案表统计命令与原始输出：
+
+```text
+awk '/^const chineseMessages/{s="chinese"; next} /^const englishMessages/{s="english"; next} /^const hungarianMessages/{s="hungarian"; next} /^};/{s=""} s && /^  "[^"]+":/{count[s]++} END {printf "chinese=%d\\nenglish=%d\\nhungarian=%d\\n", count["chinese"], count["english"], count["hungarian"]}' src/ui/i18n.tsx
+
+chinese=660
+english=32
+hungarian=32
+```
+
+对照第三轮起点与收尾的新增 key 原始输出：
+
+```text
+git show b6738a8:src/ui/i18n.tsx | <同一 awk>
+chinese=655
+english=32
+hungarian=32
+
+git diff --unified=0 b6738a8..HEAD -- src/ui/i18n.tsx | rg '^\\+  "' | wc -l
+15
+```
+
+英文、匈牙利语各仅覆盖 32 个 key，均通过既有 `translate()` 回落中文；相对中文表各缺 628 个 key。
+
+### Q-13：标点收尾普查
+
+因本机 BSD `grep` 不支持合同示例所用 `-P`，改用同一正则语义的 `rg`：
+
+```text
+rg -n '[：、，。？！；]' src/app src/features src/ui --glob '*.ts' --glob '*.tsx' -g '!*.test.*' -g '!src/ui/i18n.tsx'
+
+src/app/usePersistentLedger.ts:179: * 统一管理启动读取、hydration 门禁和 ready 后的串行自动保存。
+src/ui/ConfirmDeleteButton.tsx:25: * 普通删除的共享两段确认控件。
+src/ui/ConfirmDeleteButton.tsx:27: * 第一次激活只改变局部 armed 状态；第二次完整激活才调用业务回调。
+src/app/layout.tsx:6:  description: "只由你选择的加密文件承载的本地优先交易账本。",
+src/features/trades/tradeRemovalService.ts:25: * 删除交易前重放候选账本的完整交易时间线，包括被界面隔离的未来事实。
+src/features/trades/tradeRemovalService.ts:27: * reducer 只负责不可变更新；会影响后续卖出时间线的业务判断放在 service。
+```
+
+留下项逐条说明：`usePersistentLedger.ts:179`、`ConfirmDeleteButton.tsx:25,27`、`tradeRemovalService.ts:25,27` 均为注释，依 P-4 不动。`layout.tsx:6` 是服务端 `metadata.description` 静态定义；`6197ae5` 曾尝试客户端 `translateDefault()`，production build 报服务端不能调用客户端函数，后由 `b6738a8` 恢复。此项为第二轮已合格的服务端边界例外，不是可安全迁入客户端表的界面运行文案。
+
+### Q-1～Q-16 收尾闸门
+
+**Q-1／Q-16（同命令、同去重口径）**。缝上的 JSON 是在缝上用同一条 `npx vitest list --json` 命令生成的保存输出；收尾重新导出后，两侧均用相同 jq 提取 `name` 并 `sort -u`：
+
+```text
+npx vitest list --json /private/tmp/lftl-09-final3-tests.json
+jq -r '.. | objects | select(has("name")) | .name' /private/tmp/lftl-09-seam-tests.json | sort -u > /private/tmp/lftl-09-seam3-test-names.txt
+jq -r '.. | objects | select(has("name")) | .name' /private/tmp/lftl-09-final3-tests.json | sort -u > /private/tmp/lftl-09-final3-test-names.txt
+wc -l /private/tmp/lftl-09-seam3-test-names.txt /private/tmp/lftl-09-final3-test-names.txt
+    1168 /private/tmp/lftl-09-seam3-test-names.txt
+    1168 /private/tmp/lftl-09-final3-test-names.txt
+    2336 total
+diff -u /private/tmp/lftl-09-seam3-test-names.txt /private/tmp/lftl-09-final3-test-names.txt
+<empty>
+diff_exit=0
+```
+
+**Q-2／Q-14（默认全量与中文断言）**：
+
+```text
+npm test
+Test Files  106 passed (106)
+Tests  1185 passed (1185)
+
+git grep -n -P 'expect\\([^\\n]*[\\p{Han}]|expect\\([^\\n]*\\)\\.[^(]+\\([^\\n]*[\\p{Han}]' ffbe0ff -- 'src/**/*.test.ts' 'src/**/*.test.tsx' | wc -l
+349
+rg -n -P 'expect\\([^\\n]*[\\p{Han}]|expect\\([^\\n]*\\)\\.[^(]+\\([^\\n]*[\\p{Han}]' src --glob '*.test.*' | wc -l
+352
+```
+
+测试源文件没有被本批改动；按同一检索，中文断言命中未减少（349 → 352）。
+
+**Q-3**（命令按合同原文照抄）：
+
+```text
+npx vitest run --config vitest.benchmarks.config.ts benchmarks/measure/derivedSnapshot.contract.ts
+Test Files  1 passed (1)
+Tests  7 passed (7)
+```
+
+**Q-4**：
+
+```text
+npm run typecheck
+tsc --noEmit
+
+npm run lint
+eslint . --max-warnings=0
+
+npm run build
+✓ Compiled successfully
+✓ Generating static pages (5/5)
+┌ ○ /                                     376 kB         479 kB
+└ ○ /_not-found                            993 B         103 kB
+
+npx vitest run src/test-support/sourceLayout.test.ts src/test-support/interfaceWording.test.ts
+Test Files  2 passed (2)
+Tests  8 passed (8)
+
+git diff --check ffbe0ff..HEAD
+<empty>
+git diff --check
+<empty>
+```
+
+**Q-5**（权威定义处，不引用镜像常量块）：
+
+```text
+src/platform/files/ledgerFileContract.ts:11: fileFormatVersion: 2
+src/platform/files/ledgerFileContract.ts:12: cryptoVersion: 1
+src/platform/files/ledgerFileContract.ts:31:export const SUPPORTED_LEDGER_SCHEMA_VERSION = 4 as const;
+src/features/backup/backupEnvelope.ts:21:export const BACKUP_FORMAT_VERSION = 3 as const;
+```
+
+本批未修改上述文件中的权威版本定义；版本号为文件格式 3（当前 V3 容器的权威格式）、crypto 1、ledger schema 4、backup 3，均与缝上相同。
+
+**Q-6**：
+
+```text
+rg -n 'from "@/ui"' src/core src/platform || true
+<empty>
+```
+
+**Q-7 通电检查与还原**：
+
+```text
+before SHA-256: d1112fcee1f7d6be2db98d4b0c6758dac1c21b0dd9a7f913fe05335864508b29  src/ui/i18n.tsx
+temporary key: "thirdRound.wiringProbe": "总花费"
+npx vitest run src/test-support/interfaceWording.test.ts
+Test Files  1 failed (1)
+AssertionError: expected [ 'ui/i18n.tsx: 总花费' ] to deeply equal []
+
+after restore SHA-256: d1112fcee1f7d6be2db98d4b0c6758dac1c21b0dd9a7f913fe05335864508b29  src/ui/i18n.tsx
+npx vitest run src/test-support/interfaceWording.test.ts
+Test Files  1 passed (1)
+Tests  1 passed (1)
+```
+
+**Q-8**：第三轮起点与收尾均为 `/ 376 kB`、`First Load JS 479 kB`，无产物膨胀。
+
+**Q-9**：
+
+```text
+git diff --name-only ffbe0ff..HEAD -- package.json package-lock.json
+<empty>
+```
+
+**Q-10**：中文表 660 个 key，`TranslationKey` 由该完整中文表推导，故无中文缺项；英文 32、匈牙利语 32 按 `Partial<Record<TranslationKey, string>>` 合法回落。
+
+**Q-11／Q-12**：第二轮的非标点中文已完成迁移；最终不能搬的业务字符串见下一节。第三轮 Q-13 的残余清单中，五行是注释，另一行是已备案的服务端 metadata 边界。
+
+### 最终跳过清单
+
+一档：0 处。
+
+二档／不可搬的语义边界共 4 处：
+
+| 文件与行号 | 原文 | K-2 举证与理由 |
+| --- | --- | --- |
+| `src/app/SettingsWorkspace.tsx:15` | `清空账本` | 在第 139 行参与 `confirmationValue !== PUBLIC_CLEAR_LEDGER_CONFIRMATION_TEXT` 精确比较；它是破坏性操作确认口令，随界面语言变化会改变判定。 |
+| `src/features/charts/chartDataService.ts:152` | `现金 USDT` | 写入 `assetSymbol` 语义标识；第 191–198 行用 `left.assetSymbol < right.assetSymbol`／`>` 参与排序比较。 |
+| `src/features/charts/chartDataService.ts:246` | `其他` | 同为 `assetSymbol` 语义标识，并在第 191–198 行的相同排序比较中参与判定。 |
+| `src/features/backup/backupImportPreflight.ts:661` | `且不提供迁移` | 由 `error.message.endsWith("且不提供迁移")` 直接参与条件分支。 |
+
+未处理清单：无。注释与 `layout.tsx:6` metadata 服务端边界均不属于 K-2 跳过条目，已在 Q-13 单列说明。
+
+### 最终收口申报
+
+```text
+branch: zhennn/w15-main-app-split
+HEAD: 8fd0b6ebdccd0f7f83bf32b61b080dfafdc1fed8
+seam: ffbe0ff470132efcab2d3651dd446837426d4b33
+09 source commits since seam: 57
+i18n keys: chinese=660, english=32, hungarian=32
+source git status --short --branch
+## zhennn/w15-main-app-split
+```
+
+否定性声明：本轮未改任何既有测试断言、阈值或用例名；未改渲染结构、样式或交互；未引入语法复数；未让数字或日期随语言变化；未改文件格式、版本号、加密参数或派生计算；未改目录结构或拆分文件；未改结构守卫；未引入依赖；未执行 push、rebase、amend、squash、reset 或 force；未读取真实数据区；根文档仓库本轮仅追加本报告。
