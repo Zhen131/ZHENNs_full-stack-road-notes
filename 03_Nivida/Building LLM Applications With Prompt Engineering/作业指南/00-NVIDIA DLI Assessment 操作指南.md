@@ -205,7 +205,7 @@ pprint(extract_chain.invoke({"email": emails[1]}))
 这一格是整个流程中第一次真正调用模型，两种失败要分开处理：
 
 - 报 `ReadTimeout`：模型服务超时，与代码无关。新建一格运行 `llm._client.timeout = 300`，然后重新运行代码格 2 和代码格 3
-- 报其他错误（返回空、结构化输出不支持等）：跳到第九节的备用方案
+- 报其他错误（返回空、结构化输出不支持等）：跳到第十节的备用方案
 
 ### 代码格 4：一次读完全部邮件
 
@@ -320,7 +320,7 @@ run_assessment(chain)
 | 提示类别不对 | 回代码格 1，按第六节末尾的办法补一句描述，重跑后再评分 |
 | 提示门店不对 | 检查代码格 6 打印的句子里门店名是否正确；确认 `.title()` 那行没漏 |
 | 报 `NameError: run_assessment` | 回最上方 Imports 那一格重新运行一次 |
-| 其他报错 | 对照第九节出错表 |
+| 其他报错 | 对照第十一节出错表 |
 
 ---
 
@@ -340,7 +340,122 @@ run_assessment(chain)
 
 ---
 
-## 九、备用方案（仅在代码格 3 报错时使用）
+## 九、模型无响应时的处理（实测发生过）
+
+作业默认使用的模型是 `nvidia/nemotron-3-nano-30b-a3b`。**实测中出现过这个模型完全不响应、每次调用都在 60 秒后抛 `ReadTimeout` 的情况**，而同一个环境里课程用的另一个模型 `meta/llama-3.2-11b-vision-instruct` 1 秒就能返回。
+
+这属于服务端故障，与代码无关。按下面顺序处理。
+
+### 9.1 先诊断：到底是哪一层出问题
+
+新建一个代码格，粘贴运行（最长约 4 分钟）：
+
+```python
+import time
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
+
+print("base_url =", os.getenv("NVIDIA_BASE_URL"))
+
+try:
+    print("原超时 =", llm._client.timeout)
+    llm._client.timeout = 120
+    print("新超时 =", llm._client.timeout)
+except Exception as e:
+    print("改超时失败：", type(e).__name__, e)
+
+t0 = time.time()
+try:
+    r = llm.invoke("Say hello.")
+    print(f"[nemotron] 成功，耗时 {time.time()-t0:.0f} 秒 -> {r.content[:120]}")
+except Exception as e:
+    print(f"[nemotron] 失败，耗时 {time.time()-t0:.0f} 秒 -> {type(e).__name__}")
+
+try:
+    llm2 = ChatNVIDIA(base_url=os.getenv("NVIDIA_BASE_URL"),
+                      model='meta/llama-3.2-11b-vision-instruct',
+                      temperature=0)
+    llm2._client.timeout = 120
+    t0 = time.time()
+    r = llm2.invoke("Say hello.")
+    print(f"[llama]    成功，耗时 {time.time()-t0:.0f} 秒 -> {r.content[:120]}")
+except Exception as e:
+    print(f"[llama]    失败，耗时 {time.time()-t0:.0f} 秒 -> {type(e).__name__}")
+```
+
+| 输出 | 结论 | 处理 |
+| --- | --- | --- |
+| nemotron 成功 | 只是慢，60 秒不够 | 运行 `llm._client.timeout = 300`，重跑代码格 2、3，继续做作业 |
+| nemotron 失败、llama 成功 | 指定模型故障 | 按 9.2 换模型 |
+| 两个都失败 | 整个代理卡死 | 按 9.3 重启环境 |
+
+**诊断完成后请删除这个代码格**（点格子左侧空白，连按两下 `D`），否则以后误重跑会白等两分钟。
+
+### 9.2 换用 llama 模型继续做（nemotron 故障时）
+
+评分程序检查的是链的**回答是否正确**，不限制用哪个模型，所以换模型不影响拿证书。
+
+**第一步**：点代码格 1 的左侧空白，按 `A` 在它**上面**插入一格（`A` = 上方插入，`B` = 下方插入），粘贴运行：
+
+```python
+llm = ChatNVIDIA(
+    base_url=os.getenv("NVIDIA_BASE_URL"),
+    model='meta/llama-3.2-11b-vision-instruct',
+    temperature=0
+)
+llm._client.timeout = 120
+
+print(llm.invoke("Say hello.").content)
+```
+
+成功标志：几秒内打印出一句英文问候。
+
+**第二步**：llama 不一定支持 `with_structured_output`，把**代码格 2 的内容整个替换**为下面这段（改用课程第 42 节教的 `JsonOutputParser`，对模型没有特殊要求）：
+
+```python
+parser = JsonOutputParser(pydantic_object=EmailInfo)
+
+extract_prompt = ChatPromptTemplate.from_messages([
+    ("system",
+     "You analyze customer emails for a retail store called BuyBuy. "
+     "Read the email and extract the requested fields.\n"
+     "The product category must be a single short lowercase noun, such as "
+     "'furniture', 'clothing', 'electronics', 'kitchen appliances', 'toys'.\n"
+     "A dining table, a couch, a bookshelf, a recliner chair and a bed frame "
+     "are all 'furniture'.\n"
+     "A blender, a coffee maker and an air fryer are all 'kitchen appliances'.\n"
+     "Only return the JSON object. Never return any other text, and never wrap "
+     "the JSON in backticks.\n\n{format_instructions}"),
+    ("human", "Email: {email}")
+]).partial(format_instructions=parser.get_format_instructions())
+
+extract_chain = extract_prompt | llm | parser
+```
+
+**代码格 1、4、5、6 都不用改。**
+
+替换后从新插入的换模型格开始，依次往下运行。注意代码格 3 的输出这次是字典形式（带大括号），属正常：
+
+```python
+{'sentiment': 'negative',
+ 'product': 'dining table',
+ 'product_category': 'furniture',
+ 'store_location': 'New York'}
+```
+
+### 9.3 重启实验环境（两个模型都失败时）
+
+已保存的 Notebook 内容不会丢失。
+
+1. 回 NVIDIA 课程网页，点击 `STOP TASK`
+2. 等按钮变回 `LAUNCH` / `START`，重新点击启动
+3. 重新打开 `61-Assessment.ipynb`
+4. **从最顶端按顺序重新运行全部格子**（新 Kernel 内存是空的，必须重跑）
+
+重启后仍全部超时，即为英伟达服务端故障，只能过一段时间再试，或在课程页寻求 Support 支持。
+
+---
+
+## 十、备用方案（仅在代码格 3 报错时使用）
 
 如果 `with_structured_output` 在当前环境不可用（报错、返回空、长时间无响应），改用下面这个更简单但精度稍低的写法。新建一个代码格，整段粘贴并运行：
 
@@ -374,7 +489,7 @@ print(chain.invoke(emails))
 
 ---
 
-## 十、出错分流表
+## 十一、出错分流表
 
 | 现象 | 先做什么 | 不要做什么 |
 | --- | --- | --- |
@@ -386,13 +501,13 @@ print(chain.invoke(emails))
 | `ReadTimeout: ... read timeout=60` | 先重跑一次该格；仍超时就运行 `llm._client.timeout = 300` 后重试 | 不要以为是代码写错了 |
 | 运行 `.batch()` 那一步超时 | 按第六节代码格 6 的说明给 `.batch()` 加 `max_concurrency` 限流 | 不要一次次盲目重跑 |
 | 页面显示 Connecting / Kernel 重启 | 从 Notebook 最顶端按顺序重新运行全部格子 | 不要相信页面上残留的旧输出 |
-| 代码格 3 报错 | 改用第九节备用方案 | 不要反复重跑同一格 |
+| 代码格 3 报错 | 先按第九节排查模型是否无响应，再考虑第十节备用方案 | 不要反复重跑同一格 |
 | 评分不通过 | 先看代码格 6 打印的句子对不对，再针对性调整 | 不要连续提交碰运气 |
 | 反复调整仍不通过 | 新建一格运行 `!cat assessment_helper.py`，直接查看评分程序的判定条件 | 不要修改这个文件 |
 
 ---
 
-## 十一、不要做的事
+## 十二、不要做的事
 
 - 不要修改 `62-Conclusion.ipynb`，不要修改 `1-Intro` 至 `5-Tools` 的任何文件。
 - 不要修改 `base_url`、`model`、`temperature` 这三行。
