@@ -78,6 +78,12 @@ JupyterLab 是一个在浏览器里写和运行 Python 代码的网页。页面�
 
 - Windows：`Ctrl + S`；Mac：`Cmd + S`
 
+**一个重要概念：Notebook 是有记忆的**
+
+只要页面没有重启 Kernel，**之前成功运行过的内容会一直留在内存里**。某一格报错，既不会清空内存，也不会影响其他格子。
+
+所以中途遇到报错时，通常**不需要从头重跑一遍**，只要把出问题的那一格解决掉，再继续往下即可。只有页面显示 Kernel 重启 / Connecting，才需要从最顶端重新按顺序运行。
+
 ---
 
 ## 四、第一步：打开作业文件
@@ -114,13 +120,27 @@ llm = ChatNVIDIA(base_url=base_url, model=model, temperature=0)
 
 成功标志：屏幕上出现三段英文邮件（分别是夸搅拌机、投诉餐桌、夸运动鞋）。
 
-**4. Checking Your Work 下面的几格**
+**4. Checking Your Work 下面的两格**
 
-直接运行。
+这两格运行的是一个故意写错的示例链（无视邮件内容、硬答 clothing 和 Dallas），只为演示调用方式。**它们跟你的解法无关，跑不跑都行。**
 
-**这里会打印出一段错误信息，属于正常现象。** 这几格运行的是一个故意写错的示例：它无视邮件内容、硬答 clothing 和 Dallas，评分程序当然不放行。
+务必分清这两格的区别：
 
-这段错误信息值得读一遍，它会透露评分程序在检查什么。
+| 格子 | 内容 | 预期结果 |
+| --- | --- | --- |
+| 第 1 格 | `mock_chain.invoke(emails)` | **应该成功**，打印一句英文。这是环境里第一次真正调用模型 |
+| 第 2 格 | `try: run_assessment(mock_chain)` | 打印一段"未通过"的提示。**这个"报错"是设计好的，属正常** |
+
+**如果第 1 格报 `ReadTimeout: ... Read timed out. (read timeout=60)`**，这不是正常现象，而是模型服务在 60 秒内没有响应（环境刚启动、服务未预热时常见）。处理办法：
+
+- 先重新运行这一格一次，多数情况下第二次就通了
+- 仍然超时，就新建一格运行下面这一行，把等待上限从 60 秒放宽到 300 秒，然后再试：
+
+```python
+llm._client.timeout = 300
+```
+
+**第 2 格建议直接跳过**，它会额外消耗几次模型调用，对拿证书没有帮助。
 
 运行到这里，准备工作结束。
 
@@ -180,7 +200,12 @@ pprint(extract_chain.invoke({"email": emails[1]}))
 
 成功标志：打印结果中 `sentiment` 为 negative、`product_category` 为 furniture、`store_location` 为 New York。
 
-看到这个结果，说明整套方案可行。**如果这一格报错，跳到第八节的备用方案。**
+看到这个结果，说明整套方案可行。
+
+这一格是整个流程中第一次真正调用模型，两种失败要分开处理：
+
+- 报 `ReadTimeout`：模型服务超时，与代码无关。新建一格运行 `llm._client.timeout = 300`，然后重新运行代码格 2 和代码格 3
+- 报其他错误（返回空、结构化输出不支持等）：跳到第九节的备用方案
 
 ### 代码格 4：一次读完全部邮件
 
@@ -254,6 +279,19 @@ The product category with the most negative sentiment is furniture. The store lo
 
 只要 `furniture` 和 `New York` 两个词都正确，就可以进入下一步。
 
+这一格会一次性发出 10 个请求。如果这里报 `ReadTimeout`，把**代码格 4** 改成下面这样加上限流（一次只发 2 个），再依次重跑代码格 4 和代码格 6：
+
+```python
+def extract_all(email_list):
+    return extract_chain.batch(
+        [{"email": email} for email in email_list],
+        config={"max_concurrency": 2},
+    )
+
+extract_all_runnable = RunnableLambda(extract_all)
+```
+
+
 如果类别输出成了 `home furniture`、`furnishings` 之类的近义词，先直接进第七节试评分；若评分不通过，再回到代码格 1，在 `product_category` 的描述末尾补一句：
 
 ```text
@@ -272,7 +310,9 @@ Always answer with a single common English noun such as 'furniture', 'clothing',
 run_assessment(chain)
 ```
 
-它会调用几次模型，通常需要十几秒到一分钟。**运行期间不要重复点击。**
+评分程序会用**三组**邮件测试你的链：课程原始的 10 封，外加两组对照邮件。所以它会调用几十次模型，**可能需要几分钟**。看到 `[*]` 就耐心等待，**绝对不要重复点击**。
+
+正因为它会换数据测试，把 `furniture`、`New York` 写死在代码里一定不通过。
 
 | 结果 | 处理方式 |
 | --- | --- |
@@ -342,7 +382,9 @@ print(chain.invoke(emails))
 | `NameError: llm is not defined` | 回 Create a Model Instance 那一格重新运行 | 不要改模型名 |
 | `NameError: BaseModel` / `Field` / `RunnableLambda` 等 | 回最上方 Imports 那一格重新运行 | 不要自己补写 import |
 | `IndentationError` / `SyntaxError` | 粘贴时缩进被吃掉了。把整格清空，重新粘贴一次 | 不要逐行手动调缩进 |
-| `[*]` 长时间不结束 | 模型正在推理，等待 1–2 分钟 | 不要重复点击运行 |
+| `[*]` 长时间不结束 | 模型正在推理，等待 1–2 分钟；评分那一格可能要几分钟 | 不要重复点击运行 |
+| `ReadTimeout: ... read timeout=60` | 先重跑一次该格；仍超时就运行 `llm._client.timeout = 300` 后重试 | 不要以为是代码写错了 |
+| 运行 `.batch()` 那一步超时 | 按第六节代码格 6 的说明给 `.batch()` 加 `max_concurrency` 限流 | 不要一次次盲目重跑 |
 | 页面显示 Connecting / Kernel 重启 | 从 Notebook 最顶端按顺序重新运行全部格子 | 不要相信页面上残留的旧输出 |
 | 代码格 3 报错 | 改用第九节备用方案 | 不要反复重跑同一格 |
 | 评分不通过 | 先看代码格 6 打印的句子对不对，再针对性调整 | 不要连续提交碰运气 |
