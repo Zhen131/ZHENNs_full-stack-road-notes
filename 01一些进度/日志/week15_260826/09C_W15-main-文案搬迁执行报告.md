@@ -429,3 +429,149 @@ source git status --short --branch
 ```
 
 否定性声明：本轮未改任何既有测试断言、阈值或用例名；未改渲染结构、样式或交互；未引入语法复数；未让数字或日期随语言变化；未改文件格式、版本号、加密参数或派生计算；未改目录结构或拆分文件；未改结构守卫；未引入依赖；未执行 push、rebase、amend、squash、reset 或 force；未读取真实数据区；根文档仓库本轮仅追加本报告。
+
+## 第四轮（修复轮）
+
+本轮从 `8fd0b6ebdccd0f7f83bf32b61b080dfafdc1fed8` 在同一分支 `zhennn/w15-main-app-split` 继续。范围严格为四处已确认的 D-3 缺陷，以及 `translationKeyUsage` 这一项新增守卫；没有改既有测试断言、阈值、用例名、结构守卫、依赖、版本定义或其他产品文件。
+
+### 四处修复与 Q-17：逐字对照
+
+每处均以 `git show ffbe0ff:<文件>` 取回缝上原文，保留旧 key 的值不变，并为出错调用点创建专用 key。每笔修复提交前均实跑 `npm test`，共同原始结论为：
+
+```text
+Test Files  106 passed (106)
+Tests  1185 passed (1185)
+```
+
+| 位置 | 缝上原文 | 修复前渲染 | 修复后渲染 | 专用 key／提交 |
+| --- | --- | --- | --- | --- |
+| `BackupControls.tsx:614` | `账本或 mapping 状态已变化，价格未写入` | `mapping 或全局 ID 状态已变化，价格未写入` | `账本或 mapping 状态已变化，价格未写入` | `backup.pairing.priceNotWrittenByLedger`；`b45ec1e fix: restore ledger price failure wording` |
+| `BackupControls.tsx:1407` | `项导入错误，页面显示前` | `项导入错误，显示前` | `项导入错误，页面显示前` | `backup.errors.hardErrorVisiblePrefix`；`fce7513 fix: restore import error visibility wording` |
+| `FeeRuleManager.tsx:299` | `小数费率` | `费率` | `小数费率` | `fees.field.decimalRate`；`8e35f26 fix: restore decimal rate wording` |
+| `FeeRuleManager.tsx:337` | `固定` | `固定费` | `固定` | `fees.history.fixedAmountLabel`；`62eca8d fix: restore fixed amount wording` |
+
+四行的「修复后渲染」逐字等于各自的「缝上原文」。既有 key `backup.pairing.priceNotWritten`、`backup.errors.showingPrefix`、`fees.field.rate`、`fees.type.fixed` 的值均未改动，因此原来正确的另一调用点保持原样。
+
+第二处初次尝试曾把新 key 错误地只写成 `页面显示前`；全量测试在既有 `BackupControls.test.tsx:1038` 失败，断言为 `expect(screen.getByText(/发现 1 项导入错误/)).not.toBeNull()`。这不是 H-4：失败由遗漏同一调用点原文中的 `项导入错误，` 所致。立即还原该未提交尝试后，改用完整专用值 `项导入错误，页面显示前`，同一断言随即随全量测试通过；既有测试未改。
+
+### Q-18：`translationKeyUsage` 守卫与通电检查
+
+新增 `src/test-support/translationKeyUsage.test.ts`，提交 `c830e79 test: guard translation key reuse`。它用 TypeScript AST 扫描 `src/` 全部 `.ts`／`.tsx` 文件的字面量 `t("...")` 调用，建立 key → 调用点映射；调用点不少于两个的 key 必须出现在显式允许清单。允许清单当前有 117 条，每条前有一行注释说明调用点共享同一句话；守卫也拒绝已不再复用的陈旧允许项。
+
+```text
+$ npx vitest run src/test-support/translationKeyUsage.test.ts
+Test Files  1 passed (1)
+Tests  1 passed (1)
+
+$ rg '^  "[^"]+",$' src/test-support/translationKeyUsage.test.ts | wc -l
+     117
+```
+
+通电检查临时把 `FeeRuleManager.tsx:353` 的单调用 key `fees.field.rate` 换成 `fees.field.decimalRate`，使后者在 `:299` 与 `:353` 两处调用。守卫原始失败输出为：
+
+```text
+AssertionError: Translation keys reused without explicit approval:
+- fees.field.decimalRate: features/fees/FeeRuleManager.tsx:299, features/fees/FeeRuleManager.tsx:353
+Test Files  1 failed (1)
+Tests  1 failed (1)
+```
+
+还原后，`FeeRuleManager.tsx` 的 SHA-256 前后完全一致，并且守卫重新通过：
+
+```text
+before: 7d3745634afb52bcc75186ab702267746a8393fbef3aceffaa1876913e1a7cda  src/features/fees/FeeRuleManager.tsx
+after:  7d3745634afb52bcc75186ab702267746a8393fbef3aceffaa1876913e1a7cda  src/features/fees/FeeRuleManager.tsx
+Test Files  1 passed (1)
+Tests  1 passed (1)
+```
+
+### Q-19：全量收口闸门
+
+所有命令在 `c830e79` 后实跑：
+
+```text
+$ npm test
+Test Files  107 passed (107)
+Tests  1186 passed (1186)
+
+$ npx vitest run --config vitest.benchmarks.config.ts benchmarks/measure/derivedSnapshot.contract.ts
+Test Files  1 passed (1)
+Tests  7 passed (7)
+
+$ npm run typecheck
+tsc --noEmit
+
+$ npm run lint
+eslint . --max-warnings=0
+
+$ npm run build
+✓ Compiled successfully
+✓ Generating static pages (5/5)
+┌ ○ /                                     377 kB         479 kB
+└ ○ /_not-found                            993 B         103 kB
+
+$ npx vitest run src/test-support/sourceLayout.test.ts src/test-support/interfaceWording.test.ts
+Test Files  2 passed (2)
+Tests  8 passed (8)
+
+$ git diff --check ffbe0ff..HEAD
+<empty>
+$ git diff --check
+<empty>
+```
+
+四个版本号仍为 `fileFormatVersion=3`、`cryptoVersion=1`、`ledgerSchemaVersion=4`、`backupFormatVersion=3`。权威 V3 文件外壳元组在 `src/platform/files/ledgerFileChunkedContainerV3.ts:23-27`；账本 schema 的独立权威定义在 `src/platform/files/ledgerFileContract.ts:31`，备份格式的独立权威定义在 `src/features/backup/backupEnvelope.ts:21`。本轮未修改这些文件。
+
+```text
+src/platform/files/ledgerFileChunkedContainerV3.ts:24: fileFormatVersion: 3
+src/platform/files/ledgerFileChunkedContainerV3.ts:25: cryptoVersion: 1
+src/platform/files/ledgerFileContract.ts:31: export const SUPPORTED_LEDGER_SCHEMA_VERSION = 4 as const;
+src/features/backup/backupEnvelope.ts:21: export const BACKUP_FORMAT_VERSION = 3 as const;
+```
+
+### Q-20：中文表键数（逐键 AST 口径）
+
+以下命令用 TypeScript AST 找到三个消息对象，并数每个对象的 `PropertyAssignment`；不按源码行计数，因此正确处理多键同行。
+
+```text
+$ node -e "const fs=require('node:fs');const ts=require('typescript');const f='src/ui/i18n.tsx',s=ts.createSourceFile(f,fs.readFileSync(f,'utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX),n=new Set(['chineseMessages','englishMessages','hungarianMessages']),c={};const o=x=>{while(ts.isAsExpression(x)||ts.isTypeAssertionExpression(x)||ts.isParenthesizedExpression(x))x=x.expression;return ts.isObjectLiteralExpression(x)?x:undefined};const v=x=>{if(ts.isVariableDeclaration(x)&&ts.isIdentifier(x.name)&&n.has(x.name.text)&&x.initializer){const q=o(x.initializer);if(q)c[x.name.text]=q.properties.filter(ts.isPropertyAssignment).length}ts.forEachChild(x,v)};v(s);console.log('chinese='+c.chineseMessages);console.log('english='+c.englishMessages);console.log('hungarian='+c.hungarianMessages)"
+chinese=1218
+english=32
+hungarian=32
+```
+
+中文数由上一轮实测 1,214 加本轮四个专用 key 得到；这里的 `1218` 来自上述实跑 AST 输出，而非按行数推断。
+
+### Q-21：09D 同类 AST 复核
+
+同一份 Node + TypeScript AST 脚本分别对 `ffbe0ff` 与当前 `HEAD` 读取 `src/app`、`src/features`、`src/ui` 的全部非测试 `.ts`／`.tsx` 文件。脚本抽出 `StringLiteral`、无插值模板串、模板头／中／尾和 `JsxText` 中含汉字的字面量；对两侧同一口径的差异，以汉字投影动态规划判断能否由对侧片段拼出。
+
+```text
+seam files=96 hits=1391 unique=1047
+head files=96 hits=1186 unique=986
+seamUncomposableCandidates=1
+- "已"
+headUncomposableCandidates=1
+- "条"
+```
+
+逐条判定：
+
+| 候选 | 判定 | 依据 |
+| --- | --- | --- |
+| 缝侧 `已` | 合格的等价判定改写，不是渲染文案丢失 | 缝侧 `AssetTransferPanel.tsx:174` 为 `feedback.includes("已")`；当前 `:178-181` 改为只比较 `savedFeedback`／`deletedFeedback` 两个完整运行期译文，仍只清除同一两类成功反馈。 |
+| 当前侧 `条` | 合格的分页文案拆分，不是新增措辞 | 当前 `cash.pagination.totalSuffix` 与 `assetTransfers.pagination.totalSuffix` 都为 `条`；缝侧完整句在本批被拆为 `共`、数量、`条`、分隔符、`第`、页码、`页`。 |
+
+已确认的四处缺陷字符串均未出现在本次候选中；因此本轮没有发现新的中文静默改写。
+
+### 第四轮收口状态
+
+```text
+branch: zhennn/w15-main-app-split
+HEAD: c830e79
+source status:
+## zhennn/w15-main-app-split
+source commits since ffbe0ff: 62
+```
+
+未执行 push、rebase、amend、squash、reset --hard 或 clean -fd；未读取 `Downloads/history_OKX/`。根文档仓库本轮只追加本节。
