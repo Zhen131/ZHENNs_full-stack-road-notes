@@ -25,7 +25,7 @@ Every tool today tells you what happened to your money. None tell you why you di
 
 Existing tools either protect your privacy and have no AI, or use AI only to follow the money. The few that study psychology sit in the cloud and ask you to tag your own emotions by hand. Even when someone does, the form records what they *think* they were thinking — people are not lying on purpose; they simply believe their own account of themselves.
 
-**The idea has three layers.** *One: infer from behaviour, ask nothing.* The ledger already knows the second each trade happened and what the price was doing then. A buy landing in the 97th percentile of an asset's 24-hour move is not a reported feeling. It is a fact. Trades do not lie.
+**The idea has three layers.** *One: infer from behaviour, ask nothing.* The ledger already knows the second each trade happened and what the price was doing then. If I bought into a price that was already spiking, the trade itself says so. Nobody had to ask me how I felt. Trades do not lie.
 
 *Two: put the record beside the account.* Every trade can carry the sentence I wrote at that moment. The ledger says: you bought at the top of a fourteen-percent day. My own words say: the fundamentals changed, I am here for the long term. The distance between those two sentences is how much I lie to myself. It runs both ways — disagreement is a blind spot; agreement, again and again, is discipline, and for the first time it is measurable. Money compounds. When your judgement is repeatedly shown to be reliable, your thinking starts to compound too.
 
@@ -37,7 +37,7 @@ Existing tools either protect your privacy and have no AI, or use AI only to fol
 
 **It must also be AI.** Two of the three layers do not need it — percentile statistics are arithmetic, and I will not call them AI. Knowing where not to use AI is how I know where to use it. The second layer is different, and it is not sentence parsing.
 
-*Contradiction is semantic, not lexical.* "The fundamentals changed, I am here for the long term" and "you bought in the 97th percentile" do not clash on the surface. They clash because a genuinely long-term investor does not care where the short-term price sits — and the same intent has unlimited phrasings, so enumeration always misses, and it misses the most original people first.
+*Contradiction is semantic, not lexical.* "The fundamentals changed, I am here for the long term" and "you bought at the top of a fourteen-percent day" do not clash on the surface. They clash because a genuinely long-term investor does not care where the short-term price sits — and the same intent has unlimited phrasings, so enumeration always misses, and it misses the most original people first.
 
 *Meaning depends on the person's own history*, which is why *why AI* and *why local* are two conclusions drawn from one constraint.
 
